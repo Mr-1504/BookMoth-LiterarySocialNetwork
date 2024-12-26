@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "1063517883965",
+    "firebase_url": "https://bea-book-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "bea-book",
+    "storage_bucket": "bea-book.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063517883965:android:465967b0caf34fceb3a454",
+        "android_client_info": {
+          "package_name": "com.beabook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA616HkWdWESLN6ceTW8yTritXsxTgnZ94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063517883965:android:c56a5eb72b11bc4db3a454",
+        "android_client_info": {
+          "package_name": "com.example.bookmoth"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA616HkWdWESLN6ceTW8yTritXsxTgnZ94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063517883965:android:819d1841aecb7269b3a454",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA616HkWdWESLN6ceTW8yTritXsxTgnZ94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
