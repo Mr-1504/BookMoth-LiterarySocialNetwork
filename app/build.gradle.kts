@@ -16,7 +16,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    // Không cần tạo lại signingConfigs với tên 'debug'
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug") // Sử dụng signingConfig mặc định
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -25,6 +29,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
