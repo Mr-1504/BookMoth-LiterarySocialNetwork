@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "229552525282",
+    "project_id": "bookmoth-2a0fe",
+    "storage_bucket": "bookmoth-2a0fe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:229552525282:android:662efb889e79089f6df3bb",
+        "android_client_info": {
+          "package_name": "com.example.bookmoth"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjwWJ-oxRB-1NWvc_3u4ST4R6105ajxnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
