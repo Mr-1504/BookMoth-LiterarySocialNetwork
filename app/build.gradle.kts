@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -33,6 +34,24 @@ android {
 
 dependencies {
 
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+
+
+    // TODO: Add the dependencies for Firebase products you want to use
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.android.gms:play-services-auth:20.0.1")
+    implementation("com.google.code.gson:gson:2.8.8")
+
+    // Add the dependencies for any other desired Firebase products
+    // https://firebase.google.com/docs/android/setup#available-libraries
+
+    // Thêm Glide dependency
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.database)
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
