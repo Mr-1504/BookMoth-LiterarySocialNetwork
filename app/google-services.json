@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "386345899253",
+    "project_id": "bookmoth-448216",
+    "storage_bucket": "bookmoth-448216.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386345899253:android:766ed31bb661bbf220e1bc",
+        "android_client_info": {
+          "package_name": "com.example.bookmoth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "386345899253-dm0imgufbm4j7fttddgiceoudb96gtki.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bookmoth",
+            "certificate_hash": "5953a73fb29cd9e176c481514380ba678f5fab0a"
+          }
+        },
+        {
+          "client_id": "386345899253-b3028v2ija9jg19hi2svdh1uh665goii.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1rwthdwazSGbjI54i9-dejtq4qAwnRs0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "386345899253-b3028v2ija9jg19hi2svdh1uh665goii.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

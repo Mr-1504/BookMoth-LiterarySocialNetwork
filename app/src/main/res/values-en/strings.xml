@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BookMoth</string>
+    <string name="LoginFailedMessage">Login failed. Try again later!</string>
+    <string name="ng_nh_p_v_i_gg">Login with Google</string>
+    <string name="no_internet">No Internet</string>
+</resources>

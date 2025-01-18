@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="LoginFailedMessage">Đăng nhập không thành công. Thử lại sau</string>
+    <string name="no_internet">Không có kết nối Internet</string>
+</resources>

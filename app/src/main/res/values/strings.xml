@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">BookMoth</string>
+    <string name="test" translatable="false">Test</string>
+    <string name="ng_nh_p_v_i_gg">Đăng nhập với GG</string>
 </resources>
