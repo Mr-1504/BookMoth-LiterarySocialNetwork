@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">BookMoth</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="ng_nh_p_b_ng_google">Đăng nhập bằng Google</string>
+    <string name="no_internet">Không có kết nối internet!</string>
+    <string name="LoginFailedMessage">Đăng nhập thất bại. Thử lại sau!</string>
+    <string name="error_signin_cancelled">Quá trình đăng nhập không thể hoàn thành!</string>
+    <string name="error_network">Lỗi kết nối Internet!</string>
+    <string name="error_invalid_account">Tài khoản Google không hợp lệ!</string>
+    <string name="error_unknown">Lỗi không xác định!</string>
+    <string name="firebase_auth_failed">Đăng nhập thất bại!</string>
 </resources>
