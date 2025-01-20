@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.bookmoth.LogoutActivity;
 import com.example.bookmoth.MainActivity;
 import com.example.bookmoth.R;
 import com.example.bookmoth.ui.login.LoginViewModel;
@@ -332,7 +333,7 @@ public class LoginActivity extends AppCompatActivity {
                             FirebaseUser user = firebaseAuth.getCurrentUser();
                             Log.d("LoginActivity", "Firebase authentication successful. Email: "
                                     + (user != null ? user.getEmail() : "Unknown"));
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            startActivity(new Intent(LoginActivity.this, LogoutActivity.class));
                             finish();
                         } else {
                             Log.e("LoginActivity", "Firebase authentication failed.", task.getException());
