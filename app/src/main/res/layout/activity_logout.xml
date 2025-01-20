@@ -7,4 +7,141 @@
     android:layout_height="match_parent"
     tools:context=".LogoutActivity">
 
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="148dp"
+        android:layout_marginBottom="199dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/serverAuthCode"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/serverAuthCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginBottom="58dp"
+        android:text="Server Auth Code"
+        app:layout_constraintBottom_toTopOf="@+id/avatar"
+        app:layout_constraintEnd_toStartOf="@+id/codeValue"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/name" />
+
+    <TextView
+        android:id="@+id/Id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="19dp"
+        android:text="ID"
+        app:layout_constraintBottom_toTopOf="@+id/email"
+        app:layout_constraintEnd_toStartOf="@+id/IdValue"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logout" />
+
+    <TextView
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginBottom="25dp"
+        android:text="Email"
+        app:layout_constraintBottom_toTopOf="@+id/name"
+        app:layout_constraintEnd_toStartOf="@+id/EmailValue"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Id" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="22dp"
+        android:text="Tên"
+        app:layout_constraintBottom_toTopOf="@+id/serverAuthCode"
+        app:layout_constraintEnd_toStartOf="@+id/nameValue"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/email" />
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="248dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="73dp"
+        android:text="Đăng xuất"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/IdValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="132dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="159dp"
+        android:layout_marginBottom="20dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/EmailValue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/Id"
+        app:layout_constraintTop_toBottomOf="@+id/logout" />
+
+    <TextView
+        android:id="@+id/EmailValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="108dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="160dp"
+        android:layout_marginBottom="55dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/nameValue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/email"
+        app:layout_constraintTop_toBottomOf="@+id/IdValue" />
+
+    <TextView
+        android:id="@+id/nameValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="194dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="160dp"
+        android:layout_marginBottom="70dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/codeValue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/EmailValue" />
+
+    <TextView
+        android:id="@+id/codeValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="194dp"
+        android:layout_marginEnd="159dp"
+        android:layout_marginBottom="430dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameValue" />
 </androidx.constraintlayout.widget.ConstraintLayout>
