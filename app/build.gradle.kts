@@ -19,14 +19,14 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-//    signingConfigs {
-//        create("release") {
-//            storeFile = file("D:\\key_store\\BookMoth.jks")
-//            storePassword = "123456"
-//            keyAlias = "bookmoth"
-//            keyPassword = "123456"
-//        }
-//    }
+    signingConfigs {
+        create("release") {
+            storeFile = file("BookMoth.jks")
+            storePassword = "123456"
+            keyAlias = "bookmoth"
+            keyPassword = "123456"
+        }
+    }
 
     buildTypes {
         release {
@@ -35,11 +35,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-//            signingConfig = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("release")
         }
-//        debug {
-//            signingConfig = signingConfigs.getByName("release")
-//        }
+        debug {
+            signingConfig = signingConfigs.getByName("release")
+        }
     }
 
     compileOptions {

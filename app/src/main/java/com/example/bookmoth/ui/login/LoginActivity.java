@@ -283,6 +283,9 @@ public class LoginActivity extends AppCompatActivity {
             case GoogleSignInStatusCodes.INVALID_ACCOUNT:
                 errorMessage = getString(R.string.error_invalid_account);
                 break;
+            case GoogleSignInStatusCodes.API_NOT_CONNECTED:
+                errorMessage = getString(R.string.api_not_connected);
+                break;
             default:
                 errorMessage = getString(R.string.error_unknown);
                 break;
