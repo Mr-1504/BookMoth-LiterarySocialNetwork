@@ -13,6 +13,9 @@
         android:theme="@style/Theme.BookMoth"
         tools:targetApi="31">
         <activity
+            android:name=".PayActivity"
+            android:exported="false" />
+        <activity
             android:name=".LogoutActivity"
             android:exported="false" />
         <activity
