@@ -17,4 +17,5 @@
     <string name="error_invalid_account">Tài khoản Google không hợp lệ!</string>
     <string name="error_unknown">Lỗi không xác định!</string>
     <string name="firebase_auth_failed">Đăng nhập thất bại!</string>
+    <string name="api_not_connected">API not connected</string>
 </resources>
