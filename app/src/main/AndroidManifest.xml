@@ -33,7 +33,7 @@
 
                 <data
                     android:host="app"
-                    android:scheme="demozpdk" />
+                    android:scheme="pay_order" />
             </intent-filter>
         </activity>
         <activity

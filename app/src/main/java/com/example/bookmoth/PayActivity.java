@@ -81,7 +81,7 @@ public class PayActivity extends AppCompatActivity {
     }
 
     private void startZaloPayPayment(String token) {
-        ZaloPaySDK.getInstance().payOrder(PayActivity.this, token, "demozpdk://app", new PayOrderListener() {
+        ZaloPaySDK.getInstance().payOrder(PayActivity.this, token, "pay_order://app", new PayOrderListener() {
             @Override
             public void onPaymentSucceeded(String s, String s1, String s2) {
                 Log.i("PaymentCallback", "Payment succeeded with transaction: " + s);
