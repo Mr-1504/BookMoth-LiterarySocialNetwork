@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.Objects;
 
 public class Helpers {
-    private static int transIdDefault = 1;
 
 
     /**
@@ -21,15 +20,10 @@ public class Helpers {
      */
     @NotNull
     @SuppressLint("DefaultLocale")
-     public static String getAppTransId() {
-        if (transIdDefault >= 100000) {
-            transIdDefault = 1;
-        }
-
-        transIdDefault += 1;
+     public static String getAppTransId(String invoiceId) {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat formatDateTime = new SimpleDateFormat("yyMMdd_hhmmss");
         String timeString = formatDateTime.format(new Date());
-        return String.format("%s%06d", timeString, transIdDefault);
+        return String.format("%s%s", timeString, invoiceId);
     }
 
     @NotNull

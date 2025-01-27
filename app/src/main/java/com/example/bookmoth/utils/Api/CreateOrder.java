@@ -1,9 +1,5 @@
 package com.example.bookmoth.utils.Api;
 
-
-import android.widget.Toast;
-
-import com.example.bookmoth.PayActivity;
 import com.example.bookmoth.utils.Constant.AppInfo;
 import com.example.bookmoth.utils.Helper.Helpers;
 
@@ -27,17 +23,17 @@ public class CreateOrder {
         String Description;
         String Mac;
 
-        public CreateOrderData(String amount) throws Exception {
+        public CreateOrderData(String amount, String appUser, String invoiceId) throws Exception {
             long appTime = new Date().getTime();
             AppId = String.valueOf(AppInfo.APP_ID);
-            AppUser = "Android_Demo";
+            AppUser = appUser;
             AppTime = String.valueOf(appTime);
             Amount = amount;
-            AppTransId = Helpers.getAppTransId();
+            AppTransId = Helpers.getAppTransId(invoiceId);
             EmbedData = "{}";
             Items = "[]";
             BankCode = "zalopayapp";
-            Description = "Merchant pay for order #" + Helpers.getAppTransId();
+            Description = "Merchant pay for order #" + AppTransId;
             String inputHMac = String.format("%s|%s|%s|%s|%s|%s|%s",
                     this.AppId,
                     this.AppTransId,
@@ -53,8 +49,8 @@ public class CreateOrder {
         }
     }
 
-     public JSONObject createOrder(String amount) throws Exception {
-        CreateOrderData input = new CreateOrderData(amount);
+    public JSONObject createOrder(String amount, String appUser, String invoiceId) throws Exception {
+        CreateOrderData input = new CreateOrderData(amount, appUser, invoiceId);
 
         RequestBody formBody = new FormBody.Builder()
                 .add("appid", input.AppId)
@@ -69,7 +65,7 @@ public class CreateOrder {
                 .add("mac", input.Mac)
                 .build();
 
-         return HttpProvider.sendPost(AppInfo.URL_CREATE_ORDER, formBody);
+        return HttpProvider.sendPost(AppInfo.URL_CREATE_ORDER, formBody);
     }
 }
 
