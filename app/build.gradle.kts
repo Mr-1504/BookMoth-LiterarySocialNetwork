@@ -62,6 +62,10 @@ android {
 }
 
 dependencies {
+
+    implementation(project(":data"))
+    implementation(project(":domain"))
+
     implementation(libs.play.services.auth)
     // Import the Firebase BoM
     implementation(platform(libs.firebase.bom))

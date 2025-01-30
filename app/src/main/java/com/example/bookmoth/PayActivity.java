@@ -58,7 +58,7 @@ public class PayActivity extends AppCompatActivity {
 
                 new Thread(() -> {
                     try {
-                        JSONObject data = new CreateOrder().createOrder(soluongString, "");
+                        JSONObject data = new CreateOrder().createOrder(soluongString, "Minh", "MUA_KIM_CUONG_FREE_FIRE");
                         String code = data.getString("returncode");
                         Log.i("Successed", "API Response: " + data.toString());
 
