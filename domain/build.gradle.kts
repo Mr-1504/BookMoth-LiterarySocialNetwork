@@ -7,5 +7,7 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 dependencies {
-    implementation(libs.lifecycle.livedata.core)
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }

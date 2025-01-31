@@ -1,11 +1,13 @@
 package com.example.domain.repository;
 
-import androidx.lifecycle.LiveData;
 
-import com.example.domain.entity.User;
+import com.example.domain.model.User;
 
 import java.util.List;
 
+import retrofit2.Callback;
+
+
 public interface UserRepository {
-    LiveData<List<User>> getUsers();
+    void getUsers(Callback<List<User>> callback);
 }

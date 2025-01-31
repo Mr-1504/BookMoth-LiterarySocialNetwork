@@ -63,7 +63,6 @@ android {
 
 dependencies {
 
-    implementation(project(":data"))
     implementation(project(":domain"))
 
     implementation(libs.play.services.auth)

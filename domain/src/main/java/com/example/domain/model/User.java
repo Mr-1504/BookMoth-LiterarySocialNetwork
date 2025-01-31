@@ -1,4 +1,4 @@
-package com.example.domain.entity;
+package com.example.domain.model;
 
 public class User {
     private int id;
