@@ -21,5 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "BookMoth"
 include(":app")
-include(":domain")
-include(":data")

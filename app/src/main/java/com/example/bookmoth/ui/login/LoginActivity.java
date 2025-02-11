@@ -26,12 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bookmoth.LogoutActivity;
-import com.example.bookmoth.MainActivity;
+import com.example.bookmoth.ui.home.MainActivity;
 import com.example.bookmoth.R;
-import com.example.bookmoth.ui.login.LoginViewModel;
-import com.example.bookmoth.ui.login.LoginViewModelFactory;
 import com.example.bookmoth.databinding.ActivityLoginBinding;
-import com.example.bookmoth.utils.InternetHelper;
+import com.example.bookmoth.core.utils.Api.HttpProvider;
+import com.example.bookmoth.core.utils.InternetHelper;
+import com.example.bookmoth.ui.viewmodel.LoginViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -47,8 +47,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
-import java.util.Objects;
+import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -154,9 +153,30 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
+//                loadingProgressBar.setVisibility(View.VISIBLE);
+//                loginViewModel.login(usernameEditText.getText().toString(),
+//                        passwordEditText.getText().toString());
+                // Tạo JSON request body
+                new Thread(() -> {
+                    Response response = HttpProvider.sendPostJson(
+                            usernameEditText.getText().toString(),
+                            passwordEditText.getText().toString()
+                    );
+
+                    if (response != null) {
+                        System.out.println(response.toString());
+                        if (response.code() == 200){
+                            runOnUiThread(() -> {
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            });
+                        }
+
+                    } else {
+                        System.out.println("Request thất bại!");
+                    }
+                }).start();
             }
         });
 
@@ -296,35 +316,35 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Xác thực người dùng với Firebase bằng token ID từ Google.
-     *
+     * <p>
      * Phương thức này sử dụng token ID của Google để tạo đối tượng {@link com.google.firebase.auth.AuthCredential},
      * sau đó xác thực thông qua Firebase Authentication bằng cách gọi
      * {@code firebaseAuth.signInWithCredential(AuthCredential)}.
      *
      * @param account tài khoản người dùng nhận được từ Google sau khi người dùng đăng nhập.
-     *
-     * Điều kiện tiên quyết:
-     * - Đối tượng FirebaseAuth (firebaseAuth) phải được khởi tạo trước khi gọi phương thức này.
-     * - Tham số {@code idToken} không được null.
-     *
-     * Quá trình:
-     * 1. Tạo đối tượng {@link com.google.firebase.auth.AuthCredential} bằng token ID.
-     * 2. Gọi phương thức xác thực của Firebase.
-     * 3. Nếu xác thực thành công:
-     *    - Lấy thông tin người dùng từ Firebase thông qua {@link com.google.firebase.auth.FirebaseUser}.
-     *    - Nếu thông tin người dùng không tồn tại, hiển thị thông báo lỗi.
-     *    - Nếu tồn tại, lưu thông tin người dùng (ID, tên, avatar) vào cơ sở dữ liệu Firebase Realtime Database.
-     *    - Chuyển sang màn hình chính ({@code Home}).
-     * 4. Nếu xác thực thất bại, hiển thị thông báo lỗi.
-     *
-     * Ví dụ:
-     * <pre>
-     * String idToken = "your_google_id_token";
-     * firebaseAuth(idToken);
-     * </pre>
-     *
-     * Xử lý lỗi:
-     * - Hiển thị thông báo lỗi nếu người dùng không được xác thực hoặc thông tin không tồn tại.
+     *                <p>
+     *                Điều kiện tiên quyết:
+     *                - Đối tượng FirebaseAuth (firebaseAuth) phải được khởi tạo trước khi gọi phương thức này.
+     *                - Tham số {@code idToken} không được null.
+     *                <p>
+     *                Quá trình:
+     *                1. Tạo đối tượng {@link com.google.firebase.auth.AuthCredential} bằng token ID.
+     *                2. Gọi phương thức xác thực của Firebase.
+     *                3. Nếu xác thực thành công:
+     *                - Lấy thông tin người dùng từ Firebase thông qua {@link com.google.firebase.auth.FirebaseUser}.
+     *                - Nếu thông tin người dùng không tồn tại, hiển thị thông báo lỗi.
+     *                - Nếu tồn tại, lưu thông tin người dùng (ID, tên, avatar) vào cơ sở dữ liệu Firebase Realtime Database.
+     *                - Chuyển sang màn hình chính ({@code Home}).
+     *                4. Nếu xác thực thất bại, hiển thị thông báo lỗi.
+     *                <p>
+     *                Ví dụ:
+     *                <pre>
+     *                String idToken = "your_google_id_token";
+     *                firebaseAuth(idToken);
+     *                </pre>
+     *                <p>
+     *                Xử lý lỗi:
+     *                - Hiển thị thông báo lỗi nếu người dùng không được xác thực hoặc thông tin không tồn tại.
      */
     private void firebaseAuth(GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
