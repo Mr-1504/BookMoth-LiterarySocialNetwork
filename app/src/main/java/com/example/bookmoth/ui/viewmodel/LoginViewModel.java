@@ -1,71 +1,51 @@
 package com.example.bookmoth.ui.viewmodel;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import android.util.Patterns;
+import com.example.bookmoth.domain.model.Account;
+import com.example.bookmoth.domain.usecase.login.LoginUseCase;
 
-import com.example.bookmoth.data.LoginRepository;
-import com.example.bookmoth.data.Result;
-import com.example.bookmoth.data.model.LoggedInUser;
-import com.example.bookmoth.R;
-import com.example.bookmoth.ui.login.LoggedInUserView;
-import com.example.bookmoth.ui.login.LoginFormState;
-import com.example.bookmoth.ui.login.LoginResult;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginViewModel extends ViewModel {
 
-    private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
-    private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
-    private LoginRepository loginRepository;
+    private LoginUseCase loginUseCase;
 
-    LoginViewModel(LoginRepository loginRepository) { this.loginRepository = loginRepository; }
-
-    LiveData<LoginFormState> getLoginFormState() {
-        return loginFormState;
+    public LoginViewModel(LoginUseCase loginUseCase) {
+        this.loginUseCase = loginUseCase;
     }
 
-    LiveData<LoginResult> getLoginResult() {
-        return loginResult;
+    public void login(String email, String password, final OnLoginListener listener) {
+        loginUseCase.execute(email, password).enqueue(new Callback<Account>() {
+            @Override
+            public void onResponse(Call<Account> call, Response<Account> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listener.onSuccess(response.body().getEmail());
+                } else {
+                    if (response.code() == 400){
+                        listener.onError("Sai email hoặc mật khẩu");
+                    } else if (response.code() == 404){
+                        listener.onError("Tài khoản không tồn tại");
+                    } else if (response.code() == 500){
+                        listener.onError("Lỗi kết nối server");
+                    } else {
+                        listener.onError("Lỗi không xác định - " + response.code());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Account> call, Throwable t) {
+                listener.onError("Lỗi kết nối đến server: " + t.getMessage());
+            }
+        });
     }
 
-    public void login(String username, String password) {
-        // can be launched in a separate asynchronous job
-        Result<LoggedInUser> result = loginRepository.login(username, password);
+    public interface OnLoginListener {
+        void onSuccess(String token);
 
-        if (result instanceof Result.Success) {
-            LoggedInUser data = ((Result.Success<LoggedInUser>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getDisplayName())));
-        } else {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
-        }
-    }
-
-    public void loginDataChanged(String username, String password) {
-        if (!isUserNameValid(username)) {
-            loginFormState.setValue(new LoginFormState(R.string.invalid_username, null));
-        } else if (!isPasswordValid(password)) {
-            loginFormState.setValue(new LoginFormState(null, R.string.invalid_password));
-        } else {
-            loginFormState.setValue(new LoginFormState(true));
-        }
-    }
-
-    // A placeholder username validation check
-    private boolean isUserNameValid(String username) {
-        if (username == null) {
-            return false;
-        }
-        if (username.contains("@")) {
-            return Patterns.EMAIL_ADDRESS.matcher(username).matches();
-        } else {
-            return !username.trim().isEmpty();
-        }
-    }
-
-    // A placeholder password validation check
-    private boolean isPasswordValid(String password) {
-        return password != null && password.trim().length() > 5;
+        void onError(String error);
     }
 }

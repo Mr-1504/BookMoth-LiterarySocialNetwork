@@ -1,9 +1,9 @@
 package com.example.bookmoth.domain.repository;
 
-import com.example.bookmoth.data.model.login.LoginRequest;
+import com.example.bookmoth.domain.model.Account;
 
 import retrofit2.Call;
 
-public interface AuthRepository {
-    Call<LoginResponse> login (LoginRequest request);
+public interface LoginRepository {
+    Call<Account> login (String email, String password);
 }

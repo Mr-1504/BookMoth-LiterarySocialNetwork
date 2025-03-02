@@ -1,4 +1,4 @@
-package com.example.bookmoth.data.network;
+package com.example.bookmoth.data.remote;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -6,7 +6,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static String BASE_URL = "https://127.0.0.1:7204/";
+    private static String BASE_URL = "http://127.0.0.1:7100/";
     private static Retrofit retrofit;
 
     public static Retrofit getInstance(){
