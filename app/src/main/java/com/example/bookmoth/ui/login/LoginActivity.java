@@ -1,10 +1,6 @@
 package com.example.bookmoth.ui.login;
 
-import android.app.Activity;
-
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,25 +9,19 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.bookmoth.LogoutActivity;
-import com.example.bookmoth.MainActivity;
 import com.example.bookmoth.R;
-import com.example.bookmoth.ui.login.LoginViewModel;
-import com.example.bookmoth.ui.login.LoginViewModelFactory;
+import com.example.bookmoth.data.repository.login.LoginRepositoryImpl;
 import com.example.bookmoth.databinding.ActivityLoginBinding;
-import com.example.bookmoth.utils.InternetHelper;
+import com.example.bookmoth.core.utils.InternetHelper;
+import com.example.bookmoth.domain.usecase.login.LoginUseCase;
+import com.example.bookmoth.ui.home.MainActivity;
+import com.example.bookmoth.ui.viewmodel.LoginViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -47,18 +37,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
-import java.util.Objects;
-
 public class LoginActivity extends AppCompatActivity {
 
-    private Button loginWithGoogle;
+    private Button loginWithGoogle, loginWithEmail;
     private LoginViewModel loginViewModel;
     private ActivityLoginBinding binding;
     private FirebaseDatabase database;
     private GoogleSignInOptions signInOptions;
     private GoogleSignInClient client;
     private FirebaseAuth firebaseAuth;
+    private EditText email, password;
     int RC_LOGIN = 20;
 
     @Override
@@ -68,9 +56,9 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
-                .get(LoginViewModel.class);
-
+        email = binding.username;
+        password = binding.password;
+        loginWithEmail = binding.login;
         loginWithGoogle = binding.loginWithGoogleButton;
         database = FirebaseDatabase.getInstance();
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -79,95 +67,38 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
         client = GoogleSignIn.getClient(LoginActivity.this, signInOptions);
         firebaseAuth = FirebaseAuth.getInstance();
-        final EditText usernameEditText = binding.username;
-        final EditText passwordEditText = binding.password;
-        final Button loginButton = binding.login;
-        final ProgressBar loadingProgressBar = binding.loading;
+        loginViewModel = new LoginViewModel(new LoginUseCase(new LoginRepositoryImpl()));
 
-        loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
-            @Override
-            public void onChanged(@Nullable LoginFormState loginFormState) {
-                if (loginFormState == null) {
-                    return;
-                }
-                loginButton.setEnabled(loginFormState.isDataValid());
-                if (loginFormState.getUsernameError() != null) {
-                    usernameEditText.setError(getString(loginFormState.getUsernameError()));
-                }
-                if (loginFormState.getPasswordError() != null) {
-                    passwordEditText.setError(getString(loginFormState.getPasswordError()));
-                }
-            }
-        });
-
-        loginViewModel.getLoginResult().observe(this, new Observer<LoginResult>() {
-            @Override
-            public void onChanged(@Nullable LoginResult loginResult) {
-                if (loginResult == null) {
-                    return;
-                }
-                loadingProgressBar.setVisibility(View.GONE);
-                if (loginResult.getError() != null) {
-                    showLoginFailed(loginResult.getError());
-                }
-                if (loginResult.getSuccess() != null) {
-                    updateUiWithUser(loginResult.getSuccess());
-                }
-                setResult(Activity.RESULT_OK);
-
-                //Complete and destroy login activity once successful
-                finish();
-            }
-        });
-
-        TextWatcher afterTextChangedListener = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // ignore
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // ignore
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                loginViewModel.loginDataChanged(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
-            }
-        };
-        usernameEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.addTextChangedListener(afterTextChangedListener);
-        passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    loginViewModel.login(usernameEditText.getText().toString(),
-                            passwordEditText.getText().toString());
-                }
-                return false;
-            }
-        });
-
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
-            }
-        });
-
+        clickLoginWithEmail();
         clickLoginWithGoogle();
     }
 
-    private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+    private void clickLoginWithEmail() {
+        loginWithEmail.setOnClickListener(v -> {
+            String mail = email.getText().toString();
+            String pass = password.getText().toString();
+
+            loginViewModel.login(mail, pass, new LoginViewModel.OnLoginListener() {
+                @Override
+                public void onSuccess(String token) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+
+                @Override
+                public void onError(String error) {
+                    Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
+                }
+            });
+        });
     }
+
+//    private void updateUiWithUser(LoggedInUserView model) {
+//        String welcome = getString(R.string.welcome) + model.getDisplayName();
+//        // TODO : initiate successful logged in experience
+//        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+//    }
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
@@ -296,35 +227,35 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Xác thực người dùng với Firebase bằng token ID từ Google.
-     *
+     * <p>
      * Phương thức này sử dụng token ID của Google để tạo đối tượng {@link com.google.firebase.auth.AuthCredential},
      * sau đó xác thực thông qua Firebase Authentication bằng cách gọi
      * {@code firebaseAuth.signInWithCredential(AuthCredential)}.
      *
      * @param account tài khoản người dùng nhận được từ Google sau khi người dùng đăng nhập.
-     *
-     * Điều kiện tiên quyết:
-     * - Đối tượng FirebaseAuth (firebaseAuth) phải được khởi tạo trước khi gọi phương thức này.
-     * - Tham số {@code idToken} không được null.
-     *
-     * Quá trình:
-     * 1. Tạo đối tượng {@link com.google.firebase.auth.AuthCredential} bằng token ID.
-     * 2. Gọi phương thức xác thực của Firebase.
-     * 3. Nếu xác thực thành công:
-     *    - Lấy thông tin người dùng từ Firebase thông qua {@link com.google.firebase.auth.FirebaseUser}.
-     *    - Nếu thông tin người dùng không tồn tại, hiển thị thông báo lỗi.
-     *    - Nếu tồn tại, lưu thông tin người dùng (ID, tên, avatar) vào cơ sở dữ liệu Firebase Realtime Database.
-     *    - Chuyển sang màn hình chính ({@code Home}).
-     * 4. Nếu xác thực thất bại, hiển thị thông báo lỗi.
-     *
-     * Ví dụ:
-     * <pre>
-     * String idToken = "your_google_id_token";
-     * firebaseAuth(idToken);
-     * </pre>
-     *
-     * Xử lý lỗi:
-     * - Hiển thị thông báo lỗi nếu người dùng không được xác thực hoặc thông tin không tồn tại.
+     *                <p>
+     *                Điều kiện tiên quyết:
+     *                - Đối tượng FirebaseAuth (firebaseAuth) phải được khởi tạo trước khi gọi phương thức này.
+     *                - Tham số {@code idToken} không được null.
+     *                <p>
+     *                Quá trình:
+     *                1. Tạo đối tượng {@link com.google.firebase.auth.AuthCredential} bằng token ID.
+     *                2. Gọi phương thức xác thực của Firebase.
+     *                3. Nếu xác thực thành công:
+     *                - Lấy thông tin người dùng từ Firebase thông qua {@link com.google.firebase.auth.FirebaseUser}.
+     *                - Nếu thông tin người dùng không tồn tại, hiển thị thông báo lỗi.
+     *                - Nếu tồn tại, lưu thông tin người dùng (ID, tên, avatar) vào cơ sở dữ liệu Firebase Realtime Database.
+     *                - Chuyển sang màn hình chính ({@code Home}).
+     *                4. Nếu xác thực thất bại, hiển thị thông báo lỗi.
+     *                <p>
+     *                Ví dụ:
+     *                <pre>
+     *                               String idToken = "your_google_id_token";
+     *                               firebaseAuth(idToken);
+     *                               </pre>
+     *                <p>
+     *                Xử lý lỗi:
+     *                - Hiển thị thông báo lỗi nếu người dùng không được xác thực hoặc thông tin không tồn tại.
      */
     private void firebaseAuth(GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
