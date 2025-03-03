@@ -62,6 +62,7 @@ android {
 }
 
 dependencies {
+
     implementation(libs.play.services.auth)
     // Import the Firebase BoM
     implementation(platform(libs.firebase.bom))
@@ -82,18 +83,21 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.ktx)
 
     // OkHttp & JSON
-    implementation("com.squareup.okhttp3:okhttp:4.11.0")
-    implementation("commons-codec:commons-codec:1.14")
-    implementation("org.apache.httpcomponents:httpclient:4.5.13")
-    implementation("org.json:json:20210307")
+    implementation(libs.okhttp)
 
     // Other libraries
-    implementation("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
     implementation(files("zpdk-release-v3.1.aar"))
 
     // Testing libraries
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // retrofit
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
 }
