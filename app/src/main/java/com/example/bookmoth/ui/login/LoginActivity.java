@@ -9,19 +9,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.bookmoth.LogoutActivity;
 import com.example.bookmoth.R;
 import com.example.bookmoth.data.repository.login.LoginRepositoryImpl;
 import com.example.bookmoth.databinding.ActivityLoginBinding;

@@ -2,7 +2,7 @@ package com.example.bookmoth.ui.viewmodel;
 
 import androidx.lifecycle.ViewModel;
 
-import com.example.bookmoth.domain.model.Account;
+import com.example.bookmoth.domain.model.login.Account;
 import com.example.bookmoth.domain.usecase.login.LoginUseCase;
 
 import retrofit2.Call;

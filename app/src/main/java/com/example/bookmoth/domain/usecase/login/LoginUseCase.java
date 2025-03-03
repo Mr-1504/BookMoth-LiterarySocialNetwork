@@ -1,8 +1,7 @@
 package com.example.bookmoth.domain.usecase.login;
 
-import com.example.bookmoth.data.model.login.LoginRequest;
-import com.example.bookmoth.domain.model.Account;
-import com.example.bookmoth.domain.repository.LoginRepository;
+import com.example.bookmoth.domain.model.login.Account;
+import com.example.bookmoth.domain.repository.login.LoginRepository;
 
 import retrofit2.Call;
 

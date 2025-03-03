@@ -1,4 +1,4 @@
-package com.example.bookmoth.domain.model;
+package com.example.bookmoth.domain.model.login;
 
 public class Account {
     private int accountId;

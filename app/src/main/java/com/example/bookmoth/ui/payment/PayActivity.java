@@ -13,7 +13,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.ResultAcitivity;
 import com.example.bookmoth.core.utils.Api.CreateOrder;
 import com.example.bookmoth.core.utils.Constant.AppInfo;
 import org.json.JSONObject;

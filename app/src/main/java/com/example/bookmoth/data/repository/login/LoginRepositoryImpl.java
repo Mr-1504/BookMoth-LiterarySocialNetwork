@@ -3,8 +3,8 @@ package com.example.bookmoth.data.repository.login;
 import com.example.bookmoth.data.model.login.LoginRequest;
 import com.example.bookmoth.data.remote.RetrofitClient;
 import com.example.bookmoth.data.remote.login.LoginApiService;
-import com.example.bookmoth.domain.model.Account;
-import com.example.bookmoth.domain.repository.LoginRepository;
+import com.example.bookmoth.domain.model.login.Account;
+import com.example.bookmoth.domain.repository.login.LoginRepository;
 
 import retrofit2.Call;
 

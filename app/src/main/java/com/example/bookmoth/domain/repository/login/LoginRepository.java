@@ -1,6 +1,6 @@
-package com.example.bookmoth.domain.repository;
+package com.example.bookmoth.domain.repository.login;
 
-import com.example.bookmoth.domain.model.Account;
+import com.example.bookmoth.domain.model.login.Account;
 
 import retrofit2.Call;
 
