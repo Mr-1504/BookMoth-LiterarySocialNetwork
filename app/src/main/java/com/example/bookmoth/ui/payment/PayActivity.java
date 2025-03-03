@@ -3,7 +3,6 @@ package com.example.bookmoth.ui.payment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -44,32 +43,29 @@ public class PayActivity extends AppCompatActivity {
         amount = findViewById(R.id.amount);
         price = findViewById(R.id.price);
 
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String soluongString = amount.getText().toString().equals("") ? price.getText().toString() : amount.getText().toString();
+        confirm.setOnClickListener(view -> {
+            String soluongString = amount.getText().toString().equals("") ? price.getText().toString() : amount.getText().toString();
 
-                new Thread(() -> {
-                    try {
-                        JSONObject data = new CreateOrder().createOrder(soluongString, "Minh", "MUA_KIM_CUONG_FREE_FIRE");
-                        String code = data.getString("returncode");
-                        Log.i("Successed", "API Response: " + data);
+            new Thread(() -> {
+                try {
+                    JSONObject data = new CreateOrder().createOrder(soluongString, "Minh", "MUA_KIM_CUONG_FREE_FIRE");
+                    String code = data.getString("returncode");
+                    Log.i("Successed", "API Response: " + data);
 
-                        if (code.equals("1")) {
-                            String token = data.optString("zptranstoken", null);
-                            if (token != null) {
-                                runOnUiThread(() -> startZaloPayPayment(token));
-                            } else {
-                                Log.e("Error", "Token is null");
-                            }
+                    if (code.equals("1")) {
+                        String token = data.optString("zptranstoken", null);
+                        if (token != null) {
+                            runOnUiThread(() -> startZaloPayPayment(token));
                         } else {
-                            Log.e("Error", "Invalid return code: " + code);
+                            Log.e("Error", "Token is null");
                         }
-                    } catch (Exception e) {
-                        Log.e("Error", "Error creating order", e);
+                    } else {
+                        Log.e("Error", "Invalid return code: " + code);
                     }
-                }).start();
-            }
+                } catch (Exception e) {
+                    Log.e("Error", "Error creating order", e);
+                }
+            }).start();
         });
     }
 
