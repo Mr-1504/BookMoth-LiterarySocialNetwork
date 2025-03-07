@@ -9,7 +9,7 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
-    <string name="ng_nh_p_b_ng_google">Đăng nhập bằng Google</string>
+    <string name="login_with_google">Đăng nhập bằng Google</string>
     <string name="no_internet">Không có kết nối internet!</string>
     <string name="LoginFailedMessage">Đăng nhập thất bại. Thử lại sau!</string>
     <string name="error_signin_cancelled">Quá trình đăng nhập không thể hoàn thành!</string>
@@ -18,4 +18,22 @@
     <string name="error_unknown">Lỗi không xác định!</string>
     <string name="firebase_auth_failed">Đăng nhập thất bại!</string>
     <string name="api_not_connected">API not connected</string>
+    <string name="what_your_name">Bạn tên gì?</string>
+    <string name="return_button">➜</string>
+    <string name="type_your_name">Nhập tên của bạn trong đời thực.</string>
+    <string name="LastName">Họ</string>
+    <string name="firstname_for_register">Tên</string>
+    <string name="i_have_a_account">Tôi có tài khoản rồi</string>
+    <string name="next">Tiếp theo</string>
+    <string name="what_your_birth">Sinh nhật của bạn?</string>
+    <string name="type_your_birth">Thông tin này là bí mật!</string>
+    <string name="female">Nữ</string>
+    <string name="male">Nam</string>
+    <string name="other">Lựa chọn khác</string>
+    <string name="what_your_gender">Giới tính của bạn?</string>
+    <string name="warning_name">Vui lòng nhập thông tin hợp lệ</string>
+    <string name="warning_gender">Vui lòng chọn thông tin!</string>
+    <string name="Invalid_date_of_birth">Ngày sinh không hợp lệ. Vui lòng chọn lại!</string>
+    <string name="setDate">Chọn ngày</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
 </resources>
