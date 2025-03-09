@@ -14,30 +14,41 @@
         android:theme="@style/Theme.BookMoth"
         tools:targetApi="31">
         <activity
-            android:name=".ui.register.TypeGenderActivity"
-            android:exported="true" >
+            android:name=".ui.register.ResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.register.SetPasswordActivity"
+            android:exported="true">
 
         </activity>
+        <activity
+            android:name=".ui.register.TypeOtpActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".ui.register.TypeEmailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.register.TypeGenderActivity"
+            android:exported="true" />
         <activity
             android:name=".ui.register.TypeBirthActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".ui.register.TypeNameActivity"
-            android:exported="true">
+            android:exported="true" />
+        <activity
+            android:name=".ui.payment.ResultAcitivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.payment.ResultAcitivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.login.LoginActivity"
-            android:exported="true" />
         <activity
             android:name=".ui.login.LogoutActivity"
             android:exported="false" />
