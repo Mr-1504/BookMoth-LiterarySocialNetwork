@@ -65,29 +65,39 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/last_name_for_register"
+            <!-- Họ -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:background="@drawable/custom_edittext"
-                android:hint="@string/LastName"
-                android:inputType="text"
-                android:padding="10dp" />
+                android:hint="@string/LastName">
 
-            <EditText
-                android:id="@+id/firstname_for_register"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/last_name_for_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="text"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Tên -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextInputOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="15dp"
-                android:layout_weight="1"
-                android:background="@drawable/custom_edittext"
-                android:hint="@string/firstname_for_register"
-                android:inputType="text"
-                android:padding="10dp" />
+                android:hint="@string/firstname_for_register">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/firstname_for_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:inputType="text"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 
@@ -124,19 +134,28 @@
 
     </LinearLayout>
 
-
-    <Button
-        android:id="@+id/i_have_a_account"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="392dp"
-        android:layout_marginEnd="21dp"
-        android:background="@android:color/transparent"
-        android:text="@string/i_have_a_account"
-        android:textColor="?attr/colorOnBackground"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_container" />
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <Button
+                android:id="@+id/i_have_a_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="@string/i_have_a_account"
+                android:textColor="?attr/colorOnBackground" />
+        </LinearLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
