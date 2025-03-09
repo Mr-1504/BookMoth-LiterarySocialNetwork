@@ -1,6 +1,7 @@
 package com.example.bookmoth.ui.register;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.ui.login.LoginActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,7 +25,7 @@ import java.util.Locale;
 
 public class TypeBirthActivity extends AppCompatActivity {
 
-    Button btnNext;
+    Button btnNext, iHaveAAccount, returnButton;
     TextView tvWarning;
     EditText edtDate;
     @Override
@@ -38,8 +40,46 @@ public class TypeBirthActivity extends AppCompatActivity {
         });
 
         btnNext = findViewById(R.id.next_for_register);
+        returnButton = findViewById(R.id.return_button);
+        iHaveAAccount = findViewById(R.id.i_have_a_account);
         tvWarning = findViewById(R.id.tvWarning);
         edtDate = findViewById(R.id.edtDate);
+
+        clickPickDate();
+        clickNext();
+        clickIHaveAAccount();
+        clickReturn();
+    }
+
+    private void clickReturn() {
+        returnButton.setOnClickListener(v -> {
+            finish();
+        });
+    }
+
+    private void clickIHaveAAccount() {
+        iHaveAAccount.setOnClickListener(v -> {
+            Intent intent = new Intent(TypeBirthActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
+    }
+
+    private void clickNext() {
+        btnNext.setOnClickListener(v -> {
+            String ngaySinh = edtDate.getText().toString();
+
+            if (validateDateOfBirth(ngaySinh)) {
+                tvWarning.setVisibility(View.GONE);
+                Intent intent = new Intent(TypeBirthActivity.this, TypeGenderActivity.class);
+                startActivity(intent);
+            } else {
+                tvWarning.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void clickPickDate() {
         edtDate.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
@@ -47,33 +87,23 @@ public class TypeBirthActivity extends AppCompatActivity {
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
             DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year1, month1, dayOfMonth) -> {
-                edtDate.setText(dayOfMonth + "/" + (month1 + 1) + "/" + year1);
+                String strDay = dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth);
+                String strMonth = month1 < 9 ? "0" + (month1 + 1) : String.valueOf(month1 + 1);
+
+                edtDate.setText(strDay + "/" + strMonth + "/" + year1);
             }, year, month, day);
 
             datePickerDialog.show();
         });
-
-
-
-
-        btnNext.setOnClickListener(v -> {
-            String ngaySinh = edtDate.getText().toString();
-
-            if (kiemTraNgaySinhHopLe(ngaySinh)) {
-                tvWarning.setVisibility(View.GONE); // Ẩn cảnh báo nếu hợp lệ
-            } else {
-                tvWarning.setVisibility(View.VISIBLE); // Hiện cảnh báo nếu sai
-            }
-        });
     }
 
 
-    private boolean kiemTraNgaySinhHopLe(String ngaySinh) {
+    private boolean validateDateOfBirth(String dateOfBirth) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         sdf.setLenient(false);
 
         try {
-            Date date = sdf.parse(ngaySinh);
+            Date date = sdf.parse(dateOfBirth);
             return !date.after(new Date()); // Ngày sinh không được là tương lai
         } catch (ParseException e) {
             return false; // Sai định dạng
