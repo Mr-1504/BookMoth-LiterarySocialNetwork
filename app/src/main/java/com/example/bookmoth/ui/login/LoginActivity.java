@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bookmoth.R;
@@ -21,6 +23,7 @@ import com.example.bookmoth.databinding.ActivityLoginBinding;
 import com.example.bookmoth.core.utils.InternetHelper;
 import com.example.bookmoth.domain.usecase.login.LoginUseCase;
 import com.example.bookmoth.ui.home.MainActivity;
+import com.example.bookmoth.ui.register.TypeNameActivity;
 import com.example.bookmoth.ui.viewmodel.LoginViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -30,6 +33,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,14 +43,16 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private Button loginWithGoogle, loginWithEmail;
+    private Button loginWithEmail;
+    private TextView forgotPassword, register;
+    private LinearLayout  loginWithGoogle;
     private LoginViewModel loginViewModel;
     private ActivityLoginBinding binding;
     private FirebaseDatabase database;
     private GoogleSignInOptions signInOptions;
     private GoogleSignInClient client;
     private FirebaseAuth firebaseAuth;
-    private EditText email, password;
+    private TextInputEditText email, password;
     int RC_LOGIN = 20;
 
     @Override
@@ -56,9 +62,11 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        email = binding.username;
-        password = binding.password;
-        loginWithEmail = binding.login;
+        forgotPassword = binding.forgotPasswordButton;
+        register = binding.registerButton;
+        email = (TextInputEditText) binding.username;
+        password = (TextInputEditText) binding.password;
+        loginWithEmail = binding.loginWithEmail;
         loginWithGoogle = binding.loginWithGoogleButton;
         database = FirebaseDatabase.getInstance();
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -71,6 +79,22 @@ public class LoginActivity extends AppCompatActivity {
 
         clickLoginWithEmail();
         clickLoginWithGoogle();
+        clickForgotPassword();
+        clickRegister();
+    }
+
+    private void clickRegister() {
+        register.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, TypeNameActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    private void clickForgotPassword() {
+//        forgotPassword.setOnClickListener(v -> {
+//            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+//            startActivity(intent);
+//        });
     }
 
     private void clickLoginWithEmail() {
