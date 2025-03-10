@@ -85,6 +85,11 @@ public class TypeOtpActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         secondResend = 30;
                         setCountdownResendOtp();
+                        tvWarning.setVisibility(View.GONE);
+                        for (EditText et : otpFields) {
+                            et.setText("");
+                        }
+                        otpFields[0].requestFocus();
                     }
 
                     @Override
@@ -161,9 +166,8 @@ public class TypeOtpActivity extends AppCompatActivity {
                     public void onSuccess() {
                         progressDialog.dismiss();
                         tvWarning.setVisibility(View.GONE);
-                        Intent intent = new Intent(TypeOtpActivity.this, RegisterResultActivity.class);
-                        intent.putExtra("registerViewModel", registerViewModel);
-                        startActivity(intent);
+
+                        register();
                     }
 
                     @Override
@@ -171,6 +175,36 @@ public class TypeOtpActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         tvWarning.setText(error);
                         tvWarning.setVisibility(View.VISIBLE);
+                    }
+                }
+        );
+    }
+
+    private void register() {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        registerViewModel.register(
+                this,
+                new RegisterUseCase(new RegisterRepositoryImpl()),
+                new RegisterViewModel.OnRegisterListener() {
+                    @Override
+                    public void onSuccess() {
+                        progressDialog.dismiss();
+                        tvWarning.setVisibility(View.GONE);
+                        Intent intent = new Intent(TypeOtpActivity.this, RegisterResultActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        progressDialog.dismiss();
+                        showErrorDialog(error);
+                        Intent intent = new Intent(TypeOtpActivity.this, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                     }
                 }
         );
@@ -187,7 +221,7 @@ public class TypeOtpActivity extends AppCompatActivity {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (!s.toString().isEmpty() && index < otpFields.length - 1) {
-                        otpFields[index + 1].requestFocus(); // Chuyển sang ô tiếp theo
+                        otpFields[index + 1].requestFocus();
                     }
                 }
 
@@ -219,7 +253,7 @@ public class TypeOtpActivity extends AppCompatActivity {
 
     private void showErrorDialog(String message) {
         new AlertDialog.Builder(this)
-                .setTitle("Lỗi kết nối")
+                .setTitle("Lỗi")
                 .setMessage(message)
                 .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                 .setCancelable(false)

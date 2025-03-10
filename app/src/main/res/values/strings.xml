@@ -66,4 +66,5 @@
     <string name="invalid_otp">Mã OTP không đúng hoặc hết hạn</string>
     <string name="resend_otp_now">Gửi lại</string>
     <string name="isEmptyOtp">Vui lòng nhập OTP</string>
+    <string name="cannot_register">Tạo tài khoản không thành công, thử lại sau!</string>
 </resources>

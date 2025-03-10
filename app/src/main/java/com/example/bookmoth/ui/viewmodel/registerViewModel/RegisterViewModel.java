@@ -7,7 +7,9 @@ import android.util.Log;
 import androidx.lifecycle.ViewModel;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.GenderUtils;
 import com.example.bookmoth.domain.model.Gender;
+import com.example.bookmoth.domain.model.login.Token;
 import com.example.bookmoth.domain.model.register.Otp;
 import com.example.bookmoth.domain.usecase.register.RegisterUseCase;
 
@@ -25,6 +27,15 @@ public class RegisterViewModel extends ViewModel implements Serializable {
     private String email;
     private String password;
     private String otp;
+    private int accountType;
+
+    public int getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(int accountType) {
+        this.accountType = accountType;
+    }
 
     public String getOtp() {
         return otp;
@@ -82,7 +93,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
         this.password = password;
     }
 
-    public void checkEmailExists(Context context, RegisterUseCase useCase, final OnCheckEmailExistsListener listener){
+    public void checkEmailExists(Context context, RegisterUseCase useCase, final OnCheckEmailExistsListener listener) {
         useCase.checkEmailExistsExecute(this.getEmail()).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -92,13 +103,11 @@ public class RegisterViewModel extends ViewModel implements Serializable {
                     // Email đã tồn tại (status code 200 OK)
                     Log.d("EmailCheck", "Email đã tồn tại");
                     listener.onError(context.getString(R.string.email_already_exists));
-                }
-                else if (statusCode == 204) {
+                } else if (statusCode == 204) {
                     // Email chưa tồn tại (status code 204 No Content)
                     Log.d("EmailCheck", "Email chưa tồn tại");
                     listener.onSuccess();
-                }
-                else {
+                } else {
                     // Xử lý các status code khác nếu có
                     Log.d("EmailCheck", "Mã trạng thái không mong đợi: " + statusCode);
                     listener.onError(context.getString(R.string.undefined_error));
@@ -107,7 +116,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                listener.onError(context.getString(R.string.undefined_error));
+                listener.onError(context.getString(R.string.error_connecting_to_server));
             }
         });
     }
@@ -143,12 +152,13 @@ public class RegisterViewModel extends ViewModel implements Serializable {
         registerUseCase.verifyOtpExecute(this.getEmail(), this.getOtp()).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()){
+                if (response.isSuccessful()) {
                     listener.onSuccess();
-                }else {
+                } else {
                     listener.onError(context.getString(R.string.invalid_otp));
                 }
             }
+
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 listener.onError(context.getString(R.string.error_connecting_to_server));
@@ -156,18 +166,58 @@ public class RegisterViewModel extends ViewModel implements Serializable {
         });
     }
 
+    public void register(Context context, RegisterUseCase registerUseCase, final OnRegisterListener listener) {
+        registerUseCase.registerExecute(
+                this.getFirstName(),
+                this.getLastName(),
+                this.getEmail(),
+                this.getPassword(),
+                GenderUtils.getGenderIntValue(this.getGender()),
+                this.getAccountType()
+        ).enqueue(new Callback<Token>() {
+            @Override
+            public void onResponse(Call<Token> call, Response<Token> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listener.onSuccess();
+                } else if (response.code() == 400) {
+                    listener.onError(context.getString(R.string.invalid_email));
+                } else if (response.code() == 409) {
+                    listener.onError(context.getString(R.string.email_already_exists));
+                } else if (response.code() == 422) {
+                    listener.onError(context.getString(R.string.cannot_register));
+                } else {
+                    listener.onError(context.getString(R.string.undefined_error) + " " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Token> call, Throwable t) {
+                listener.onError(context.getString(R.string.error_connecting_to_server));
+            }
+        });
+    }
+
     public interface OnGetOtpListener {
         void onSuccess();
+
         void onError(String error);
     }
 
     public interface OnCheckEmailExistsListener {
         void onSuccess();
+
         void onError(String error);
     }
 
     public interface OnVerifyOtpListener {
         void onSuccess();
+
+        void onError(String error);
+    }
+
+    public interface OnRegisterListener {
+        void onSuccess();
+
         void onError(String error);
     }
 }

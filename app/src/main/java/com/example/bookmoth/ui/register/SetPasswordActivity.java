@@ -117,6 +117,7 @@ public class SetPasswordActivity extends AppCompatActivity {
     }
 
     private void getOtp() {
+        registerViewModel.setPassword(passwordEditText.getText().toString());
         progressDialog.show();
         registerViewModel.getOtp(
                 this,
