@@ -66,10 +66,10 @@
                 android:id="@+id/edtDate"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:clickable="true"
                 android:background="@drawable/custom_edittext"
                 android:drawableEnd="@android:drawable/ic_menu_today"
                 android:focusable="false"
+                android:clickable="true"
                 android:hint="@string/setDate" />
 
             <!-- Cảnh báo lỗi -->
@@ -77,11 +77,12 @@
                 android:id="@+id/tvWarning"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
                 android:text="@string/Invalid_date_of_birth"
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="14sp"
                 android:visibility="gone"
-                android:layout_marginTop="4dp" />
+                android:layout_marginTop="5dp" />
         </LinearLayout>
 
         <LinearLayout

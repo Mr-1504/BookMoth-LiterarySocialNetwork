@@ -12,7 +12,7 @@
         android:layout_width="216dp"
         android:layout_height="39dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="0dp"
         android:text="@string/what_your_otp"
         android:textColor="?attr/colorOnBackground"
         android:textSize="22sp"
@@ -38,10 +38,11 @@
 
     <TextView
         android:id="@+id/type_your_email"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="1dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/type_your_otp"
         android:textColor="?attr/colorOnBackground"
         android:textSize="16sp"
@@ -159,13 +160,34 @@
                 android:id="@+id/tvWarning"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
                 android:layout_marginTop="4dp"
                 android:text="@string/Invalid_date_of_birth"
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="14sp"
                 android:visibility="gone" />
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/forgot_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="right"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name_container">
 
+            <TextView
+                android:id="@+id/resend_otp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_weight="1"
+                android:textAlignment="textEnd"
+                android:textColor="?attr/colorOnBackground"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -13,9 +13,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.ui.login.LoginActivity;
+import com.example.bookmoth.ui.viewmodel.registerViewModel.RegisterViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,6 +31,8 @@ public class TypeBirthActivity extends AppCompatActivity {
     Button btnNext, iHaveAAccount, returnButton;
     TextView tvWarning;
     EditText edtDate;
+    RegisterViewModel registerViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,16 +50,21 @@ public class TypeBirthActivity extends AppCompatActivity {
         tvWarning = findViewById(R.id.tvWarning);
         edtDate = findViewById(R.id.edtDate);
 
+        registerViewModel = getIntent().getSerializableExtra("registerViewModel") == null ?
+                new ViewModelProvider(this).get(RegisterViewModel.class) :
+                (RegisterViewModel) getIntent().getSerializableExtra("registerViewModel");
+
         clickPickDate();
         clickNext();
         clickIHaveAAccount();
         clickReturn();
     }
+    public RegisterViewModel getSharedViewModel() {
+        return registerViewModel;
+    }
 
     private void clickReturn() {
-        returnButton.setOnClickListener(v -> {
-            finish();
-        });
+        returnButton.setOnClickListener(v -> finish());
     }
 
     private void clickIHaveAAccount() {
@@ -71,7 +81,9 @@ public class TypeBirthActivity extends AppCompatActivity {
 
             if (validateDateOfBirth(ngaySinh)) {
                 tvWarning.setVisibility(View.GONE);
+                registerViewModel.setDateOfBirth(ngaySinh);
                 Intent intent = new Intent(TypeBirthActivity.this, TypeGenderActivity.class);
+                intent.putExtra("registerViewModel", registerViewModel);
                 startActivity(intent);
             } else {
                 tvWarning.setVisibility(View.VISIBLE);
@@ -86,12 +98,14 @@ public class TypeBirthActivity extends AppCompatActivity {
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year1, month1, dayOfMonth) -> {
-                String strDay = dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth);
-                String strMonth = month1 < 9 ? "0" + (month1 + 1) : String.valueOf(month1 + 1);
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    this,
+                    (view, year1, month1, dayOfMonth) -> {
+                        String strDay = dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth);
+                        String strMonth = month1 < 9 ? "0" + (month1 + 1) : String.valueOf(month1 + 1);
 
-                edtDate.setText(strDay + "/" + strMonth + "/" + year1);
-            }, year, month, day);
+                        edtDate.setText(strDay + "/" + strMonth + "/" + year1);
+                    }, year, month, day);
 
             datePickerDialog.show();
         });

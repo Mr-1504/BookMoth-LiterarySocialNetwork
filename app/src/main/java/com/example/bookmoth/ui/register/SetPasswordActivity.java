@@ -1,5 +1,7 @@
 package com.example.bookmoth.ui.register;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -14,14 +16,21 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.data.repository.register.RegisterRepositoryImpl;
+import com.example.bookmoth.domain.usecase.register.RegisterUseCase;
 import com.example.bookmoth.ui.login.LoginActivity;
+import com.example.bookmoth.ui.viewmodel.registerViewModel.RegisterViewModel;
 import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.Set;
 
 public class SetPasswordActivity extends AppCompatActivity {
 
     private Button returnButton, nextButton, iHaveAccountButton;
     private TextInputEditText passwordEditText, confirmPasswordEditText;
     private TextView warningText;
+    private RegisterViewModel registerViewModel;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +51,14 @@ public class SetPasswordActivity extends AppCompatActivity {
         confirmPasswordEditText = findViewById(R.id.edtConfirmPassword);
 
         warningText = findViewById(R.id.tvWarning);
+
+        registerViewModel = getIntent().getSerializableExtra("registerViewModel") == null ?
+                new RegisterViewModel() :
+                (RegisterViewModel) getIntent().getSerializableExtra("registerViewModel");
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.setCancelable(false);
 
         submitPassword();
         clickIHaveAAccount();
@@ -95,14 +112,42 @@ public class SetPasswordActivity extends AppCompatActivity {
 
 
             warningText.setVisibility(View.GONE);
-
-
+            getOtp();
         });
+    }
+
+    private void getOtp() {
+        progressDialog.show();
+        registerViewModel.getOtp(
+                this,
+                new RegisterUseCase(new RegisterRepositoryImpl()),
+                new RegisterViewModel.OnGetOtpListener() {
+                    @Override
+                    public void onSuccess() {
+                        progressDialog.dismiss();
+                        Intent intent = new Intent(SetPasswordActivity.this, TypeOtpActivity.class);
+                        intent.putExtra("registerViewModel", registerViewModel);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        showErrorDialog(error);
+                    }
+                });
     }
 
     private static boolean isValidPassword(String password) {
         String pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$";
         return password.matches(pattern);
     }
-
+    private void showErrorDialog(String message) {
+        progressDialog.dismiss();
+        new AlertDialog.Builder(this)
+                .setTitle("Lỗi kết nối")
+                .setMessage(message)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
+    }
 }

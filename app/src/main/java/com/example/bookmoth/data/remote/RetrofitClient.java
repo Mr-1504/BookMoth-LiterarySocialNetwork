@@ -6,7 +6,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static String BASE_URL = "http://127.0.0.1:7100/";
+    private static final String BASE_URL = "http://127.0.0.1:7100/";
     private static Retrofit retrofit;
 
     public static Retrofit getInstance(){
@@ -16,6 +16,7 @@ public class RetrofitClient {
 
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(httpLoggingInterceptor)
+                    //.addInterceptor(new ApiKeyInterceptor())
                     .build();
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)

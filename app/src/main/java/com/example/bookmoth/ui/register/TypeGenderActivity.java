@@ -13,21 +13,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.core.utils.GenderUtils;
 import com.example.bookmoth.domain.model.Gender;
 import com.example.bookmoth.ui.login.LoginActivity;
-import com.example.bookmoth.ui.viewmodel.registerViewModel.GenderViewModel;
+import com.example.bookmoth.ui.viewmodel.registerViewModel.RegisterViewModel;
+
 
 public class TypeGenderActivity extends AppCompatActivity {
 
     private Button returnButton, iHaveAAccountButton, nextButton;
     private TextView warning;
     private RadioGroup gender;
-    private GenderViewModel genderViewModel;
+    private RegisterViewModel registerViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +46,18 @@ public class TypeGenderActivity extends AppCompatActivity {
         warning = findViewById(R.id.warning);
         gender = findViewById(R.id.gender_group);
 
-        genderViewModel = new ViewModelProvider(this).get(GenderViewModel.class);
+        registerViewModel = getIntent().getSerializableExtra("registerViewModel") == null ?
+                new ViewModelProvider(this).get(RegisterViewModel.class) :
+                (RegisterViewModel) getIntent().getSerializableExtra("registerViewModel");
+
 
         clickNext();
         clickIHaveAAccount();
         clickReturn();
+    }
+
+    public RegisterViewModel getSharedViewModel() {
+        return registerViewModel;
     }
 
     private void clickReturn() {
@@ -73,9 +80,10 @@ public class TypeGenderActivity extends AppCompatActivity {
             } else {
                 warning.setVisibility(View.GONE);
                 Gender selectedGender = getSelectedGender(selectedId);
-                genderViewModel.setGender(selectedGender);
+                registerViewModel.setGender(selectedGender);
                 Log.d("GENDER_SELECTED", "Selected gender: " + selectedGender); // Kiểm tra xem có gọi không
-                Intent intent = new Intent(TypeGenderActivity.this, TypeOtpActivity.class);
+                Intent intent = new Intent(TypeGenderActivity.this, TypeEmailActivity.class);
+                intent.putExtra("registerViewModel", registerViewModel);
                 startActivity(intent);
             }
         });
