@@ -1,13 +1,13 @@
 package com.example.bookmoth.data.model.register;
 
-public class OtpRequest {
+public class GetOtpRequest {
     private String email;
     private String name;
-    private String otp;
+    private int type;
 
-    public OtpRequest(String email, String otp, String name) {
+    public GetOtpRequest(String email, String name) {
         this.email = email;
-        this.otp = otp;
-        this.name = name
+        this.name = name;
+//        this.type = 1;
     }
 }

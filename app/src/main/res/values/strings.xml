@@ -39,7 +39,7 @@
     <string name="type_your_email">Email này sẽ được dùng để đăng ký tài khoản.</string>
     <string name="email_not_empty">Email không được để trống</string>
     <string name="what_your_otp">Nhập mã OTP</string>
-    <string name="type_your_otp">Nhập mã OTP đươch gửi đến email.</string>
+    <string name="type_your_otp">Nhập mã OTP được gửi đến email. Mã có hiệu lực trong vòng 5 phút</string>
     <string name="confirm_password">Nhập lại mật khẩu</string>
     <string name="what_your_password">Đặt mật khẩu</string>
     <string name="type_your_password">Mật khẩu sẽ được dùng để đăng nhập</string>
@@ -51,4 +51,19 @@
     <string name="gender_male">Nam</string>
     <string name="gender_female">Nữ</string>
     <string name="gender_other">Khác</string>
+    <string name="undefined_error">"Lỗi không xác định - "</string>
+    <string name="error_connecting_to_server">Lỗi kết nối server</string>
+    <string name="account_does_not_exist">Tài khoản không tồn tại</string>
+    <string name="incorrect_email_or_password">Sai email hoặc mật khẩu</string>
+    <string name="email_already_exists">Email đã tồn tại</string>
+    <string name="invalid_email">Email không hợp lệ</string>
+    <string name="cannot_send_otp">Không thể gửi mã OTP. Thử lại sau!</string>
+    <string name="loading">Vui lòng đợi...</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="otp_will_expire_after">"Mã OTP sẽ hết hạn sau "</string>
+    <string name="resend_otp_after">"Gửi lại sau "</string>
+    <string name="invalid_otp">Mã OTP không đúng hoặc hết hạn</string>
+    <string name="resend_otp_now">Gửi lại</string>
+    <string name="isEmptyOtp">Vui lòng nhập OTP</string>
 </resources>

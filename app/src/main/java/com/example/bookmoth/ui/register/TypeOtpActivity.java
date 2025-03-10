@@ -1,15 +1,18 @@
 package com.example.bookmoth.ui.register;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -19,12 +22,19 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.data.repository.register.RegisterRepositoryImpl;
+import com.example.bookmoth.domain.usecase.register.RegisterUseCase;
 import com.example.bookmoth.ui.login.LoginActivity;
+import com.example.bookmoth.ui.viewmodel.registerViewModel.RegisterViewModel;
 
 public class TypeOtpActivity extends AppCompatActivity {
 
     private final EditText[] otpFields = new EditText[6];
     private Button btnSubmitOtp, returnButton, iHaveAAccountButton;
+    private RegisterViewModel registerViewModel;
+    private TextView tvResendOtp, tvWarning;
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private int secondResend = 30;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +53,71 @@ public class TypeOtpActivity extends AppCompatActivity {
         otpFields[4] = findViewById(R.id.otp5);
         otpFields[5] = findViewById(R.id.otp6);
 
+        tvResendOtp = findViewById(R.id.resend_otp);
+        tvWarning = findViewById(R.id.tvWarning);
+
         btnSubmitOtp = findViewById(R.id.next_for_register);
         returnButton = findViewById(R.id.return_button);
         iHaveAAccountButton = findViewById(R.id.i_have_a_account);
+
+        registerViewModel = getIntent().getSerializableExtra("registerViewModel") == null ?
+                new RegisterViewModel() :
+                (RegisterViewModel) getIntent().getSerializableExtra("registerViewModel");
 
         clickIHaveAAccount();
         clickReturnButton();
         setupOtpInputs();
         submitOTP();
+        setCountdownResendOtp();
+        clickResend();
+    }
+
+    private void clickResend() {
+        tvResendOtp.setOnClickListener(v -> {
+            if (secondResend < 0) {
+                ProgressDialog progressDialog = new ProgressDialog(this);
+                progressDialog.setMessage(getString(R.string.loading));
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+                registerViewModel.getOtp(this, new RegisterUseCase(new RegisterRepositoryImpl()), new RegisterViewModel.OnGetOtpListener() {
+                    @Override
+                    public void onSuccess() {
+                        progressDialog.dismiss();
+                        secondResend = 30;
+                        setCountdownResendOtp();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        progressDialog.dismiss();
+                        showErrorDialog(error);
+                        tvWarning.setVisibility(View.GONE);
+                    }
+                });
+            } else {
+                Toast.makeText(TypeOtpActivity.this, "Vui lòng đợi " + secondResend + " giây để gửi lại mã OTP", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setCountdownResendOtp() {
+        String time = getString(R.string.resend_otp_after);
+        Runnable countdownRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (secondResend >= 0) {
+                    tvResendOtp.setText(time + (secondResend < 10 ? "0" + secondResend : secondResend));
+                    secondResend--;
+
+                    if (secondResend >= 0) {
+                        handler.postDelayed(this, 1000);
+                    } else {
+                        tvResendOtp.setText(R.string.resend_otp_now);
+                    }
+                }
+            }
+        };
+        handler.post(countdownRunnable);
     }
 
     private void clickIHaveAAccount() {
@@ -71,12 +138,42 @@ public class TypeOtpActivity extends AppCompatActivity {
         {
             String otp = getOtpCode();
             if (otp.length() == 6) {
-                Toast.makeText(this, "OTP: " + otp, Toast.LENGTH_SHORT).show();
+                verifyOtp(otp);
             } else {
-                Toast.makeText(this, "Vui lòng nhập đủ 6 số!", Toast.LENGTH_SHORT).show();
+                tvWarning.setText(getString(R.string.isEmptyOtp));
+                tvWarning.setVisibility(View.VISIBLE);
             }
         });
 
+    }
+
+    private void verifyOtp(String otp) {
+        ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        registerViewModel.setOtp(otp);
+        registerViewModel.verifyOtp(
+                this,
+                new RegisterUseCase(new RegisterRepositoryImpl()),
+                new RegisterViewModel.OnVerifyOtpListener() {
+                    @Override
+                    public void onSuccess() {
+                        progressDialog.dismiss();
+                        tvWarning.setVisibility(View.GONE);
+                        Intent intent = new Intent(TypeOtpActivity.this, RegisterResultActivity.class);
+                        intent.putExtra("registerViewModel", registerViewModel);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        progressDialog.dismiss();
+                        tvWarning.setText(error);
+                        tvWarning.setVisibility(View.VISIBLE);
+                    }
+                }
+        );
     }
 
     private void setupOtpInputs() {
@@ -102,8 +199,9 @@ public class TypeOtpActivity extends AppCompatActivity {
 
             otpFields[i].setOnKeyListener((v, keyCode, event) -> {
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (index > 0) {
-                        otpFields[index - 1].requestFocus(); // Quay lại ô trước khi xóa
+                    if (index > 0 && otpFields[index].getText().toString().isEmpty()) {
+                        otpFields[index - 1].setText("");
+                        otpFields[index - 1].requestFocus();
                     }
                 }
                 return false;
@@ -119,5 +217,12 @@ public class TypeOtpActivity extends AppCompatActivity {
         return otpCode.toString();
     }
 
-
+    private void showErrorDialog(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle("Lỗi kết nối")
+                .setMessage(message)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
+    }
 }

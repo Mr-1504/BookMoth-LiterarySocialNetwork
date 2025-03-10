@@ -2,6 +2,7 @@ package com.example.bookmoth.ui.viewmodel;
 
 import androidx.lifecycle.ViewModel;
 
+import com.example.bookmoth.R;
 import com.example.bookmoth.domain.model.login.Account;
 import com.example.bookmoth.domain.usecase.login.LoginUseCase;
 
@@ -25,20 +26,20 @@ public class LoginViewModel extends ViewModel {
                     listener.onSuccess(response.body().getEmail());
                 } else {
                     if (response.code() == 400){
-                        listener.onError("Sai email hoặc mật khẩu");
+                        listener.onError(String.valueOf(R.string.incorrect_email_or_password));
                     } else if (response.code() == 404){
-                        listener.onError("Tài khoản không tồn tại");
+                        listener.onError(String.valueOf(R.string.account_does_not_exist));
                     } else if (response.code() == 500){
-                        listener.onError("Lỗi kết nối server");
+                        listener.onError(String.valueOf(R.string.error_connecting_to_server));
                     } else {
-                        listener.onError("Lỗi không xác định - " + response.code());
+                        listener.onError(String.valueOf(R.string.undefined_error + response.code()));
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<Account> call, Throwable t) {
-                listener.onError("Lỗi kết nối đến server: " + t.getMessage());
+                listener.onError(R.string.error_connecting_to_server + t.getMessage());
             }
         });
     }
