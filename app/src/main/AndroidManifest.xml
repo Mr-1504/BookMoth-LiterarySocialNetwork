@@ -17,14 +17,11 @@
             android:name=".ui.register.RegisterResultActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.register.ResultActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.register.SetPasswordActivity"
-            android:exported="true"></activity>
+            android:exported="true"/>
         <activity
             android:name=".ui.register.TypeOtpActivity"
-            android:exported="true"></activity>
+            android:exported="true"/>
         <activity
             android:name=".ui.register.TypeEmailActivity"
             android:exported="false" />

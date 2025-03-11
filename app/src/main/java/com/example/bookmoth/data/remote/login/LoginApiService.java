@@ -2,6 +2,7 @@ package com.example.bookmoth.data.remote.login;
 
 import com.example.bookmoth.data.model.login.LoginRequest;
 import com.example.bookmoth.domain.model.login.Account;
+import com.example.bookmoth.domain.model.login.Token;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -14,5 +15,5 @@ public interface LoginApiService {
 //            "x-api-key: minh"
 //    })
     @POST("api/account/login")
-    Call<Account> login(@Body LoginRequest request);
+    Call<Token> login(@Body LoginRequest request);
 }

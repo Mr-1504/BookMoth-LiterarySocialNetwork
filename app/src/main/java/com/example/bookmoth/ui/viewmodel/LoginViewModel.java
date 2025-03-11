@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.domain.model.login.Account;
+import com.example.bookmoth.domain.model.login.Token;
 import com.example.bookmoth.domain.usecase.login.LoginUseCase;
 
 import retrofit2.Call;
@@ -19,33 +20,19 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void login(String email, String password, final OnLoginListener listener) {
-        loginUseCase.execute(email, password).enqueue(new Callback<Account>() {
-            @Override
-            public void onResponse(Call<Account> call, Response<Account> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listener.onSuccess(response.body().getEmail());
-                } else {
-                    if (response.code() == 400){
-                        listener.onError(String.valueOf(R.string.incorrect_email_or_password));
-                    } else if (response.code() == 404){
-                        listener.onError(String.valueOf(R.string.account_does_not_exist));
-                    } else if (response.code() == 500){
-                        listener.onError(String.valueOf(R.string.error_connecting_to_server));
-                    } else {
-                        listener.onError(String.valueOf(R.string.undefined_error + response.code()));
-                    }
-                }
+        new Thread(() -> {
+            try {
+                Token token = loginUseCase.login(email, password);
+                listener.onSuccess();
+            } catch (Exception e) {
+                listener.onError(e.getMessage());
             }
 
-            @Override
-            public void onFailure(Call<Account> call, Throwable t) {
-                listener.onError(R.string.error_connecting_to_server + t.getMessage());
-            }
-        });
+        }).start();
     }
 
     public interface OnLoginListener {
-        void onSuccess(String token);
+        void onSuccess();
 
         void onError(String error);
     }

@@ -3,16 +3,18 @@ package com.example.bookmoth.domain.repository.register;
 import com.example.bookmoth.domain.model.login.Token;
 import com.example.bookmoth.domain.model.register.Otp;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 
 public interface RegisterRepository {
-    Call<Otp> getOtp(String email, String name);
+    Otp getOtp(String email, String name) throws IOException;
 
-    Call<Void> checkEmailExists(String email);
+    Void checkEmailExists(String email);
 
-    Call<Void> verifyOtp(String email, String otp);
+    Void verifyOtp(String email, String otp);
 
-    Call<Token> register(
+    Token register(
             String firstName,
             String lastName,
             String email,
