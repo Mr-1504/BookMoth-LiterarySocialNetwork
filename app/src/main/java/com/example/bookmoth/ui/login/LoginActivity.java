@@ -1,6 +1,5 @@
 package com.example.bookmoth.ui.login;
 
-import androidx.annotation.NonNull;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,27 +29,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity {
 
     private Button loginWithEmail;
     private TextView forgotPassword, register;
-    private LinearLayout  loginWithGoogle;
+    private LinearLayout loginWithGoogle;
     private LoginViewModel loginViewModel;
     private ActivityLoginBinding binding;
-    private FirebaseDatabase database;
     private GoogleSignInOptions signInOptions;
     private GoogleSignInClient client;
-    private FirebaseAuth firebaseAuth;
     private TextInputEditText email, password;
     int RC_LOGIN = 20;
 
@@ -68,13 +57,11 @@ public class LoginActivity extends AppCompatActivity {
         password = (TextInputEditText) binding.password;
         loginWithEmail = binding.loginWithEmail;
         loginWithGoogle = binding.loginWithGoogleButton;
-        database = FirebaseDatabase.getInstance();
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.WEB_CLIENT_ID))
                 .requestEmail()
                 .build();
         client = GoogleSignIn.getClient(LoginActivity.this, signInOptions);
-        firebaseAuth = FirebaseAuth.getInstance();
         loginViewModel = new LoginViewModel(new LoginUseCase(new LoginRepositoryImpl()));
 
         clickLoginWithEmail();
@@ -102,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
             String mail = email.getText().toString();
             String pass = password.getText().toString();
 
-            loginViewModel.login(mail, pass, new LoginViewModel.OnLoginListener() {
+            loginViewModel.login(this, mail, pass, new LoginViewModel.OnLoginListener() {
                 @Override
                 public void onSuccess() {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -215,11 +202,24 @@ public class LoginActivity extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d("LoginActivity", "Google sign-in successful. Email: " + account.getEmail());
-                firebaseAuth(account); // Xác thực Firebase
+                String id = account.getIdToken();
+                loginViewModel.loginWithGoogle(this, account.getIdToken(), new LoginViewModel.OnLoginListener() {
+                    @Override
+                    public void onSuccess() {
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.i("LoginActivity", "Google sign-in failed: " + error);
+                        Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
+                    }
+                });
             } catch (ApiException e) {
                 Log.e("LoginActivity", "Google sign-in failed. Code: " + e.getStatusCode(), e);
-                handleGoogleSignInError(e); // Hàm xử lý chi tiết lỗi
+                handleGoogleSignInError(e);
             }
         }
     }
@@ -247,61 +247,4 @@ public class LoginActivity extends AppCompatActivity {
         }
         Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
     }
-
-
-    /**
-     * Xác thực người dùng với Firebase bằng token ID từ Google.
-     * <p>
-     * Phương thức này sử dụng token ID của Google để tạo đối tượng {@link com.google.firebase.auth.AuthCredential},
-     * sau đó xác thực thông qua Firebase Authentication bằng cách gọi
-     * {@code firebaseAuth.signInWithCredential(AuthCredential)}.
-     *
-     * @param account tài khoản người dùng nhận được từ Google sau khi người dùng đăng nhập.
-     *                <p>
-     *                Điều kiện tiên quyết:
-     *                - Đối tượng FirebaseAuth (firebaseAuth) phải được khởi tạo trước khi gọi phương thức này.
-     *                - Tham số {@code idToken} không được null.
-     *                <p>
-     *                Quá trình:
-     *                1. Tạo đối tượng {@link com.google.firebase.auth.AuthCredential} bằng token ID.
-     *                2. Gọi phương thức xác thực của Firebase.
-     *                3. Nếu xác thực thành công:
-     *                - Lấy thông tin người dùng từ Firebase thông qua {@link com.google.firebase.auth.FirebaseUser}.
-     *                - Nếu thông tin người dùng không tồn tại, hiển thị thông báo lỗi.
-     *                - Nếu tồn tại, lưu thông tin người dùng (ID, tên, avatar) vào cơ sở dữ liệu Firebase Realtime Database.
-     *                - Chuyển sang màn hình chính ({@code Home}).
-     *                4. Nếu xác thực thất bại, hiển thị thông báo lỗi.
-     *                <p>
-     *                Ví dụ:
-     *                <pre>
-     *                               String idToken = "your_google_id_token";
-     *                               firebaseAuth(idToken);
-     *                               </pre>
-     *                <p>
-     *                Xử lý lỗi:
-     *                - Hiển thị thông báo lỗi nếu người dùng không được xác thực hoặc thông tin không tồn tại.
-     */
-    private void firebaseAuth(GoogleSignInAccount account) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        firebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
-                            Log.d("LoginActivity", "Firebase authentication successful. Email: "
-                                    + (user != null ? user.getEmail() : "Unknown"));
-                            startActivity(new Intent(LoginActivity.this, LogoutActivity.class));
-                            finish();
-                        } else {
-                            Log.e("LoginActivity", "Firebase authentication failed.", task.getException());
-                            String errorMessage = task.getException() != null
-                                    ? task.getException().getMessage()
-                                    : getString(R.string.firebase_auth_failed);
-                            Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-    }
-
 }
