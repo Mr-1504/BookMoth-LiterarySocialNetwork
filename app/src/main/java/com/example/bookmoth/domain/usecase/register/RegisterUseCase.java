@@ -1,8 +1,11 @@
 package com.example.bookmoth.domain.usecase.register;
 
+import com.example.bookmoth.core.utils.Result;
 import com.example.bookmoth.domain.model.login.Token;
 import com.example.bookmoth.domain.model.register.Otp;
 import com.example.bookmoth.domain.repository.register.RegisterRepository;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 
@@ -13,19 +16,19 @@ public class RegisterUseCase {
         this.registerRepository = registerRepository;
     }
 
-    public Call<Otp> getOtpExecute(String email, String name) {
+    public Result<Otp> getOtpExecute(String email, String name) throws IOException {
         return registerRepository.getOtp(email, name);
     }
 
-    public Call<Void> checkEmailExistsExecute(String email) {
+    public Result<Void> checkEmailExistsExecute(String email) {
         return registerRepository.checkEmailExists(email);
     }
 
-    public Call<Void> verifyOtpExecute(String email, String otp) {
+    public Result<Void> verifyOtpExecute(String email, String otp) {
         return registerRepository.verifyOtp(email, otp);
     }
 
-    public Call<Token> registerExecute(
+    public Result<Token> registerExecute(
             String firstName,
             String lastName,
             String email,
