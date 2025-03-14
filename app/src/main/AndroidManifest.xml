@@ -15,14 +15,20 @@
         android:theme="@style/Theme.BookMoth"
         tools:targetApi="31">
         <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.register.OptionActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.register.RegisterResultActivity"
             android:exported="false" />
         <activity
             android:name=".ui.register.SetPasswordActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".ui.register.TypeOtpActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".ui.register.TypeEmailActivity"
             android:exported="false" />
