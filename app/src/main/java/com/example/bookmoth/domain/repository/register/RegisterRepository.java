@@ -1,24 +1,28 @@
 package com.example.bookmoth.domain.repository.register;
 
-import com.example.bookmoth.core.utils.Result;
+
+import com.example.bookmoth.data.model.register.TokenResponse;
 import com.example.bookmoth.domain.model.login.Token;
 import com.example.bookmoth.domain.model.register.Otp;
 
-import java.io.IOException;
+
+import retrofit2.Call;
 
 
 public interface RegisterRepository {
-    Result<Otp> getOtp(String email, String name) throws IOException;
+    Call<Otp> getOtp(String email, String name);
 
-    Result<Void> checkEmailExists(String email);
+    Call<Void> checkEmailExists(String email);
 
-    Result<Void> verifyOtp(String email, String otp);
+    Call<Void> verifyOtp(String email, String otp);
 
-    Result<Token> register(
+    Call<Token> register(
             String firstName,
             String lastName,
             String email,
             String password,
-            int gender,
-            int accountType);
+            int gender
+    );
+
+    Call<TokenResponse> googleRegister(String idToken);
 }
