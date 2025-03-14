@@ -13,14 +13,12 @@ public class RegisterRequest {
             String lastName,
             String email,
             String password,
-            int gender,
-            int accountType
+            int gender
     ) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.accountType = accountType;
         this.gender = gender;
     }
 }
