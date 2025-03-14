@@ -1,7 +1,9 @@
 package com.example.bookmoth.data.remote.register;
 
 import com.example.bookmoth.data.model.register.GetOtpRequest;
+import com.example.bookmoth.data.model.register.GoogleRegisterRequest;
 import com.example.bookmoth.data.model.register.RegisterRequest;
+import com.example.bookmoth.data.model.register.TokenResponse;
 import com.example.bookmoth.data.model.register.VerifyOtpRequest;
 import com.example.bookmoth.domain.model.login.Token;
 import com.example.bookmoth.domain.model.register.Otp;
@@ -24,4 +26,7 @@ public interface RegisterApiService {
 
     @POST("api/account/register")
     Call<Token> register(@Body RegisterRequest request);
+
+    @POST("api/account/auth/google-register")
+    Call<TokenResponse> googleRegister(@Body GoogleRegisterRequest request);
 }
