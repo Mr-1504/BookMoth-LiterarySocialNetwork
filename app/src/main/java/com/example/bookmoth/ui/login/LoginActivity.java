@@ -21,6 +21,7 @@ import com.example.bookmoth.databinding.ActivityLoginBinding;
 import com.example.bookmoth.core.utils.InternetHelper;
 import com.example.bookmoth.domain.usecase.login.LoginUseCase;
 import com.example.bookmoth.ui.home.MainActivity;
+import com.example.bookmoth.ui.register.OptionActivity;
 import com.example.bookmoth.ui.register.TypeNameActivity;
 import com.example.bookmoth.ui.viewmodel.LoginViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -72,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void clickRegister() {
         register.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, TypeNameActivity.class);
+            Intent intent = new Intent(LoginActivity.this, OptionActivity.class);
             startActivity(intent);
         });
     }
@@ -100,6 +101,11 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onError(String error) {
                     Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onErrorForGoogle(String error) {
+
                 }
             });
         });
@@ -213,8 +219,12 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String error) {
-                        Log.i("LoginActivity", "Google sign-in failed: " + error);
-                        Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onErrorForGoogle(String error) {
+                        Toast.makeText(LoginActivity.this, error , Toast.LENGTH_SHORT).show();
+                        client.signOut();
                     }
                 });
             } catch (ApiException e) {
