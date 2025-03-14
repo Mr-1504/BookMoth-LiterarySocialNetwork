@@ -47,8 +47,6 @@
             returnButton = findViewById(R.id.return_button);
             iHaveAAccountButton = findViewById(R.id.i_have_a_account);
 
-            registerViewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
-            registerViewModel.setAccountType(0);
             // Xử lý sự kiện click
             clickNext();
             clickReturnButton();

@@ -60,17 +60,17 @@ public class LoginViewModel extends ViewModel {
                     SecureStorage.saveToken("refresh_token", token.getRefreshToken());
                     listener.onSuccess();
                 } else if (response.code() == 401) {
-                    listener.onError(context.getString(R.string.invalid_google_account));
+                    listener.onErrorForGoogle(context.getString(R.string.invalid_google_account));
                 } else if (response.code() == 404) {
-                    listener.onError(context.getString(R.string.account_does_not_exist));
+                    listener.onErrorForGoogle(context.getString(R.string.account_does_not_exist));
                 } else {
-                    listener.onError(context.getString(R.string.undefined_error));
+                    listener.onErrorForGoogle(context.getString(R.string.undefined_error));
                 }
             }
 
             @Override
             public void onFailure(Call<Token> call, Throwable t) {
-                listener.onError(context.getString(R.string.error_connecting_to_server));
+                listener.onErrorForGoogle(context.getString(R.string.error_connecting_to_server));
             }
         });
     }
@@ -78,5 +78,6 @@ public class LoginViewModel extends ViewModel {
     public interface OnLoginListener {
         void onSuccess();
         void onError(String error);
+        void onErrorForGoogle(String error);
     }
 }
