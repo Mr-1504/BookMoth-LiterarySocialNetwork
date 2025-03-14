@@ -68,4 +68,8 @@
     <string name="isEmptyOtp">Vui lòng nhập OTP</string>
     <string name="cannot_register">Tạo tài khoản không thành công, thử lại sau!</string>
     <string name="invalid_google_account">Tài khoản Google không hợp lệ</string>
+    <string name="register_now">Đăng ký tài khoản</string>
+    <string name="what_your_option">Bạn muốn đăng ký bằng tài khoản nào</string>
+    <string name="register_with_email">Đăng ký bằng email</string>
+    <string name="register_with_google">Đăng ký bằng Google</string>
 </resources>
