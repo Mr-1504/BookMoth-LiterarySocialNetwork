@@ -72,4 +72,9 @@
     <string name="what_your_option">Bạn muốn đăng ký bằng tài khoản nào</string>
     <string name="register_with_email">Đăng ký bằng email</string>
     <string name="register_with_google">Đăng ký bằng Google</string>
+    <string name="continue_after">"Tiếp tục sau "</string>
+    <string name="choose_your_avatar">Chọn ảnh đại diện</string>
+    <string name="skip">Bỏ qua</string>
+    <string name="your_session_has_expired">Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!</string>
+    <string name="connection_restored">Đã khôi phục kết nối</string>
 </resources>
