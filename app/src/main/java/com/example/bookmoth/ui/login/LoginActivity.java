@@ -22,7 +22,6 @@ import com.example.bookmoth.core.utils.InternetHelper;
 import com.example.bookmoth.domain.usecase.login.LoginUseCase;
 import com.example.bookmoth.ui.home.MainActivity;
 import com.example.bookmoth.ui.register.OptionActivity;
-import com.example.bookmoth.ui.register.TypeNameActivity;
 import com.example.bookmoth.ui.viewmodel.LoginViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -101,11 +100,6 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onError(String error) {
                     Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onErrorForGoogle(String error) {
-
                 }
             });
         });
@@ -208,7 +202,7 @@ public class LoginActivity extends AppCompatActivity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                String id = account.getIdToken();
+
                 loginViewModel.loginWithGoogle(this, account.getIdToken(), new LoginViewModel.OnLoginListener() {
                     @Override
                     public void onSuccess() {
@@ -219,10 +213,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String error) {
-                    }
-
-                    @Override
-                    public void onErrorForGoogle(String error) {
                         Toast.makeText(LoginActivity.this, error , Toast.LENGTH_SHORT).show();
                         client.signOut();
                     }
