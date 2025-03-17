@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <!-- Thanh tiêu đề -->
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/return_button"
+            android:layout_width="50dp"
+            android:layout_height="54dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="@android:color/transparent"
+            android:padding="0dp"
+            android:rotationY="180"
+            android:text="@string/return_button"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="29sp" />
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Xem trước ảnh đại diện"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/btn_blue"
+            android:text="Lưu"
+            android:textColor="@android:color/white" />
+    </RelativeLayout>
+
+    <!-- Ảnh đại diện -->
+    <FrameLayout
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true"
+        android:clipChildren="true"
+        android:clipToPadding="true">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/avatar"
+            app:shapeAppearanceOverlay="@style/RoundedImage" />
+
+        <com.jsibbold.zoomage.ZoomageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:zoomage_animateOnReset="true"
+            app:zoomage_autoResetMode="UNDER"
+            app:zoomage_maxScale="4.0"
+            app:zoomage_minScale="1.0"
+            app:zoomage_restrictBounds="true"
+            app:zoomage_translatable="true" />
+    </FrameLayout>
+
+    <!-- Nút chức năng bên dưới -->
+    <LinearLayout
+        android:id="@+id/bottomButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/edtCaption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/custom_edittext"
+            android:hint="Hãy nói gì đó về ảnh đại diện của bạn..."
+            android:padding="12dp" />
+
+        <CheckBox
+            android:id="@+id/checkShareToNews"
+            android:layout_width="380dp"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Chia sẻ lên Bảng tin" />
+    </LinearLayout>
+</RelativeLayout>

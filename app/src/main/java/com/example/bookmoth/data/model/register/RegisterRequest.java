@@ -6,7 +6,7 @@ public class RegisterRequest {
     private String email;
     private String password;
     private int gender;
-    private int accountType;
+    private String dateOfBirth;
 
     public RegisterRequest(
             String firstName,
@@ -14,13 +14,13 @@ public class RegisterRequest {
             String email,
             String password,
             int gender,
-            int accountType
+            String dateOfBirth
     ) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.accountType = accountType;
         this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
     }
 }

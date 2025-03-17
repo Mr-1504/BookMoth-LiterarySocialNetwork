@@ -1,9 +1,13 @@
 package com.example.bookmoth.domain.repository.register;
 
+
+import com.example.bookmoth.data.model.register.TokenResponse;
 import com.example.bookmoth.domain.model.login.Token;
 import com.example.bookmoth.domain.model.register.Otp;
 
+
 import retrofit2.Call;
+
 
 public interface RegisterRepository {
     Call<Otp> getOtp(String email, String name);
@@ -12,11 +16,13 @@ public interface RegisterRepository {
 
     Call<Void> verifyOtp(String email, String otp);
 
-    Call<Token> register(
+    Call<TokenResponse> register(
             String firstName,
             String lastName,
             String email,
             String password,
             int gender,
-            int accountType);
+            String dateOfBirth);
+
+    Call<TokenResponse> googleRegister(String idToken);
 }
