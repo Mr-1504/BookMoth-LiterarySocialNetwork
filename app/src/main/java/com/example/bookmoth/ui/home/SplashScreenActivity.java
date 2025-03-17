@@ -23,7 +23,7 @@ import com.example.bookmoth.ui.viewmodel.ProfileViewModel;
 public class SplashScreenActivity extends AppCompatActivity {
 
     private static final int SPLASH_TIME_OUT = 1500;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
