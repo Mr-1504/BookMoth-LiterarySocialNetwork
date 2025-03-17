@@ -107,4 +107,9 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.8.8")
 
     implementation("androidx.security:security-crypto:1.0.0")
+
+    // zoomview
+    implementation("com.jsibbold:zoomage:1.3.1")
+
+    implementation(libs.material)
 }
