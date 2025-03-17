@@ -1,141 +1,106 @@
-package com.example.bookmoth.ui.login;
-
+package com.example.bookmoth.ui.register;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.example.bookmoth.R;
-import com.example.bookmoth.data.repository.login.LoginRepositoryImpl;
-import com.example.bookmoth.databinding.ActivityLoginBinding;
 import com.example.bookmoth.core.utils.InternetHelper;
-import com.example.bookmoth.domain.usecase.login.LoginUseCase;
-import com.example.bookmoth.ui.home.MainActivity;
-import com.example.bookmoth.ui.register.OptionActivity;
-import com.example.bookmoth.ui.viewmodel.LoginViewModel;
+import com.example.bookmoth.data.repository.register.RegisterRepositoryImpl;
+import com.example.bookmoth.domain.usecase.register.RegisterUseCase;
+import com.example.bookmoth.ui.viewmodel.registerViewModel.RegisterViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
 
-public class LoginActivity extends AppCompatActivity {
+public class OptionActivity extends AppCompatActivity {
 
-    private Button loginWithEmail;
-    private TextView forgotPassword, register;
-    private LinearLayout loginWithGoogle;
-    private LoginViewModel loginViewModel;
-    private ActivityLoginBinding binding;
+    private static final int RC_REGISTER_WITH_GOOGLE = 100;
+    private Button registerWithEmail, returnButton, ihavaAccount;
+    private LinearLayout registerWithGoogle;
     private GoogleSignInOptions signInOptions;
     private GoogleSignInClient client;
-    private TextInputEditText email, password;
-    int RC_LOGIN = 20;
-
+    private RegisterViewModel registerViewModel;
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_option);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        forgotPassword = binding.forgotPasswordButton;
-        register = binding.registerButton;
-        email = (TextInputEditText) binding.username;
-        password = (TextInputEditText) binding.password;
-        loginWithEmail = binding.loginWithEmail;
-        loginWithGoogle = binding.loginWithGoogleButton;
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.WEB_CLIENT_ID))
                 .requestEmail()
+                .requestProfile()
+                .requestScopes(new Scope("https://www.googleapis.com/auth/user.birthday.read"))
+                .requestScopes(new Scope("https://www.googleapis.com/auth/user.gender.read"))
                 .build();
-        client = GoogleSignIn.getClient(LoginActivity.this, signInOptions);
-        loginViewModel = new LoginViewModel(new LoginUseCase(new LoginRepositoryImpl()));
+        client = GoogleSignIn.getClient(OptionActivity.this, signInOptions);
 
-        clickLoginWithEmail();
-        clickLoginWithGoogle();
-        clickForgotPassword();
-        clickRegister();
+        registerWithEmail = findViewById(R.id.register_with_email);
+        registerWithGoogle = findViewById(R.id.register_with_google);
+        returnButton = findViewById(R.id.return_button);
+        ihavaAccount = findViewById(R.id.i_have_a_account);
+
+
+        registerViewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
+
+        clickRegisterWithEmail();
+        clickRegisterWithGoogle();
+        clickReturn();
+        clickIHaveAAccount();
     }
 
-    private void clickRegister() {
-        register.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, OptionActivity.class);
+    private void clickIHaveAAccount() {
+        ihavaAccount.setOnClickListener(view -> {
+            finish();
+        });
+    }
+
+    private void clickReturn() {
+        returnButton.setOnClickListener(view -> {
+            finish();
+        });
+    }
+
+    private void clickRegisterWithEmail() {
+        registerWithEmail.setOnClickListener(view -> {
+            Intent intent = new Intent(OptionActivity.this, TypeNameActivity.class);
             startActivity(intent);
         });
     }
 
-    private void clickForgotPassword() {
-//        forgotPassword.setOnClickListener(v -> {
-//            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
-//            startActivity(intent);
-//        });
-    }
-
-    private void clickLoginWithEmail() {
-        loginWithEmail.setOnClickListener(v -> {
-            String mail = email.getText().toString();
-            String pass = password.getText().toString();
-
-            loginViewModel.login(this, mail, pass, new LoginViewModel.OnLoginListener() {
-                @Override
-                public void onSuccess() {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-
-                @Override
-                public void onError(String error) {
-                    Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
-                }
-            });
-        });
-    }
-
-//    private void updateUiWithUser(LoggedInUserView model) {
-//        String welcome = getString(R.string.welcome) + model.getDisplayName();
-//        // TODO : initiate successful logged in experience
-//        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-//    }
-
-    private void showLoginFailed(@StringRes Integer errorString) {
-        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Phương thức `clickLogin` dùng để thiết lập sự kiện khi người dùng nhấn nút đăng nhập với Google.<br>
-     * - Trước khi thực hiện đăng nhập, phương thức sẽ kiểm tra kết nối Internet của thiết bị. <br>
-     * - Nếu có kết nối Internet, phương thức sẽ gọi phương thức `loginWithGoogle()` để tiến hành đăng nhập. <br>
-     * - Nếu không có kết nối Internet, phương thức sẽ hiển thị một thông báo cho người dùng biết rằng không có kết nối mạng.
-     */
-    private void clickLoginWithGoogle() {
-        loginWithGoogle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (InternetHelper.isNetworkAvailable(LoginActivity.this)) {
-                    Log.d("LoginActivity", "Network is available. Proceeding with Google sign-in.");
-                    loginWithGoogle();
-                } else {
-                    Log.w("LoginActivity", "No Internet connection detected.");
-                    Toast.makeText(LoginActivity.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
-                }
+    private void clickRegisterWithGoogle() {
+        registerWithGoogle.setOnClickListener(view -> {
+            if (InternetHelper.isNetworkAvailable(OptionActivity.this)) {
+                Log.d("LoginActivity", "Network is available. Proceeding with Google sign-in.");
+                registerWithGoogle();
+            } else {
+                Log.w("LoginActivity", "No Internet connection detected.");
+                Toast.makeText(OptionActivity.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
             }
         });
     }
-
 
     /**
      * Bắt đầu quá trình đăng nhập bằng Google.
@@ -163,9 +128,9 @@ public class LoginActivity extends AppCompatActivity {
      * Sau khi người dùng chọn tài khoản, kết quả sẽ được xử lý trong phương thức
      * {@link #onActivityResult(int, int, Intent)}.
      */
-    private void loginWithGoogle() {
+    private void registerWithGoogle() {
         Intent loginWithGoogleIntent = client.getSignInIntent();
-        startActivityForResult(loginWithGoogleIntent, RC_LOGIN);
+        startActivityForResult(loginWithGoogleIntent, RC_REGISTER_WITH_GOOGLE);
     }
 
     /**
@@ -198,25 +163,32 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RC_LOGIN) {
+        if (requestCode == RC_REGISTER_WITH_GOOGLE) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
 
-                loginViewModel.loginWithGoogle(this, account.getIdToken(), new LoginViewModel.OnLoginListener() {
-                    @Override
-                    public void onSuccess() {
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
+                registerViewModel.registerWithGoogle(
+                        this,
+                        new RegisterUseCase(new RegisterRepositoryImpl()),
+                        account.getIdToken(),
+                        new RegisterViewModel.OnRegisterListener() {
+                            @Override
+                            public void onSuccess() {
+                                Intent intent = new Intent(OptionActivity.this, RegisterResultActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.putExtra("registerViewModel", registerViewModel);
+                                startActivity(intent);
+                                finish();
+                            }
 
-                    @Override
-                    public void onError(String error) {
-                        Toast.makeText(LoginActivity.this, error , Toast.LENGTH_SHORT).show();
-                        client.signOut();
-                    }
-                });
+                            @Override
+                            public void onError(String error) {
+                                Toast.makeText(OptionActivity.this, error, Toast.LENGTH_SHORT).show();
+                                client.signOut();
+                            }
+                        }
+                );
             } catch (ApiException e) {
                 Log.e("LoginActivity", "Google sign-in failed. Code: " + e.getStatusCode(), e);
                 handleGoogleSignInError(e);
@@ -224,7 +196,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    // Hàm xử lý lỗi chi tiết cho Google Sign-In
     private void handleGoogleSignInError(ApiException e) {
         int errorCode = e.getStatusCode();
         String errorMessage;

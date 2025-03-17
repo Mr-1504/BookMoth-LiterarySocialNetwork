@@ -1,10 +1,8 @@
-package com.example.bookmoth.ui.register;
+package com.example.bookmoth.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.os.Handler;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -13,71 +11,74 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
-import com.example.bookmoth.ui.profile.SetAvatarActivity;
+import com.example.bookmoth.ui.error.LoginFailedActivity;
+import com.example.bookmoth.ui.login.LoginActivity;
 import com.example.bookmoth.ui.viewmodel.ProfileViewModel;
 
-public class RegisterResultActivity extends AppCompatActivity {
+public class SplashScreenActivity extends AppCompatActivity {
 
-    private ImageView avatar;
-    private TextView tvWelcome, countdown;
+    private static final int SPLASH_TIME_OUT = 1500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_register_result);
+        setContentView(R.layout.activity_splash_screen);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        avatar = findViewById(R.id.imgAvatar);
-        tvWelcome = findViewById(R.id.tvWelcome);
-        countdown = findViewById(R.id.countdown);
+        new Handler().postDelayed(() -> {
+            String token = SecureStorage.getToken("refresh_token");
 
+            if (token != null && !token.isEmpty()) {
+                getProfile();
+            } else {
+                navigateToLogin();
+            }
+        }, SPLASH_TIME_OUT);
+    }
+
+    private void getProfile() {
         ProfileViewModel profileViewModel = new ProfileViewModel(new ProfileUseCase(new ProfileRepositoryImpl()));
 
         profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
             @Override
             public void onProfileSuccess(Profile profile) {
-                tvWelcome.setText(profile.getFirstName() + " " + getString(R.string.welcom_to_bookmoth));
-
-                Glide.with(RegisterResultActivity.this)
-                        .load(profile.getAvatar())
-                        .placeholder(R.drawable.avatar)
-                        .into(avatar);
-                new CountDownTimer(5000, 1000) {
-                    public void onTick(long millisUntilFinished) {
-                        countdown.setText(getString(R.string.continue_after) + " " + millisUntilFinished / 1000 + "s");
-                    }
-
-                    public void onFinish() {
-                        setAvatar();
-                    }
-                }.start();
+                Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                intent.putExtra("profile", profile);
+                startActivity(intent);
+                finish();
             }
 
             @Override
             public void onProfileFailure(String error) {
-                Toast.makeText(RegisterResultActivity.this, error, Toast.LENGTH_SHORT).show();
+                navigateToLogin();
             }
 
             @Override
             public void onErrorConnectToServer(String error) {
-
+                Intent intent = new Intent(SplashScreenActivity.this, LoginFailedActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
 
-    private void setAvatar(){
-        Intent intent = new Intent(RegisterResultActivity.this, SetAvatarActivity.class);
-        startActivity(intent);
+    private void navigateToLogin() {
+        Toast.makeText(
+                SplashScreenActivity.this,
+                getString(R.string.your_session_has_expired),
+                Toast.LENGTH_SHORT
+        ).show();
+        startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
         finish();
     }
 }

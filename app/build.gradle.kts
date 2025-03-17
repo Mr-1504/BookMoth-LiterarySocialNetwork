@@ -50,7 +50,7 @@ android {
         viewBinding = true
     }
 
-    // Thêm block này để xử lý xung đột file META-INF
+    // xử lý xung đột file META-INF
     packagingOptions {
         exclude("META-INF/DEPENDENCIES")
         exclude("META-INF/LICENSE")
@@ -87,6 +87,7 @@ dependencies {
 
     // Other libraries
     implementation(libs.glide)
+    implementation(libs.security.crypto)
     annotationProcessor(libs.compiler)
     implementation(files("zpdk-release-v3.1.aar"))
 
@@ -104,4 +105,11 @@ dependencies {
     //navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.8")
     implementation("androidx.navigation:navigation-ui-ktx:2.8.8")
+
+    implementation("androidx.security:security-crypto:1.0.0")
+
+    // zoomview
+    implementation("com.jsibbold:zoomage:1.3.1")
+
+    implementation(libs.material)
 }

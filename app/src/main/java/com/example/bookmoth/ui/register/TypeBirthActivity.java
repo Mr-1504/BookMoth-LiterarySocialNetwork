@@ -14,7 +14,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.ui.login.LoginActivity;
@@ -58,9 +57,6 @@ public class TypeBirthActivity extends AppCompatActivity {
         clickNext();
         clickIHaveAAccount();
         clickReturn();
-    }
-    public RegisterViewModel getSharedViewModel() {
-        return registerViewModel;
     }
 
     private void clickReturn() {
