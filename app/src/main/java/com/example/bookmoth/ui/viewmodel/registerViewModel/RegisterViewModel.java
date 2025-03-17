@@ -34,6 +34,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Lấy tên đầu của người dùng.
+     *
      * @return firstName của người dùng.
      */
     public String getFirstName() {
@@ -42,6 +43,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Thiết lập tên đầu của người dùng.
+     *
      * @param firstName Tên đầu cần thiết lập.
      */
     public void setFirstName(String firstName) {
@@ -50,6 +52,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Lấy họ của người dùng.
+     *
      * @return lastName của người dùng.
      */
     public String getLastName() {
@@ -58,6 +61,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Thiết lập họ của người dùng.
+     *
      * @param lastName Họ cần thiết lập.
      */
     public void setLastName(String lastName) {
@@ -66,6 +70,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Lấy email của người dùng.
+     *
      * @return Email của người dùng.
      */
     public String getEmail() {
@@ -74,6 +79,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Thiết lập email của người dùng.
+     *
      * @param email Email cần thiết lập.
      */
     public void setEmail(String email) {
@@ -82,6 +88,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Lấy mật khẩu của người dùng.
+     *
      * @return Password của người dùng.
      */
     public String getPassword() {
@@ -90,6 +97,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Thiết lập mật khẩu của người dùng.
+     *
      * @param password Mật khẩu cần thiết lập.
      */
     public void setPassword(String password) {
@@ -98,6 +106,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Lấy giới tính của người dùng.
+     *
      * @return Gender của người dùng.
      */
     public Gender getGender() {
@@ -106,6 +115,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Thiết lập giới tính của người dùng.
+     *
      * @param gender Giới tính cần thiết lập.
      */
     public void setGender(Gender gender) {
@@ -114,6 +124,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Lấy mã OTP hiện tại.
+     *
      * @return OTP hiện tại.
      */
     public String getOtp() {
@@ -122,6 +133,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Thiết lập mã OTP.
+     *
      * @param otp Mã OTP.
      */
     public void setOtp(String otp) {
@@ -130,6 +142,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Lấy ngày sinh của người dùng
+     *
      * @return ngày sinh
      */
     public String getDateOfBirth() {
@@ -138,6 +151,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Thiết lập ngày sinh của người dùng
+     *
      * @param dateOfBirth ngày sinh
      */
     public void setDateOfBirth(String dateOfBirth) {
@@ -146,8 +160,9 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Kiểm tra xem email có tồn tại hay không.
-     * @param context Context của ứng dụng.
-     * @param useCase Đối tượng RegisterUseCase để thực hiện kiểm tra.
+     *
+     * @param context  Context của ứng dụng.
+     * @param useCase  Đối tượng RegisterUseCase để thực hiện kiểm tra.
      * @param listener Lắng nghe kết quả kiểm tra.
      */
     public void checkEmailExists(Context context, RegisterUseCase useCase, final OnCheckEmailExistsListener listener) {
@@ -163,6 +178,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
                     listener.onError(context.getString(R.string.undefined_error));
                 }
             }
+
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 listener.onError(context.getString(R.string.error_connecting_to_server));
@@ -172,9 +188,10 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Yêu cầu gửi OTP đến email.
-     * @param context Context của ứng dụng.
+     *
+     * @param context         Context của ứng dụng.
      * @param registerUseCase Đối tượng xử lý yêu cầu OTP.
-     * @param listener Lắng nghe kết quả OTP.
+     * @param listener        Lắng nghe kết quả OTP.
      */
     public void getOtp(Context context, RegisterUseCase registerUseCase, final OnGetOtpListener listener) {
         registerUseCase.getOtpExecute(this.getEmail(), this.getFirstName()).enqueue(new Callback<Otp>() {
@@ -186,6 +203,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
                     listener.onError(context.getString(R.string.undefined_error));
                 }
             }
+
             @Override
             public void onFailure(Call<Otp> call, Throwable t) {
                 listener.onError(context.getString(R.string.error_connecting_to_server));
@@ -195,9 +213,10 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Xác minh OTP.
-     * @param context Context của ứng dụng.
+     *
+     * @param context         Context của ứng dụng.
      * @param registerUseCase Đối tượng xử lý xác minh OTP.
-     * @param listener Lắng nghe kết quả xác minh OTP.
+     * @param listener        Lắng nghe kết quả xác minh OTP.
      */
     public void verifyOtp(Context context, RegisterUseCase registerUseCase, final OnVerifyOtpListener listener) {
         registerUseCase.verifyOtpExecute(this.getEmail(), this.getOtp()).enqueue(new Callback<Void>() {
@@ -209,6 +228,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
                     listener.onError(context.getString(R.string.invalid_otp));
                 }
             }
+
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 listener.onError(context.getString(R.string.error_connecting_to_server));
@@ -218,9 +238,10 @@ public class RegisterViewModel extends ViewModel implements Serializable {
 
     /**
      * Đăng ký người dùng.
-     * @param context Context của ứng dụng.
+     *
+     * @param context         Context của ứng dụng.
      * @param registerUseCase Đối tượng xử lý đăng ký.
-     * @param listener Lắng nghe kết quả đăng ký.
+     * @param listener        Lắng nghe kết quả đăng ký.
      */
     public void register(Context context, RegisterUseCase registerUseCase, final OnRegisterListener listener) {
         registerUseCase.registerExecute(
@@ -242,6 +263,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
                     listener.onError(context.getString(R.string.undefined_error));
                 }
             }
+
             @Override
             public void onFailure(Call<TokenResponse> call, Throwable t) {
                 listener.onError(context.getString(R.string.error_connecting_to_server));
@@ -283,11 +305,46 @@ public class RegisterViewModel extends ViewModel implements Serializable {
         });
     }
 
+    public void registerWithGoogle(
+            Context context,
+            RegisterUseCase registerUseCase,
+            String idToken,
+            final OnRegisterListener listener
+    ) {
+        registerUseCase.registerGoogleExecute(idToken).enqueue(new Callback<TokenResponse>() {
+            @Override
+            public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    Token token = response.body().getData();
+                    SecureStorage.saveToken("jwt_token", token.getJwtToken());
+                    SecureStorage.saveToken("refresh_token", token.getRefreshToken());
+                    listener.onSuccess();
+                } else if (response.code() == 400) {
+                    listener.onError(context.getString(R.string.invalid_email));
+                } else if (response.code() == 401) {
+                    listener.onError(context.getString(R.string.invalid_google_account));
+                } else if (response.code() == 409) {
+                    listener.onError(context.getString(R.string.email_already_exists));
+                } else if (response.code() == 422) {
+                    listener.onError(context.getString(R.string.cannot_register));
+                } else {
+                    listener.onError(context.getString(R.string.undefined_error) + " " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TokenResponse> call, Throwable t) {
+                listener.onError(context.getString(R.string.error_connecting_to_server));
+            }
+        });
+    }
+    
     /**
      * Interface lắng nghe sự kiện lấy OTP.
      */
     public interface OnGetOtpListener {
         void onSuccess();
+
         void onError(String error);
     }
 
@@ -296,6 +353,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
      */
     public interface OnCheckEmailExistsListener {
         void onSuccess();
+
         void onError(String error);
     }
 
@@ -304,6 +362,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
      */
     public interface OnVerifyOtpListener {
         void onSuccess();
+
         void onError(String error);
     }
 
@@ -312,6 +371,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
      */
     public interface OnRegisterListener {
         void onSuccess();
+
         void onError(String error);
     }
 }
