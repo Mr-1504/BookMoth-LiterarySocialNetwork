@@ -17,6 +17,7 @@ import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.ui.login.LoginActivity;
 import com.example.bookmoth.ui.payment.PayActivity;
+import com.example.bookmoth.ui.profile.ProfileActivity;
 import com.example.bookmoth.ui.register.OptionActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -66,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             client.signOut();
             finish();
+        });
+
+        profile.setOnClickListener(view -> {
+            startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         });
     }
 }
