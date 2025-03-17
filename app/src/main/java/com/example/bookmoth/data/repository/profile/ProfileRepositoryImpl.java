@@ -11,7 +11,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     private final ProfileApiService profileApiService;
 
     public ProfileRepositoryImpl() {
-        this.profileApiService = RetrofitClient.getInstance().create(ProfileApiService.class);
+        this.profileApiService = RetrofitClient.getAspServerRetrofit().create(ProfileApiService.class);
     }
 
     @Override

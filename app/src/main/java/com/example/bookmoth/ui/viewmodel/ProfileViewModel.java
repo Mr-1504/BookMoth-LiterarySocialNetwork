@@ -22,7 +22,11 @@ public class ProfileViewModel {
             @Override
             public void onResponse(Call<Profile> call, Response<Profile> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    listener.onProfileSuccess(response.body());
+                    try {
+                        listener.onProfileSuccess(response.body());
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 } else if(response.code() == 401) {
                     listener.onProfileFailure(context.getString(R.string.invalid_email));
                 } else if (response.code() == 404) {
@@ -34,13 +38,14 @@ public class ProfileViewModel {
 
             @Override
             public void onFailure(Call<Profile> call, Throwable t) {
-                listener.onProfileFailure(context.getString(R.string.error_connecting_to_server));
+                listener.onErrorConnectToServer(context.getString(R.string.error_connecting_to_server));
             }
         });
     }
 
     public interface OnProfileListener {
-        void onProfileSuccess(Profile profile);
+        void onProfileSuccess(Profile profile) throws InterruptedException;
         void onProfileFailure(String error);
+        void onErrorConnectToServer(String error);
     }
 }

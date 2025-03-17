@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.lifecycle.ViewModel;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.DatetimeHelper;
 import com.example.bookmoth.core.utils.GenderUtils;
 import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.model.register.TokenResponse;
@@ -162,12 +163,13 @@ public class RegisterViewModel extends ViewModel implements Serializable {
                 this.getLastName(),
                 this.getEmail(),
                 this.getPassword(),
-                GenderUtils.getGenderIntValue(this.getGender())
-        ).enqueue(new Callback<Token>() {
+                GenderUtils.getGenderIntValue(this.getGender()),
+                this.getDateOfBirth()
+        ).enqueue(new Callback<TokenResponse>() {
             @Override
-            public void onResponse(Call<Token> call, Response<Token> response) {
+            public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Token token = response.body();
+                    Token token = response.body().getData();
                     SecureStorage.saveToken("jwt_token", token.getJwtToken());
                     SecureStorage.saveToken("refresh_token", token.getRefreshToken());
                     listener.onSuccess();
@@ -183,7 +185,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
             }
 
             @Override
-            public void onFailure(Call<Token> call, Throwable t) {
+            public void onFailure(Call<TokenResponse> call, Throwable t) {
                 listener.onError(context.getString(R.string.error_connecting_to_server));
             }
         });

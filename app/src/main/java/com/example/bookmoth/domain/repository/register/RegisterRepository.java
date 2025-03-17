@@ -16,13 +16,13 @@ public interface RegisterRepository {
 
     Call<Void> verifyOtp(String email, String otp);
 
-    Call<Token> register(
+    Call<TokenResponse> register(
             String firstName,
             String lastName,
             String email,
             String password,
-            int gender
-    );
+            int gender,
+            String dateOfBirth);
 
     Call<TokenResponse> googleRegister(String idToken);
 }

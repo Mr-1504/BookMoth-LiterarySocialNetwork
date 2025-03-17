@@ -5,7 +5,6 @@ import com.example.bookmoth.data.model.register.GoogleRegisterRequest;
 import com.example.bookmoth.data.model.register.RegisterRequest;
 import com.example.bookmoth.data.model.register.TokenResponse;
 import com.example.bookmoth.data.model.register.VerifyOtpRequest;
-import com.example.bookmoth.domain.model.login.Token;
 import com.example.bookmoth.domain.model.register.Otp;
 
 import retrofit2.Call;
@@ -25,7 +24,7 @@ public interface RegisterApiService {
     Call<Void> verifyOtp(@Body VerifyOtpRequest request);
 
     @POST("api/account/register")
-    Call<Token> register(@Body RegisterRequest request);
+    Call<TokenResponse> register(@Body RegisterRequest request);
 
     @POST("api/account/auth/google-register")
     Call<TokenResponse> googleRegister(@Body GoogleRegisterRequest request);

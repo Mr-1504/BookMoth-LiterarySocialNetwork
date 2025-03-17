@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.model.register.TokenResponse;
 import com.example.bookmoth.domain.model.login.Token;
 import com.example.bookmoth.domain.usecase.login.LoginUseCase;
 
@@ -22,11 +23,11 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void login(Context context, String email, String password, final OnLoginListener listener) {
-        loginUseCase.login(email, password).enqueue(new Callback<Token>() {
+        loginUseCase.login(email, password).enqueue(new Callback<TokenResponse>() {
             @Override
-            public void onResponse(Call<Token> call, Response<Token> response) {
+            public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Token token = response.body();
+                    Token token = response.body().getData();
                     SecureStorage.saveToken("jwt_token", token.getJwtToken());
                     SecureStorage.saveToken("refresh_token", token.getRefreshToken());
                     listener.onSuccess();
@@ -44,33 +45,33 @@ public class LoginViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<Token> call, Throwable t) {
+            public void onFailure(Call<TokenResponse> call, Throwable t) {
                 listener.onError(context.getString(R.string.error_connecting_to_server));
             }
         });
     }
 
     public void loginWithGoogle(Context context, String idToken, final OnLoginListener listener) {
-        loginUseCase.googleLogin(idToken).enqueue(new Callback<Token>() {
+        loginUseCase.googleLogin(idToken).enqueue(new Callback<TokenResponse>() {
             @Override
-            public void onResponse(Call<Token> call, Response<Token> response) {
+            public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Token token = response.body();
+                    Token token = response.body().getData();
                     SecureStorage.saveToken("jwt_token", token.getJwtToken());
                     SecureStorage.saveToken("refresh_token", token.getRefreshToken());
                     listener.onSuccess();
                 } else if (response.code() == 401) {
-                    listener.onErrorForGoogle(context.getString(R.string.invalid_google_account));
+                    listener.onError(context.getString(R.string.invalid_google_account));
                 } else if (response.code() == 404) {
-                    listener.onErrorForGoogle(context.getString(R.string.account_does_not_exist));
+                    listener.onError(context.getString(R.string.account_does_not_exist));
                 } else {
-                    listener.onErrorForGoogle(context.getString(R.string.undefined_error));
+                    listener.onError(context.getString(R.string.undefined_error));
                 }
             }
 
             @Override
-            public void onFailure(Call<Token> call, Throwable t) {
-                listener.onErrorForGoogle(context.getString(R.string.error_connecting_to_server));
+            public void onFailure(Call<TokenResponse> call, Throwable t) {
+                listener.onError(context.getString(R.string.error_connecting_to_server));
             }
         });
     }
@@ -78,6 +79,5 @@ public class LoginViewModel extends ViewModel {
     public interface OnLoginListener {
         void onSuccess();
         void onError(String error);
-        void onErrorForGoogle(String error);
     }
 }

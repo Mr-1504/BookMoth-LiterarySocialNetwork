@@ -1,6 +1,7 @@
 package com.example.bookmoth.data.remote.utils;
 
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.model.register.TokenResponse;
 import com.example.bookmoth.data.remote.login.LoginApiService;
 import com.example.bookmoth.domain.model.login.Token;
 
@@ -29,10 +30,10 @@ public class TokenAuthenticator implements Authenticator {
         String refreshToken = SecureStorage.getToken("refresh_token");
         if (refreshToken == null) return null;
 
-        retrofit2.Response<Token> tokenResponse = apiService.refreshToken(refreshToken).execute();
+        retrofit2.Response<TokenResponse> tokenResponse = apiService.refreshToken(refreshToken).execute();
 
         if (tokenResponse.isSuccessful() && tokenResponse.body() != null) {
-            Token token = tokenResponse.body();
+            Token token = tokenResponse.body().getData();
 
             SecureStorage.saveToken("jwt_token", token.getJwtToken());
             SecureStorage.saveToken("refresh_token", token.getRefreshToken());

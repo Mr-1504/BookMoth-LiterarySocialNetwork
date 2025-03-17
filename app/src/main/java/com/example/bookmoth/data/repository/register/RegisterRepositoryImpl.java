@@ -18,7 +18,7 @@ public class RegisterRepositoryImpl implements RegisterRepository {
     private final RegisterApiService registerApiService;
 
     public RegisterRepositoryImpl() {
-        this.registerApiService = RetrofitClient.getInstance().create(RegisterApiService.class);
+        this.registerApiService = RetrofitClient.getAspServerRetrofit().create(RegisterApiService.class);
     }
 
 
@@ -38,8 +38,14 @@ public class RegisterRepositoryImpl implements RegisterRepository {
     }
 
     @Override
-    public Call<Token> register(String firstName, String lastName, String email, String password, int gender) {
-        return registerApiService.register(new RegisterRequest(firstName, lastName, email, password, gender));
+    public Call<TokenResponse> register(
+            String firstName, String lastName,
+            String email, String password,
+            int gender, String dateOfBirth
+    ) {
+        return registerApiService.register(
+                new RegisterRequest(firstName, lastName, email, password, gender, dateOfBirth)
+        );
     }
 
     @Override

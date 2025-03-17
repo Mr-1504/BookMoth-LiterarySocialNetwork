@@ -27,14 +27,14 @@ public class RegisterUseCase {
         return registerRepository.verifyOtp(email, otp);
     }
 
-    public Call<Token> registerExecute(
+    public Call<TokenResponse> registerExecute(
             String firstName,
             String lastName,
             String email,
             String password,
-            int gender
-    ) {
-        return registerRepository.register(firstName, lastName, email, password, gender);
+            int gender,
+            String dateOfBirth) {
+        return registerRepository.register(firstName, lastName, email, password, gender, dateOfBirth);
     }
 
     public Call<TokenResponse> registerGoogleExecute(String idToken) {
