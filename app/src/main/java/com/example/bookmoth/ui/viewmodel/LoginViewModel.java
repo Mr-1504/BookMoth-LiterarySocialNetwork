@@ -14,14 +14,30 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * ViewModel xử lý logic đăng nhập của người dùng.
+ */
 public class LoginViewModel extends ViewModel {
 
     private LoginUseCase loginUseCase;
 
+    /**
+     * Khởi tạo LoginViewModel với LoginUseCase.
+     *
+     * @param loginUseCase Lớp chứa logic xử lý đăng nhập.
+     */
     public LoginViewModel(LoginUseCase loginUseCase) {
         this.loginUseCase = loginUseCase;
     }
 
+    /**
+     * Thực hiện đăng nhập với email và mật khẩu.
+     *
+     * @param context  Context của ứng dụng để lấy string resource.
+     * @param email    Địa chỉ email của người dùng.
+     * @param password Mật khẩu của người dùng.
+     * @param listener Lắng nghe kết quả đăng nhập.
+     */
     public void login(Context context, String email, String password, final OnLoginListener listener) {
         loginUseCase.login(email, password).enqueue(new Callback<TokenResponse>() {
             @Override
@@ -51,6 +67,13 @@ public class LoginViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Đăng nhập bằng tài khoản Google.
+     *
+     * @param context Context của ứng dụng để lấy string resource.
+     * @param idToken Token Google ID của người dùng.
+     * @param listener Lắng nghe kết quả đăng nhập.
+     */
     public void loginWithGoogle(Context context, String idToken, final OnLoginListener listener) {
         loginUseCase.googleLogin(idToken).enqueue(new Callback<TokenResponse>() {
             @Override
@@ -76,8 +99,20 @@ public class LoginViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Interface dùng để lắng nghe kết quả đăng nhập.
+     */
     public interface OnLoginListener {
+        /**
+         * Gọi khi đăng nhập thành công.
+         */
         void onSuccess();
+
+        /**
+         * Gọi khi đăng nhập thất bại với thông báo lỗi.
+         *
+         * @param error Chuỗi lỗi thông báo cho người dùng.
+         */
         void onError(String error);
     }
 }
