@@ -19,5 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "BookMoth"
+rootProject.name = "PostApp"
 include(":app")
+ 
