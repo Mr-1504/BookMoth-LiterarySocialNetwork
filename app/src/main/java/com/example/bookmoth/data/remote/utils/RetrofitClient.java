@@ -1,18 +1,16 @@
 package com.example.bookmoth.data.remote.utils;
 
-import com.example.bookmoth.data.remote.login.LoginApiService;
-
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static final String BASE_URL = "http://127.0.0.1:7100/";
-    private static Retrofit retrofit;
+    private static final String BASE_ASP_SERVER_URL = "http://127.0.0.1:7100/";
+    private static Retrofit aspServerRetrofit;
 
-    public static Retrofit getInstance(){
-        if(retrofit == null){
+    public static Retrofit getAspServerRetrofit() {
+        if (aspServerRetrofit == null) {
             HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
             httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -20,14 +18,14 @@ public class RetrofitClient {
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(httpLoggingInterceptor)
                     .addInterceptor(new AuthInterceptor())
-                    .authenticator(new TokenAuthenticator(BASE_URL))
+                    .authenticator(new TokenAuthenticator(BASE_ASP_SERVER_URL))
                     .build();
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+            aspServerRetrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_ASP_SERVER_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
                     .build();
         }
-        return retrofit;
+        return aspServerRetrofit;
     }
 }
