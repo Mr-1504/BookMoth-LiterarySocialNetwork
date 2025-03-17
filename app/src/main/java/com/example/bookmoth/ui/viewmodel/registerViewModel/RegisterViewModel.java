@@ -304,40 +304,6 @@ public class RegisterViewModel extends ViewModel implements Serializable {
             }
         });
     }
-
-    public void registerWithGoogle(
-            Context context,
-            RegisterUseCase registerUseCase,
-            String idToken,
-            final OnRegisterListener listener
-    ) {
-        registerUseCase.registerGoogleExecute(idToken).enqueue(new Callback<TokenResponse>() {
-            @Override
-            public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
-                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                    Token token = response.body().getData();
-                    SecureStorage.saveToken("jwt_token", token.getJwtToken());
-                    SecureStorage.saveToken("refresh_token", token.getRefreshToken());
-                    listener.onSuccess();
-                } else if (response.code() == 400) {
-                    listener.onError(context.getString(R.string.invalid_email));
-                } else if (response.code() == 401) {
-                    listener.onError(context.getString(R.string.invalid_google_account));
-                } else if (response.code() == 409) {
-                    listener.onError(context.getString(R.string.email_already_exists));
-                } else if (response.code() == 422) {
-                    listener.onError(context.getString(R.string.cannot_register));
-                } else {
-                    listener.onError(context.getString(R.string.undefined_error) + " " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TokenResponse> call, Throwable t) {
-                listener.onError(context.getString(R.string.error_connecting_to_server));
-            }
-        });
-    }
     
     /**
      * Interface lắng nghe sự kiện lấy OTP.
