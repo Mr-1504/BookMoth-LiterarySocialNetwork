@@ -1,6 +1,8 @@
 package com.example.bookmoth.domain.model.profile;
 
-public class Profile {
+import java.io.Serializable;
+
+public class Profile implements Serializable {
     private String profileId;
     private String accountId;
     private String firstName;
@@ -10,6 +12,15 @@ public class Profile {
     private String coverPhoto;
     private int gender;
     private boolean identifier;
+    private String dateOfBirth;
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
 
     public String getAvatar() {
         return avatar;
