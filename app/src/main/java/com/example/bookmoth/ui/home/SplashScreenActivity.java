@@ -23,7 +23,6 @@ import com.example.bookmoth.ui.viewmodel.ProfileViewModel;
 public class SplashScreenActivity extends AppCompatActivity {
 
     private static final int SPLASH_TIME_OUT = 1500;
-    private static final int RETRY_DELAY = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,24 +60,11 @@ public class SplashScreenActivity extends AppCompatActivity {
 
             @Override
             public void onProfileFailure(String error) {
-                Toast.makeText(
-                        SplashScreenActivity.this,
-                        getString(R.string.your_session_has_expired),
-                        Toast.LENGTH_SHORT
-                ).show();
-                Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                navigateToLogin();
             }
 
             @Override
             public void onErrorConnectToServer(String error) {
-                Toast.makeText(
-                        SplashScreenActivity.this,
-                        "Lỗi kết nối, thử lại sau 10 giây...",
-                        Toast.LENGTH_SHORT
-                ).show();
-
                 Intent intent = new Intent(SplashScreenActivity.this, LoginFailedActivity.class);
                 startActivity(intent);
                 finish();
@@ -87,6 +73,11 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void navigateToLogin() {
+        Toast.makeText(
+                SplashScreenActivity.this,
+                getString(R.string.your_session_has_expired),
+                Toast.LENGTH_SHORT
+        ).show();
         startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
         finish();
     }
