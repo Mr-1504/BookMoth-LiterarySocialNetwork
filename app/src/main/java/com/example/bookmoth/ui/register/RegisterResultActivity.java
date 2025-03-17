@@ -1,6 +1,8 @@
 package com.example.bookmoth.ui.register;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,12 +18,13 @@ import com.example.bookmoth.R;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
+import com.example.bookmoth.ui.profile.SetAvatarActivity;
 import com.example.bookmoth.ui.viewmodel.ProfileViewModel;
 
 public class RegisterResultActivity extends AppCompatActivity {
 
     private ImageView avatar;
-    private TextView tvWelcome;
+    private TextView tvWelcome, countdown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,7 @@ public class RegisterResultActivity extends AppCompatActivity {
 
         avatar = findViewById(R.id.imgAvatar);
         tvWelcome = findViewById(R.id.tvWelcome);
+        countdown = findViewById(R.id.countdown);
 
         ProfileViewModel profileViewModel = new ProfileViewModel(new ProfileUseCase(new ProfileRepositoryImpl()));
 
@@ -48,14 +52,32 @@ public class RegisterResultActivity extends AppCompatActivity {
                         .load(profile.getAvatar())
                         .placeholder(R.drawable.avatar)
                         .into(avatar);
+                new CountDownTimer(5000, 1000) {
+                    public void onTick(long millisUntilFinished) {
+                        countdown.setText(getString(R.string.continue_after) + " " + millisUntilFinished / 1000 + "s");
+                    }
+
+                    public void onFinish() {
+                        setAvatar();
+                    }
+                }.start();
             }
 
             @Override
             public void onProfileFailure(String error) {
                 Toast.makeText(RegisterResultActivity.this, error, Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public void onErrorConnectToServer(String error) {
+
+            }
         });
     }
 
-
+    private void setAvatar(){
+        Intent intent = new Intent(RegisterResultActivity.this, SetAvatarActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }
