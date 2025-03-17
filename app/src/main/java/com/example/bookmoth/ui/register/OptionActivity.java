@@ -3,7 +3,6 @@ package com.example.bookmoth.ui.register;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -20,9 +19,6 @@ import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.InternetHelper;
 import com.example.bookmoth.data.repository.register.RegisterRepositoryImpl;
 import com.example.bookmoth.domain.usecase.register.RegisterUseCase;
-import com.example.bookmoth.ui.home.MainActivity;
-import com.example.bookmoth.ui.login.LoginActivity;
-import com.example.bookmoth.ui.viewmodel.LoginViewModel;
 import com.example.bookmoth.ui.viewmodel.registerViewModel.RegisterViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -30,12 +26,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
 
 public class OptionActivity extends AppCompatActivity {
 
     private static final int RC_REGISTER_WITH_GOOGLE = 100;
-    private Button registerWithEmail;
+    private Button registerWithEmail, returnButton, ihavaAccount;
     private LinearLayout registerWithGoogle;
     private GoogleSignInOptions signInOptions;
     private GoogleSignInClient client;
@@ -54,27 +51,50 @@ public class OptionActivity extends AppCompatActivity {
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.WEB_CLIENT_ID))
                 .requestEmail()
+                .requestProfile()
+                .requestScopes(new Scope("https://www.googleapis.com/auth/user.birthday.read"))
+                .requestScopes(new Scope("https://www.googleapis.com/auth/user.gender.read"))
                 .build();
         client = GoogleSignIn.getClient(OptionActivity.this, signInOptions);
 
         registerWithEmail = findViewById(R.id.register_with_email);
         registerWithGoogle = findViewById(R.id.register_with_google);
+        returnButton = findViewById(R.id.return_button);
+        ihavaAccount = findViewById(R.id.i_have_a_account);
 
 
         registerViewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
 
         clickRegisterWithEmail();
         clickRegisterWithGoogle();
+        clickReturn();
+        clickIHaveAAccount();
+    }
+
+    private void clickIHaveAAccount() {
+        ihavaAccount.setOnClickListener(view -> {
+            finish();
+        });
+    }
+
+    private void clickReturn() {
+        returnButton.setOnClickListener(view -> {
+            finish();
+        });
     }
 
     private void clickRegisterWithEmail() {
+        registerWithEmail.setOnClickListener(view -> {
+            Intent intent = new Intent(OptionActivity.this, TypeNameActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void clickRegisterWithGoogle() {
         registerWithGoogle.setOnClickListener(view -> {
             if (InternetHelper.isNetworkAvailable(OptionActivity.this)) {
                 Log.d("LoginActivity", "Network is available. Proceeding with Google sign-in.");
-                loginWithGoogle();
+                registerWithGoogle();
             } else {
                 Log.w("LoginActivity", "No Internet connection detected.");
                 Toast.makeText(OptionActivity.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
@@ -108,7 +128,7 @@ public class OptionActivity extends AppCompatActivity {
      * Sau khi người dùng chọn tài khoản, kết quả sẽ được xử lý trong phương thức
      * {@link #onActivityResult(int, int, Intent)}.
      */
-    private void loginWithGoogle() {
+    private void registerWithGoogle() {
         Intent loginWithGoogleIntent = client.getSignInIntent();
         startActivityForResult(loginWithGoogleIntent, RC_REGISTER_WITH_GOOGLE);
     }
@@ -148,7 +168,6 @@ public class OptionActivity extends AppCompatActivity {
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
 
-                String id = account.getIdToken();
                 registerViewModel.registerWithGoogle(
                         this,
                         new RegisterUseCase(new RegisterRepositoryImpl()),
@@ -157,6 +176,7 @@ public class OptionActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess() {
                                 Intent intent = new Intent(OptionActivity.this, RegisterResultActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 intent.putExtra("registerViewModel", registerViewModel);
                                 startActivity(intent);
                                 finish();
