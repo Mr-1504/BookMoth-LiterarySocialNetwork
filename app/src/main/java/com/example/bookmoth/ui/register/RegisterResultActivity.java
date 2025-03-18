@@ -14,10 +14,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.bookmoth.R;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
+import com.example.bookmoth.ui.profile.ProfileActivity;
 import com.example.bookmoth.ui.profile.SetAvatarActivity;
 import com.example.bookmoth.ui.viewmodel.ProfileViewModel;
 
@@ -51,7 +53,12 @@ public class RegisterResultActivity extends AppCompatActivity {
                 Glide.with(RegisterResultActivity.this)
                         .load(profile.getAvatar())
                         .placeholder(R.drawable.avatar)
+                        .error(R.drawable.avatar)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .override(200, 200)
+                        .thumbnail(0.1f)
                         .into(avatar);
+
                 new CountDownTimer(5000, 1000) {
                     public void onTick(long millisUntilFinished) {
                         countdown.setText(getString(R.string.continue_after) + " " + millisUntilFinished / 1000 + "s");

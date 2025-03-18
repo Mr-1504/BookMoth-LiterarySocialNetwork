@@ -270,7 +270,14 @@ public class RegisterViewModel extends ViewModel implements Serializable {
             }
         });
     }
-    
+
+    /**
+     *
+     * @param context
+     * @param registerUseCase
+     * @param idToken
+     * @param listener
+     */
     public void registerWithGoogle(
             Context context,
             RegisterUseCase registerUseCase,
@@ -304,7 +311,7 @@ public class RegisterViewModel extends ViewModel implements Serializable {
             }
         });
     }
-    
+
     /**
      * Interface lắng nghe sự kiện lấy OTP.
      */

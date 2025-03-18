@@ -8,9 +8,6 @@
     tools:context=".ui.profile.ProfileActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
@@ -32,7 +29,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/avatar"/>
+                    android:src="@drawable/cover" />
 
                 <!-- Avatar -->
                 <ImageView
@@ -42,7 +39,6 @@
                     android:layout_marginBottom="-30dp"
                     android:layout_gravity="bottom|center_horizontal"
                     android:background="@drawable/circle_background"
-                    android:borderWidth="20dp"
                     android:clipToOutline="true"
                     android:scaleType="centerCrop"
                     android:src="@drawable/avatar" />
@@ -61,17 +57,33 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <!-- Tên & số follower -->
-                <TextView
-                    android:id="@+id/txtName"
-                    android:layout_width="wrap_content"
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Trương Văn Minh"
-                    android:textSize="20sp"
-                    android:textStyle="bold"/>
+                    android:orientation="horizontal">
+                    <!-- Tên & số follower -->
+                    <TextView
+                        android:id="@+id/txtName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Trương Văn Minh"
+                        android:textSize="20sp"
+                        android:textStyle="bold"/>
+
+                    <!-- Tên & số follower -->
+                    <TextView
+                        android:id="@+id/txUsername"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="(Trương Văn Minh)"
+                        android:textSize="16sp"/>
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/txtFriends"
+                    android:id="@+id/txtFollower"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/follower"
