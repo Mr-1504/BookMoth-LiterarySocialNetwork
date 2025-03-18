@@ -14,12 +14,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.domain.model.Gender;
+import com.example.bookmoth.domain.model.profile.Gender;
 import com.example.bookmoth.ui.login.LoginActivity;
-import com.example.bookmoth.ui.viewmodel.registerViewModel.RegisterViewModel;
+import com.example.bookmoth.ui.viewmodel.register.RegisterViewModel;
 
 
 public class TypeGenderActivity extends AppCompatActivity {

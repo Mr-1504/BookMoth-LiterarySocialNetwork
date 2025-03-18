@@ -1,4 +1,4 @@
-package com.example.bookmoth.ui.viewmodel;
+package com.example.bookmoth.ui.viewmodel.login;
 
 import android.content.Context;
 

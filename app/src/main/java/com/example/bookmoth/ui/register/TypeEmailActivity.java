@@ -20,7 +20,7 @@ import com.example.bookmoth.R;
 import com.example.bookmoth.data.repository.register.RegisterRepositoryImpl;
 import com.example.bookmoth.domain.usecase.register.RegisterUseCase;
 import com.example.bookmoth.ui.login.LoginActivity;
-import com.example.bookmoth.ui.viewmodel.registerViewModel.RegisterViewModel;
+import com.example.bookmoth.ui.viewmodel.register.RegisterViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;

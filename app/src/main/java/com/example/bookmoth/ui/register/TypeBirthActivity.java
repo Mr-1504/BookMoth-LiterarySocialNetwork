@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.ui.login.LoginActivity;
-import com.example.bookmoth.ui.viewmodel.registerViewModel.RegisterViewModel;
+import com.example.bookmoth.ui.viewmodel.register.RegisterViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

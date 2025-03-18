@@ -18,12 +18,12 @@ import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.error.LoginFailedActivity;
 import com.example.bookmoth.ui.login.LoginActivity;
-import com.example.bookmoth.ui.viewmodel.ProfileViewModel;
+import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
     private static final int SPLASH_TIME_OUT = 1500;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +52,8 @@ public class SplashScreenActivity extends AppCompatActivity {
         profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
             @Override
             public void onProfileSuccess(Profile profile) {
-                Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
-                intent.putExtra("profile", profile);
+                Intent intent = new Intent(SplashScreenActivity.this, HomeActivity.class);
+                SecureStorage.saveToken("profileId", profile.getProfileId());
                 startActivity(intent);
                 finish();
             }

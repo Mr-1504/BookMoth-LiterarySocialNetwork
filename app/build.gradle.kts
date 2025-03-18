@@ -111,5 +111,6 @@ dependencies {
     // zoomview
     implementation("com.jsibbold:zoomage:1.3.1")
 
-    implementation(libs.material)
+    //recyclerview
+    implementation ("androidx.recyclerview:recyclerview:1.2.1")
 }

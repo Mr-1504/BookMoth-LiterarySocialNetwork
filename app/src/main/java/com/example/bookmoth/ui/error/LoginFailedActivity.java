@@ -14,12 +14,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
-import com.example.bookmoth.ui.home.MainActivity;
+import com.example.bookmoth.ui.home.HomeActivity;
 import com.example.bookmoth.ui.login.LoginActivity;
-import com.example.bookmoth.ui.viewmodel.ProfileViewModel;
+import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
 public class LoginFailedActivity extends AppCompatActivity {
 
@@ -55,7 +56,8 @@ public class LoginFailedActivity extends AppCompatActivity {
                         getString(R.string.connection_restored),
                         Toast.LENGTH_SHORT
                 ).show();
-                Intent intent = new Intent(LoginFailedActivity.this, MainActivity.class);
+                SecureStorage.saveToken("profileId", profile.getProfileId());
+                Intent intent = new Intent(LoginFailedActivity.this, HomeActivity.class);
                 startActivity(intent);
                 finish();
             }
