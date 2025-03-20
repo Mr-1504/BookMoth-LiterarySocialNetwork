@@ -1,9 +1,9 @@
 package com.example.bookmoth.domain.repository.payment;
 
-import com.example.bookmoth.domain.model.payment.ZaloPayTransToken;
+import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
 
 import retrofit2.Call;
 
 public interface PaymentRepository {
-    Call<ZaloPayTransToken> createOrder(long amount, String description, boolean transactionType);
+    Call<ZaloPayTokenResponse> createOrder(long amount, String description, boolean transactionType);
 }

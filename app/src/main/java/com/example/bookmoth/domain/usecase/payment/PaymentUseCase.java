@@ -1,6 +1,6 @@
 package com.example.bookmoth.domain.usecase.payment;
 
-import com.example.bookmoth.domain.model.payment.ZaloPayTransToken;
+import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
 import com.example.bookmoth.domain.repository.payment.PaymentRepository;
 
 import retrofit2.Call;
@@ -12,7 +12,7 @@ public class PaymentUseCase {
         this.paymentRepository = paymentRepository;
     }
 
-    public Call<ZaloPayTransToken> createOrder(long amount, String description, boolean transactionType) {
+    public Call<ZaloPayTokenResponse> createOrder(long amount, String description, boolean transactionType) {
         return paymentRepository.createOrder(amount, description, transactionType);
     }
 }

@@ -1,9 +1,9 @@
 package com.example.bookmoth.data.repository.payment;
 
 import com.example.bookmoth.data.model.payment.CreateOrderRequest;
+import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
 import com.example.bookmoth.data.remote.payment.PaymentApiService;
 import com.example.bookmoth.data.remote.utils.RetrofitClient;
-import com.example.bookmoth.domain.model.payment.ZaloPayTransToken;
 import com.example.bookmoth.domain.repository.payment.PaymentRepository;
 
 import retrofit2.Call;
@@ -16,7 +16,7 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     }
 
     @Override
-    public Call<ZaloPayTransToken> createOrder(long amount, String description, boolean transactionType) {
+    public Call<ZaloPayTokenResponse> createOrder(long amount, String description, boolean transactionType) {
         return paymentApiService.createOrder(new CreateOrderRequest(
             amount,
             description,
