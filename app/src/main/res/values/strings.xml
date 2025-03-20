@@ -77,5 +77,6 @@
     <string name="skip">Bỏ qua</string>
     <string name="your_session_has_expired">Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!</string>
     <string name="connection_restored">Đã khôi phục kết nối</string>
+    <string name="follower">người theo dõi</string>
     <string name="error_get_post">"Lỗi lấy bài viết: "</string>
 </resources>

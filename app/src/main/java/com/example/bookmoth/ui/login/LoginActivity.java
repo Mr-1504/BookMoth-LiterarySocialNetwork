@@ -20,7 +20,7 @@ import com.example.bookmoth.data.repository.login.LoginRepositoryImpl;
 import com.example.bookmoth.databinding.ActivityLoginBinding;
 import com.example.bookmoth.core.utils.InternetHelper;
 import com.example.bookmoth.domain.usecase.login.LoginUseCase;
-import com.example.bookmoth.ui.payment.PayActivity;
+import com.example.bookmoth.ui.home.HomeActivity;
 import com.example.bookmoth.ui.register.OptionActivity;
 import com.example.bookmoth.ui.viewmodel.login.LoginViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             loginViewModel.login(this, mail, pass, new LoginViewModel.OnLoginListener() {
                 @Override
                 public void onSuccess() {
-                    Intent intent = new Intent(LoginActivity.this, PayActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                     startActivity(intent);
                     finish();
                 }
@@ -171,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
                 loginViewModel.loginWithGoogle(this, account.getIdToken(), new LoginViewModel.OnLoginListener() {
                     @Override
                     public void onSuccess() {
-                        Intent intent = new Intent(LoginActivity.this, PayActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);
                         finish();
                     }
