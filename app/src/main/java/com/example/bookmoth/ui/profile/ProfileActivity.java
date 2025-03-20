@@ -16,7 +16,7 @@ import com.example.bookmoth.R;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
-import com.example.bookmoth.ui.viewmodel.ProfileViewModel;
+import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
 public class ProfileActivity extends AppCompatActivity {
 

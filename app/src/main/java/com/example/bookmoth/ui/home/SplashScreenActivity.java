@@ -67,7 +67,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
             @Override
             public void onProfileSuccess(Profile profile) {
-                Intent intent = new Intent(SplashScreenActivity.this, PayActivity.class);
+                Intent intent = new Intent(SplashScreenActivity.this, HomeActivity.class);
                 SecureStorage.saveToken("profileId", profile.getProfileId());
                 startActivity(intent);
                 getPermission();

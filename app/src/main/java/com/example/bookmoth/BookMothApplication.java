@@ -13,7 +13,6 @@ public class BookMothApplication extends Application {
         super.onCreate();
         try {
             SecureStorage.init(this);
-            SecureStorage.clearToken();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

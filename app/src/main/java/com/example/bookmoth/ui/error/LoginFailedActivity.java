@@ -18,6 +18,7 @@ import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
+import com.example.bookmoth.ui.home.HomeActivity;
 import com.example.bookmoth.ui.login.LoginActivity;
 import com.example.bookmoth.ui.payment.PayActivity;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
@@ -77,7 +78,7 @@ public class LoginFailedActivity extends AppCompatActivity {
 
                 SecureStorage.saveToken("profileId", profile.getProfileId());
 
-                startActivity(new Intent(LoginFailedActivity.this, PayActivity.class));
+                startActivity(new Intent(LoginFailedActivity.this, HomeActivity.class));
                 finish();
             }
 
