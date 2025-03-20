@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation("com.google.firebase:firebase-messaging:24.1.0")
 
     // Android libraries
     implementation(libs.appcompat)
@@ -111,5 +112,6 @@ dependencies {
     // zoomview
     implementation("com.jsibbold:zoomage:1.3.1")
 
-    implementation(libs.material)
+    //recyclerview
+    implementation ("androidx.recyclerview:recyclerview:1.2.1")
 }

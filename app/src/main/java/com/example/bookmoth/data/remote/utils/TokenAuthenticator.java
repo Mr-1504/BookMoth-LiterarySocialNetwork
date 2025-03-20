@@ -1,6 +1,7 @@
 package com.example.bookmoth.data.remote.utils;
 
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.model.login.RefreshTokenRequest;
 import com.example.bookmoth.data.model.register.TokenResponse;
 import com.example.bookmoth.data.remote.login.LoginApiService;
 import com.example.bookmoth.domain.model.login.Token;
@@ -14,9 +15,18 @@ import okhttp3.Route;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Lớp {@code TokenAuthenticator} giúp xử lý việc làm mới (refresh) token JWT khi hết hạn.
+ * Nếu token đã hết hạn, nó sẽ tự động gửi request làm mới token và cập nhật token mới vào header của request.
+ */
 public class TokenAuthenticator implements Authenticator {
     private final LoginApiService apiService;
 
+    /**
+     * Khởi tạo TokenAuthenticator với URL của server để gọi API refresh token.
+     *
+     * @param baseUrl URL của server ASP.NET.
+     */
     public TokenAuthenticator(String baseUrl) {
         apiService = new Retrofit.Builder()
                 .baseUrl(baseUrl)
@@ -25,12 +35,22 @@ public class TokenAuthenticator implements Authenticator {
                 .create(LoginApiService.class);
     }
 
+    /**
+     * Xử lý khi request bị lỗi 401 (Unauthorized), thử làm mới token và gửi lại request.
+     *
+     * @param route    Route của request.
+     * @param response Response lỗi trả về từ server.
+     * @return Request mới với token đã cập nhật hoặc {@code null} nếu không thể làm mới token.
+     * @throws IOException nếu có lỗi khi gọi API refresh token.
+     */
     @Override
     public Request authenticate(Route route, Response response) throws IOException {
         String refreshToken = SecureStorage.getToken("refresh_token");
         if (refreshToken == null) return null;
 
-        retrofit2.Response<TokenResponse> tokenResponse = apiService.refreshToken(refreshToken).execute();
+        retrofit2.Response<TokenResponse> tokenResponse = apiService.refreshToken(
+                new RefreshTokenRequest(refreshToken)
+        ).execute();
 
         if (tokenResponse.isSuccessful() && tokenResponse.body() != null) {
             Token token = tokenResponse.body().getData();

@@ -21,7 +21,7 @@ import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.profile.ProfileActivity;
 import com.example.bookmoth.ui.profile.SetAvatarActivity;
-import com.example.bookmoth.ui.viewmodel.ProfileViewModel;
+import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
 public class RegisterResultActivity extends AppCompatActivity {
 

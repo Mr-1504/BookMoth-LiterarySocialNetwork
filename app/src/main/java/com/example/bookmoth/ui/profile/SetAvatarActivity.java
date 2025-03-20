@@ -10,7 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.ui.home.MainActivity;
+import com.example.bookmoth.ui.home.HomeActivity;
 
 public class SetAvatarActivity extends AppCompatActivity {
 
@@ -27,7 +27,7 @@ public class SetAvatarActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.btnSkip).setOnClickListener(view -> {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             finish();
         });
