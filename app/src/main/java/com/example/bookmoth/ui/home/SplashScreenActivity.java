@@ -18,6 +18,7 @@ import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.error.LoginFailedActivity;
 import com.example.bookmoth.ui.login.LoginActivity;
+import com.example.bookmoth.ui.payment.PayActivity;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -52,7 +53,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
             @Override
             public void onProfileSuccess(Profile profile) {
-                Intent intent = new Intent(SplashScreenActivity.this, HomeActivity.class);
+                Intent intent = new Intent(SplashScreenActivity.this, PayActivity.class);
                 SecureStorage.saveToken("profileId", profile.getProfileId());
                 startActivity(intent);
                 finish();

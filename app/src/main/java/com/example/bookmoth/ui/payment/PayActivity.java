@@ -64,6 +64,27 @@ public class PayActivity extends AppCompatActivity {
                         }
                     }
             );
+
+//            new Thread(() -> {
+//                try {
+//                    JSONObject data = new CreateOrder().createOrder(soluongString, "Minh", "MUA_KIM_CUONG_FREE_FIRE");
+//                    String code = data.getString("returncode");
+//                    Log.i("Successed", "API Response: " + data);
+//
+//                    if (code.equals("1")) {
+//                        String token = data.optString("zptranstoken", null);
+//                        if (token != null) {
+//                            runOnUiThread(() -> startZaloPayPayment(token));
+//                        } else {
+//                            Log.e("Error", "Token is null");
+//                        }
+//                    } else {
+//                        Log.e("Error", "Invalid return code: " + code);
+//                    }
+//                } catch (Exception e) {
+//                    Log.e("Error", "Error creating order", e);
+//                }
+//            }).start();
         });
     }
 

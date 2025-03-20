@@ -20,6 +20,7 @@ import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.home.HomeActivity;
 import com.example.bookmoth.ui.login.LoginActivity;
+import com.example.bookmoth.ui.payment.PayActivity;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
 public class LoginFailedActivity extends AppCompatActivity {
@@ -57,7 +58,7 @@ public class LoginFailedActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT
                 ).show();
                 SecureStorage.saveToken("profileId", profile.getProfileId());
-                Intent intent = new Intent(LoginFailedActivity.this, HomeActivity.class);
+                Intent intent = new Intent(LoginFailedActivity.this, PayActivity.class);
                 startActivity(intent);
                 finish();
             }
