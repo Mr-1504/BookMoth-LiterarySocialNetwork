@@ -6,4 +6,5 @@
     </style>
 
     <style name="Theme.BookMoth" parent="Base.Theme.BookMoth" />
+
 </resources>
