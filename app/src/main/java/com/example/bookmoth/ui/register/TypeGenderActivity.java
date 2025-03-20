@@ -20,7 +20,10 @@ import com.example.bookmoth.domain.model.profile.Gender;
 import com.example.bookmoth.ui.login.LoginActivity;
 import com.example.bookmoth.ui.viewmodel.register.RegisterViewModel;
 
-
+/**
+ * Hoạt động (Activity) cho việc chọn giới tính trong quá trình đăng ký.
+ * Người dùng có thể chọn giới tính của mình, sau đó chuyển sang bước tiếp theo.
+ */
 public class TypeGenderActivity extends AppCompatActivity {
 
     private Button returnButton, iHaveAAccountButton, nextButton;
@@ -39,6 +42,17 @@ public class TypeGenderActivity extends AppCompatActivity {
             return insets;
         });
 
+        init();
+
+        clickNext();
+        clickIHaveAAccount();
+        clickReturn();
+    }
+
+    /**
+     * Khởi tạo các thành phần giao diện và lấy dữ liệu từ Intent nếu có.
+     */
+    private void init() {
         returnButton = findViewById(R.id.return_button);
         iHaveAAccountButton = findViewById(R.id.i_have_a_account);
         nextButton = findViewById(R.id.next_for_register);
@@ -49,20 +63,20 @@ public class TypeGenderActivity extends AppCompatActivity {
                 new ViewModelProvider(this).get(RegisterViewModel.class) :
                 (RegisterViewModel) getIntent().getSerializableExtra("registerViewModel");
 
-
-        clickNext();
-        clickIHaveAAccount();
-        clickReturn();
     }
 
-    public RegisterViewModel getSharedViewModel() {
-        return registerViewModel;
-    }
-
+    /**
+     * Xử lý sự kiện khi nhấn nút "Quay lại".
+     * Kết thúc Activity hiện tại và quay lại màn hình trước đó.
+     */
     private void clickReturn() {
         returnButton.setOnClickListener(view -> finish());
     }
 
+    /**
+     * Xử lý sự kiện khi nhấn nút "Tôi đã có tài khoản".
+     * Chuyển hướng đến màn hình đăng nhập và xóa hết các Activity trước đó.
+     */
     private void clickIHaveAAccount() {
         iHaveAAccountButton.setOnClickListener(view -> {
             Intent intent = new Intent(TypeGenderActivity.this, LoginActivity.class);
@@ -71,6 +85,11 @@ public class TypeGenderActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Xử lý sự kiện khi nhấn nút "Tiếp theo".
+     * Nếu người dùng chưa chọn giới tính, hiển thị cảnh báo.
+     * Nếu đã chọn, lưu giới tính vào ViewModel và chuyển sang màn hình nhập email.
+     */
     private void clickNext() {
         nextButton.setOnClickListener(view -> {
             int selectedId = gender.getCheckedRadioButtonId();
@@ -88,7 +107,12 @@ public class TypeGenderActivity extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * Xác định giới tính dựa trên RadioButton được chọn.
+     *
+     * @param selectedId ID của RadioButton được chọn.
+     * @return Giới tính tương ứng (`Gender.MALE`, `Gender.FEMALE`, hoặc `Gender.OTHER`).
+     */
     private Gender getSelectedGender(int selectedId) {
         if (selectedId == R.id.radio_male) {
             return Gender.MALE;

@@ -29,6 +29,10 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
 
+
+/**
+ * Lớp OptionActivity cung cấp các tùy chọn đăng ký tài khoản như đăng ký bằng email hoặc Google.
+ */
 public class OptionActivity extends AppCompatActivity {
 
     private static final int RC_REGISTER_WITH_GOOGLE = 100;
@@ -37,6 +41,7 @@ public class OptionActivity extends AppCompatActivity {
     private GoogleSignInOptions signInOptions;
     private GoogleSignInClient client;
     private RegisterViewModel registerViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +53,17 @@ public class OptionActivity extends AppCompatActivity {
             return insets;
         });
 
+        init();
+        clickRegisterWithEmail();
+        clickRegisterWithGoogle();
+        clickReturn();
+        clickIHaveAAccount();
+    }
+
+    /**
+     * Khởi tạo các thành phần UI, thiết lập Google Sign-In và ViewModel.
+     */
+    private void init() {
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.WEB_CLIENT_ID))
                 .requestEmail()
@@ -62,27 +78,33 @@ public class OptionActivity extends AppCompatActivity {
         returnButton = findViewById(R.id.return_button);
         ihavaAccount = findViewById(R.id.i_have_a_account);
 
-
         registerViewModel = new ViewModelProvider(this).get(RegisterViewModel.class);
-
-        clickRegisterWithEmail();
-        clickRegisterWithGoogle();
-        clickReturn();
-        clickIHaveAAccount();
     }
 
+    /**
+     * Xử lý sự kiện khi người dùng nhấn vào nút "Tôi đã có tài khoản".
+     * Đóng Activity hiện tại.
+     */
     private void clickIHaveAAccount() {
         ihavaAccount.setOnClickListener(view -> {
             finish();
         });
     }
 
+    /**
+     * Xử lý sự kiện khi người dùng nhấn vào nút "Trở về".
+     * Đóng Activity hiện tại.
+     */
     private void clickReturn() {
         returnButton.setOnClickListener(view -> {
             finish();
         });
     }
 
+    /**
+     * Xử lý sự kiện khi người dùng chọn đăng ký bằng email.
+     * Điều hướng đến màn hình nhập tên (TypeNameActivity).
+     */
     private void clickRegisterWithEmail() {
         registerWithEmail.setOnClickListener(view -> {
             Intent intent = new Intent(OptionActivity.this, TypeNameActivity.class);
@@ -90,6 +112,10 @@ public class OptionActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Xử lý sự kiện khi người dùng chọn đăng ký bằng Google.
+     * Kiểm tra kết nối internet trước khi thực hiện đăng nhập Google.
+     */
     private void clickRegisterWithGoogle() {
         registerWithGoogle.setOnClickListener(view -> {
             if (InternetHelper.isNetworkAvailable(OptionActivity.this)) {
@@ -103,30 +129,7 @@ public class OptionActivity extends AppCompatActivity {
     }
 
     /**
-     * Bắt đầu quá trình đăng nhập bằng Google.
-     * <p>
-     * Phương thức này sử dụng đối tượng GoogleSignInClient để tạo một intent,
-     * từ đó khởi chạy giao diện đăng nhập của Google, cho phép người dùng chọn tài khoản Google
-     * để xác thực. Kết quả của quá trình đăng nhập sẽ được trả về trong phương thức
-     * {@link #onActivityResult(int, int, Intent)}.
-     * <p>
-     * Điều kiện tiên quyết:
-     * - Đối tượng {@link com.google.android.gms.auth.api.signin.GoogleSignInClient} (client)
-     * phải được khởi tạo đúng cách với các thông tin cần thiết (ví dụ: email, ID token, v.v.).
-     * - Một mã yêu cầu hợp lệ (RC_LOGIN) phải được định nghĩa để xác định kết quả đăng nhập.
-     * <p>
-     * Ví dụ sử dụng:
-     * <pre>
-     * private static final int RC_LOGIN = 1001;
-     *
-     * private void loginWithGoogle() {
-     *     Intent loginWithGoogleIntent = client.getSignInIntent();
-     *     startActivityForResult(loginWithGoogleIntent, RC_LOGIN);
-     * }
-     * </pre>
-     * <p>
-     * Sau khi người dùng chọn tài khoản, kết quả sẽ được xử lý trong phương thức
-     * {@link #onActivityResult(int, int, Intent)}.
+     * Khởi động quá trình đăng nhập với Google.
      */
     private void registerWithGoogle() {
         Intent loginWithGoogleIntent = client.getSignInIntent();
@@ -134,30 +137,11 @@ public class OptionActivity extends AppCompatActivity {
     }
 
     /**
-     * Xử lý kết quả trả về từ các Activity khác. Hàm được gọi sau khi một Activity kết thúc và trả dữ liệu về.<br>
+     * Xử lý kết quả trả về từ quá trình đăng nhập bằng Google.
      *
-     * @param requestCode Mã yêu cầu (request code) được gửi khi gọi startActivityForResult.
-     *                    Dùng để xác định yêu cầu nào trả về kết quả.
-     * @param resultCode  Mã kết quả (result code) trả về từ Activity, thường là RESULT_OK hoặc RESULT_CANCELED.
-     * @param data        Dữ liệu trả về từ Activity dưới dạng Intent, có thể chứa các giá trị cần thiết.
-     *                    <p>
-     *                    Trong trường hợp này:<br>
-     *                    - Hàm xử lý kết quả đăng nhập từ Google Sign-In.<br>
-     *                    - Nếu `requestCode` trùng với `RC_SIGN_IN`, kiểm tra kết quả đăng nhập:<br>
-     *                    - Lấy thông tin tài khoản Google từ `data` và thực hiện xác thực Firebase thông qua `firebaseAuth()`.<br>
-     *                    - Nếu xảy ra lỗi, hiển thị thông báo lỗi và ghi log chi tiết.<br>
-     *                    <p>
-     *                    Các bước xử lý cụ thể:<br>
-     *                    1. Kiểm tra `requestCode` để xác định yêu cầu nào trả về kết quả.<br>
-     *                    2. Sử dụng `GoogleSignIn.getSignedInAccountFromIntent` để lấy thông tin tài khoản Google từ Intent.<br>
-     *                    3. Nếu lấy thành công tài khoản, gọi hàm `firebaseAuth()` để xác thực với Firebase.<br>
-     *                    4. Nếu xảy ra lỗi:<br>
-     *                    - Hiển thị lỗi dưới dạng Toast cho người dùng.<br>
-     *                    - Ghi log lỗi chi tiết để dễ dàng kiểm tra trong quá trình phát triển.<br>
-     *                    <p>
-     *                    Lưu ý:<br>
-     *                    - `RC_SIGN_IN` là mã yêu cầu cho quá trình đăng nhập Google Sign-In.<br>
-     *                    - `firebaseAuth()` là hàm xử lý xác thực người dùng với Firebase dựa trên mã thông báo (ID token) nhận được từ tài khoản Google.
+     * @param requestCode Mã yêu cầu để xác định kết quả trả về từ Google Sign-In.
+     * @param resultCode  Mã kết quả của Activity (RESULT_OK hoặc RESULT_CANCELED).
+     * @param data        Dữ liệu Intent chứa thông tin tài khoản Google.
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -196,6 +180,11 @@ public class OptionActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Xử lý lỗi khi đăng nhập bằng Google thất bại.
+     *
+     * @param e Đối tượng ApiException chứa thông tin lỗi.
+     */
     private void handleGoogleSignInError(ApiException e) {
         int errorCode = e.getStatusCode();
         String errorMessage;

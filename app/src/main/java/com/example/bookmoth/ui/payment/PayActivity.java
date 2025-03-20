@@ -25,6 +25,11 @@ import vn.zalopay.sdk.ZaloPayError;
 import vn.zalopay.sdk.ZaloPaySDK;
 import vn.zalopay.sdk.listeners.PayOrderListener;
 
+
+/**
+ * Lớp PayActivity chịu trách nhiệm xử lý giao diện và logic thanh toán qua ZaloPay.
+ * Hỗ trợ khởi tạo đơn hàng và thực hiện thanh toán trực tuyến.
+ */
 public class PayActivity extends AppCompatActivity {
 
     private Button confirm;
@@ -47,6 +52,13 @@ public class PayActivity extends AppCompatActivity {
         amount = findViewById(R.id.amount);
         price = findViewById(R.id.price);
 
+        clickCreateOrder();
+    }
+
+    /**
+     * Thiết lập sự kiện click cho nút xác nhận để tạo đơn hàng và tiến hành thanh toán.
+     */
+    private void clickCreateOrder() {
         confirm.setOnClickListener(view -> {
             String soluongString = amount.getText().toString().equals("") ? price.getText().toString() : amount.getText().toString();
             long soluong = Long.parseLong(soluongString);
@@ -64,30 +76,15 @@ public class PayActivity extends AppCompatActivity {
                         }
                     }
             );
-
-//            new Thread(() -> {
-//                try {
-//                    JSONObject data = new CreateOrder().createOrder(soluongString, "Minh", "MUA_KIM_CUONG_FREE_FIRE");
-//                    String code = data.getString("returncode");
-//                    Log.i("Successed", "API Response: " + data);
-//
-//                    if (code.equals("1")) {
-//                        String token = data.optString("zptranstoken", null);
-//                        if (token != null) {
-//                            runOnUiThread(() -> startZaloPayPayment(token));
-//                        } else {
-//                            Log.e("Error", "Token is null");
-//                        }
-//                    } else {
-//                        Log.e("Error", "Invalid return code: " + code);
-//                    }
-//                } catch (Exception e) {
-//                    Log.e("Error", "Error creating order", e);
-//                }
-//            }).start();
         });
     }
 
+    /**
+     * Bắt đầu quá trình thanh toán qua ZaloPay.
+     * Khi có token giao dịch từ API, phương thức này sẽ gọi SDK của ZaloPay để thực hiện thanh toán.
+     *
+     * @param token Mã giao dịch do ZaloPay cung cấp.
+     */
     private void startZaloPayPayment(String token) {
         ZaloPaySDK.getInstance().payOrder(PayActivity.this, token, "pay_order://app", new PayOrderListener() {
             @Override
@@ -112,6 +109,11 @@ public class PayActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Xử lý Intent mới được gửi đến Activity (sử dụng cho kết quả thanh toán từ ZaloPay).
+     *
+     * @param intent Đối tượng Intent chứa dữ liệu phản hồi từ ZaloPay.
+     */
     @Override
     public void onNewIntent(Intent intent) {
         System.out.println("New Intent");

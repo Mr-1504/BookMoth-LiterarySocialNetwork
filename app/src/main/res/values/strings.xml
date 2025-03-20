@@ -30,7 +30,7 @@
     <string name="what_your_gender">Giới tính của bạn?</string>
     <string name="warning_name">Vui lòng nhập thông tin hợp lệ</string>
     <string name="warning_gender">Vui lòng chọn thông tin!</string>
-    <string name="Invalid_date_of_birth">Ngày sinh không hợp lệ. Vui lòng chọn lại!</string>
+    <string name="Invalid_date_of_birth">Người dùng cần trên 12 tuổi!</string>
     <string name="setDate">Chọn ngày</string>
     <string name="forgot_password">Quên mật khẩu?</string>
     <string name="loginWithEmail">Đăng nhập</string>

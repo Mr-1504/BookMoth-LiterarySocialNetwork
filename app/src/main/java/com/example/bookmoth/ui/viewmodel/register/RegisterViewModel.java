@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.lifecycle.ViewModel;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.services.MyFirebaseMessagingService;
 import com.example.bookmoth.core.utils.GenderUtils;
 import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.model.register.TokenResponse;
@@ -258,6 +259,9 @@ public class RegisterViewModel extends ViewModel implements Serializable {
                     Token token = response.body().getData();
                     SecureStorage.saveToken("jwt_token", token.getJwtToken());
                     SecureStorage.saveToken("refresh_token", token.getRefreshToken());
+
+                    new MyFirebaseMessagingService().updateTokenToServer(context);
+
                     listener.onSuccess();
                 } else {
                     listener.onError(context.getString(R.string.undefined_error));
@@ -284,6 +288,9 @@ public class RegisterViewModel extends ViewModel implements Serializable {
                     Token token = response.body().getData();
                     SecureStorage.saveToken("jwt_token", token.getJwtToken());
                     SecureStorage.saveToken("refresh_token", token.getRefreshToken());
+
+                    new MyFirebaseMessagingService().updateTokenToServer(context);
+
                     listener.onSuccess();
                 } else if (response.code() == 400) {
                     listener.onError(context.getString(R.string.invalid_email));
