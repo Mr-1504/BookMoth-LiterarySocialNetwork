@@ -117,7 +117,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param title   Tiêu đề của thông báo.
      * @param message Nội dung của thông báo.
      */
-    public void showNotificationn(String title, String message) {
+    public void showNotification(String title, String message) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -135,44 +135,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationManagerCompat manager = NotificationManagerCompat.from(this);
         manager.notify(1, builder.build());
     }
-    private void showNotification(String title, String message) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                Log.e("FCM", "Chưa có quyền gửi thông báo!");
-                return;
-            }
-        }
-
-        String GROUP_KEY = "com.example.bookmoth.NOTIFICATION_GROUP";
-
-        // Tạo thông báo con (individual notification)
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "FCM_CHANNEL")
-                .setSmallIcon(R.drawable.ic_app)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setGroup(GROUP_KEY)  // Thêm vô nhóm
-                .setAutoCancel(true);
-
-        // Tạo thông báo tổng hợp (summary notification)
-        NotificationCompat.Builder summaryBuilder = new NotificationCompat.Builder(this, "FCM_CHANNEL")
-                .setSmallIcon(R.drawable.ic_app)
-                .setContentTitle("Tóm tắt thông báo")
-                .setGroup(GROUP_KEY)
-                .setGroupSummary(true) // Đây là thông báo tổng hợp
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true);
-
-        NotificationManagerCompat manager = NotificationManagerCompat.from(this);
-
-        // Dùng ID khác nhau cho mỗi thông báo con
-        int notificationId = (int) System.currentTimeMillis();
-        manager.notify(notificationId, builder.build());
-
-        // Luôn cập nhật thông báo tổng hợp
-        manager.notify(0, summaryBuilder.build());
-    }
 
 
     /**
@@ -181,7 +143,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param context Context của ứng dụng.
      * @return ID của thiết bị.
      */
-    private static String getDeviceId(Context context) {
+    public static String getDeviceId(Context context) {
         return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
