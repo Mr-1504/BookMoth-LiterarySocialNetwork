@@ -40,6 +40,14 @@ public class SetPasswordActivity extends AppCompatActivity {
             return insets;
         });
 
+        init();
+
+        submitPassword();
+        clickIHaveAAccount();
+        clickReturn();
+    }
+
+    private void init(){
         returnButton = findViewById(R.id.return_button);
         nextButton = findViewById(R.id.next_for_register);
         iHaveAccountButton = findViewById(R.id.i_have_a_account);
@@ -56,10 +64,6 @@ public class SetPasswordActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.loading));
         progressDialog.setCancelable(false);
-
-        submitPassword();
-        clickIHaveAAccount();
-        clickReturn();
     }
 
     private void clickReturn() {
@@ -106,7 +110,6 @@ public class SetPasswordActivity extends AppCompatActivity {
                 confirmPasswordEditText.requestFocus();
                 return;
             }
-
 
             warningText.setVisibility(View.GONE);
             getOtp();

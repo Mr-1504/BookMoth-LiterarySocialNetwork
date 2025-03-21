@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation("com.google.firebase:firebase-messaging:24.1.0")
 
     // Android libraries
     implementation(libs.appcompat)

@@ -25,6 +25,10 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
 
+/**
+ * Hoạt động (Activity) cho việc nhập email trong quá trình đăng ký tài khoản.
+ * Kiểm tra hợp lệ của email và xác minh xem email đã tồn tại hay chưa trước khi chuyển tiếp.
+ */
 public class TypeEmailActivity extends AppCompatActivity {
 
     private TextInputEditText email;
@@ -44,6 +48,17 @@ public class TypeEmailActivity extends AppCompatActivity {
             return insets;
         });
 
+        init();
+
+        clickNext();
+        clickReturn();
+        clickIHaveAAccount();
+    }
+
+    /**
+     * Khởi tạo các thành phần giao diện và lấy dữ liệu từ Intent nếu có.
+     */
+    private void init() {
         email = findViewById(R.id.edtEmail);
         warningEmail = findViewById(R.id.tvWarning);
         nextButton = findViewById(R.id.next_for_register);
@@ -53,17 +68,21 @@ public class TypeEmailActivity extends AppCompatActivity {
         registerViewModel = getIntent().getSerializableExtra("registerViewModel") == null ?
                 new ViewModelProvider(this).get(RegisterViewModel.class) :
                 (RegisterViewModel) getIntent().getSerializableExtra("registerViewModel");
-
-
-        clickNext();
-        clickReturn();
-        clickIHaveAAccount();
     }
 
+
+    /**
+     * Xử lý sự kiện khi nhấn nút "Quay lại".
+     * Kết thúc Activity hiện tại và quay lại màn hình trước đó.
+     */
     private void clickReturn() {
         returnButton.setOnClickListener(v -> finish());
     }
 
+    /**
+     * Xử lý sự kiện khi nhấn nút "Tôi đã có tài khoản".
+     * Chuyển hướng đến màn hình đăng nhập và xóa hết các Activity trước đó.
+     */
     private void clickIHaveAAccount() {
         iHaveAAccountButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -72,6 +91,10 @@ public class TypeEmailActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Xử lý sự kiện khi nhấn nút "Tiếp theo".
+     * Kiểm tra email hợp lệ trước khi gửi yêu cầu kiểm tra email đã tồn tại.
+     */
     private void clickNext() {
         nextButton.setOnClickListener(view -> {
             String emailText = Objects.requireNonNull(email.getText()).toString().trim();
@@ -88,6 +111,11 @@ public class TypeEmailActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Kiểm tra email có tồn tại trong hệ thống hay không.
+     *
+     * @param email Địa chỉ email cần kiểm tra.
+     */
     private void checkEmail(String email) {
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.loading));
@@ -117,6 +145,12 @@ public class TypeEmailActivity extends AppCompatActivity {
                 }
         );
     }
+
+    /**
+     * Hiển thị hộp thoại lỗi khi có vấn đề về kết nối hoặc lỗi hệ thống.
+     *
+     * @param message Nội dung lỗi cần hiển thị.
+     */
     private void showErrorDialog(String message) {
         warningEmail.setVisibility(View.GONE);
         new AlertDialog.Builder(this)

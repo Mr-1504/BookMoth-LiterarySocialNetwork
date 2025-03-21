@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.lifecycle.ViewModel;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.services.MyFirebaseMessagingService;
 import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.model.register.TokenResponse;
 import com.example.bookmoth.domain.model.login.Token;
@@ -20,6 +21,7 @@ import retrofit2.Response;
 public class LoginViewModel extends ViewModel {
 
     private LoginUseCase loginUseCase;
+    private MyFirebaseMessagingService service;
 
     /**
      * Khởi tạo LoginViewModel với LoginUseCase.
@@ -28,6 +30,7 @@ public class LoginViewModel extends ViewModel {
      */
     public LoginViewModel(LoginUseCase loginUseCase) {
         this.loginUseCase = loginUseCase;
+        service = new MyFirebaseMessagingService();
     }
 
     /**
@@ -46,6 +49,9 @@ public class LoginViewModel extends ViewModel {
                     Token token = response.body().getData();
                     SecureStorage.saveToken("jwt_token", token.getJwtToken());
                     SecureStorage.saveToken("refresh_token", token.getRefreshToken());
+
+                    service.updateTokenToServer(context);
+
                     listener.onSuccess();
                 } else if (response.code() == 401) {
                     listener.onError(context.getString(R.string.invalid_password));
@@ -82,6 +88,9 @@ public class LoginViewModel extends ViewModel {
                     Token token = response.body().getData();
                     SecureStorage.saveToken("jwt_token", token.getJwtToken());
                     SecureStorage.saveToken("refresh_token", token.getRefreshToken());
+
+                    service.updateTokenToServer(context);
+
                     listener.onSuccess();
                 } else if (response.code() == 401) {
                     listener.onError(context.getString(R.string.invalid_google_account));

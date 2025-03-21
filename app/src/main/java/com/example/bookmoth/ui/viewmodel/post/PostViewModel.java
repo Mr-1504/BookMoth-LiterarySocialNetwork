@@ -90,7 +90,7 @@ public class PostViewModel {
                 } else {
                     Log.e("Supabase", "Lỗi lấy bài đăng: " + response.errorBody());
                     listener.onGetPostFailure(
-                            "Lỗi lấy bài đăng: " + response.errorBody().toString()
+                            "Lỗi lấy bài đăng"
                     );
                 }
             }

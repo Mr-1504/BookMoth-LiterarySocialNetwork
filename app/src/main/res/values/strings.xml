@@ -30,7 +30,7 @@
     <string name="what_your_gender">Giới tính của bạn?</string>
     <string name="warning_name">Vui lòng nhập thông tin hợp lệ</string>
     <string name="warning_gender">Vui lòng chọn thông tin!</string>
-    <string name="Invalid_date_of_birth">Ngày sinh không hợp lệ. Vui lòng chọn lại!</string>
+    <string name="Invalid_date_of_birth">Người dùng cần trên 12 tuổi!</string>
     <string name="setDate">Chọn ngày</string>
     <string name="forgot_password">Quên mật khẩu?</string>
     <string name="loginWithEmail">Đăng nhập</string>
@@ -77,5 +77,6 @@
     <string name="skip">Bỏ qua</string>
     <string name="your_session_has_expired">Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!</string>
     <string name="connection_restored">Đã khôi phục kết nối</string>
+    <string name="follower">người theo dõi</string>
     <string name="error_get_post">"Lỗi lấy bài viết: "</string>
 </resources>

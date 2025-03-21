@@ -32,6 +32,10 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 
+/**
+ * Lớp LoginActivity chịu trách nhiệm xử lý giao diện đăng nhập của ứng dụng.
+ * Hỗ trợ đăng nhập bằng email/mật khẩu và đăng nhập bằng tài khoản Google.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private Button loginWithEmail;
@@ -70,6 +74,10 @@ public class LoginActivity extends AppCompatActivity {
         clickRegister();
     }
 
+    /**
+     * Thiết lập sự kiện cho nút "Đăng ký".
+     * Khi người dùng nhấn vào nút này, màn hình đăng ký sẽ được mở ra.
+     */
     private void clickRegister() {
         register.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, OptionActivity.class);
@@ -77,6 +85,10 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Thiết lập sự kiện cho nút "Quên mật khẩu".
+     * Hiện tại phương thức này bị tạm thời vô hiệu hóa.
+     */
     private void clickForgotPassword() {
 //        forgotPassword.setOnClickListener(v -> {
 //            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
@@ -84,6 +96,11 @@ public class LoginActivity extends AppCompatActivity {
 //        });
     }
 
+    /**
+     * Thiết lập sự kiện đăng nhập bằng email và mật khẩu.
+     * Khi nhấn vào nút đăng nhập, phương thức sẽ lấy dữ liệu từ ô nhập liệu,
+     * sau đó gửi yêu cầu xác thực qua `LoginViewModel`.
+     */
     private void clickLoginWithEmail() {
         loginWithEmail.setOnClickListener(v -> {
             String mail = email.getText().toString();
@@ -105,21 +122,10 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-//    private void updateUiWithUser(LoggedInUserView model) {
-//        String welcome = getString(R.string.welcome) + model.getDisplayName();
-//        // TODO : initiate successful logged in experience
-//        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-//    }
-
-    private void showLoginFailed(@StringRes Integer errorString) {
-        Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
-    }
-
     /**
-     * Phương thức `clickLogin` dùng để thiết lập sự kiện khi người dùng nhấn nút đăng nhập với Google.<br>
-     * - Trước khi thực hiện đăng nhập, phương thức sẽ kiểm tra kết nối Internet của thiết bị. <br>
-     * - Nếu có kết nối Internet, phương thức sẽ gọi phương thức `loginWithGoogle()` để tiến hành đăng nhập. <br>
-     * - Nếu không có kết nối Internet, phương thức sẽ hiển thị một thông báo cho người dùng biết rằng không có kết nối mạng.
+     * Thiết lập sự kiện đăng nhập bằng Google.
+     * Nếu có kết nối Internet, phương thức sẽ thực hiện đăng nhập Google.
+     * Nếu không có Internet, hiển thị thông báo lỗi.
      */
     private void clickLoginWithGoogle() {
         loginWithGoogle.setOnClickListener(new View.OnClickListener() {
@@ -139,29 +145,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      * Bắt đầu quá trình đăng nhập bằng Google.
-     * <p>
-     * Phương thức này sử dụng đối tượng GoogleSignInClient để tạo một intent,
-     * từ đó khởi chạy giao diện đăng nhập của Google, cho phép người dùng chọn tài khoản Google
-     * để xác thực. Kết quả của quá trình đăng nhập sẽ được trả về trong phương thức
-     * {@link #onActivityResult(int, int, Intent)}.
-     * <p>
-     * Điều kiện tiên quyết:
-     * - Đối tượng {@link com.google.android.gms.auth.api.signin.GoogleSignInClient} (client)
-     * phải được khởi tạo đúng cách với các thông tin cần thiết (ví dụ: email, ID token, v.v.).
-     * - Một mã yêu cầu hợp lệ (RC_LOGIN) phải được định nghĩa để xác định kết quả đăng nhập.
-     * <p>
-     * Ví dụ sử dụng:
-     * <pre>
-     * private static final int RC_LOGIN = 1001;
-     *
-     * private void loginWithGoogle() {
-     *     Intent loginWithGoogleIntent = client.getSignInIntent();
-     *     startActivityForResult(loginWithGoogleIntent, RC_LOGIN);
-     * }
-     * </pre>
-     * <p>
-     * Sau khi người dùng chọn tài khoản, kết quả sẽ được xử lý trong phương thức
-     * {@link #onActivityResult(int, int, Intent)}.
+     * Khởi chạy giao diện đăng nhập của Google, cho phép người dùng chọn tài khoản để đăng nhập.
      */
     private void loginWithGoogle() {
         Intent loginWithGoogleIntent = client.getSignInIntent();
@@ -169,30 +153,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Xử lý kết quả trả về từ các Activity khác. Hàm được gọi sau khi một Activity kết thúc và trả dữ liệu về.<br>
+     * Xử lý kết quả trả về từ Google Sign-In hoặc các Activity khác.
      *
-     * @param requestCode Mã yêu cầu (request code) được gửi khi gọi startActivityForResult.
-     *                    Dùng để xác định yêu cầu nào trả về kết quả.
-     * @param resultCode  Mã kết quả (result code) trả về từ Activity, thường là RESULT_OK hoặc RESULT_CANCELED.
-     * @param data        Dữ liệu trả về từ Activity dưới dạng Intent, có thể chứa các giá trị cần thiết.
-     *                    <p>
-     *                    Trong trường hợp này:<br>
-     *                    - Hàm xử lý kết quả đăng nhập từ Google Sign-In.<br>
-     *                    - Nếu `requestCode` trùng với `RC_SIGN_IN`, kiểm tra kết quả đăng nhập:<br>
-     *                    - Lấy thông tin tài khoản Google từ `data` và thực hiện xác thực Firebase thông qua `firebaseAuth()`.<br>
-     *                    - Nếu xảy ra lỗi, hiển thị thông báo lỗi và ghi log chi tiết.<br>
-     *                    <p>
-     *                    Các bước xử lý cụ thể:<br>
-     *                    1. Kiểm tra `requestCode` để xác định yêu cầu nào trả về kết quả.<br>
-     *                    2. Sử dụng `GoogleSignIn.getSignedInAccountFromIntent` để lấy thông tin tài khoản Google từ Intent.<br>
-     *                    3. Nếu lấy thành công tài khoản, gọi hàm `firebaseAuth()` để xác thực với Firebase.<br>
-     *                    4. Nếu xảy ra lỗi:<br>
-     *                    - Hiển thị lỗi dưới dạng Toast cho người dùng.<br>
-     *                    - Ghi log lỗi chi tiết để dễ dàng kiểm tra trong quá trình phát triển.<br>
-     *                    <p>
-     *                    Lưu ý:<br>
-     *                    - `RC_SIGN_IN` là mã yêu cầu cho quá trình đăng nhập Google Sign-In.<br>
-     *                    - `firebaseAuth()` là hàm xử lý xác thực người dùng với Firebase dựa trên mã thông báo (ID token) nhận được từ tài khoản Google.
+     * @param requestCode Mã yêu cầu được gửi đi.
+     * @param resultCode  Kết quả trả về từ Activity.
+     * @param data        Dữ liệu trả về dưới dạng Intent.
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -213,7 +178,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String error) {
-                        Toast.makeText(LoginActivity.this, error , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
                         client.signOut();
                     }
                 });
@@ -224,7 +189,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    // Hàm xử lý lỗi chi tiết cho Google Sign-In
+    /**
+     * Xử lý các lỗi có thể xảy ra khi đăng nhập bằng Google.
+     *
+     * @param e Đối tượng `ApiException` chứa thông tin lỗi.
+     */
     private void handleGoogleSignInError(ApiException e) {
         int errorCode = e.getStatusCode();
         String errorMessage;
