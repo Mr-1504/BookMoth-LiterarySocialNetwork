@@ -79,7 +79,7 @@ public class HomeFragment extends Fragment {
 
         Log.d("Supabase", "HomeFragment onCreateView - Gọi loadPosts()");
         loadPosts();
-        loadPostProfileID();
+//        loadPostProfileID();
         return view;
     }
 

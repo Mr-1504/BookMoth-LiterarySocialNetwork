@@ -17,15 +17,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.remote.post.ApiResponse;
 import com.example.bookmoth.data.repository.post.FlaskRepositoryImpl;
 import com.example.bookmoth.data.repository.post.SupabaseRepositoryImpl;
+import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.post.Book;
+import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
+import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.home.HomeActivity;
 import com.example.bookmoth.ui.viewmodel.post.FlaskViewModel;
 import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
+import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,6 +61,7 @@ public class CreatePostActivity extends AppCompatActivity {
     private PostViewModel postViewModel;
     private FlaskViewModel flaskViewModel;
     private ImageButton btnBack;
+    private String profileId;
 
 
     @Override
@@ -257,10 +263,36 @@ public class CreatePostActivity extends AppCompatActivity {
         return extension;  // Trả về phần mở rộng của file (ví dụ: .jpg, .mp4, .mp3)
     }
 
+    private void getProfile() {
+        ProfileViewModel profileViewModel = new ProfileViewModel(
+                new ProfileUseCase(new ProfileRepositoryImpl())
+        );
+
+        profileViewModel.getProfile(CreatePostActivity.this, new ProfileViewModel.OnProfileListener() {
+            @Override
+            public void onProfileSuccess(Profile profile) {
+                SecureStorage.saveToken("profileId", profile.getProfileId());
+                profileId = profile.getProfileId();
+            }
+
+            @Override
+            public void onProfileFailure(String error) {
+                Toast.makeText(CreatePostActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onErrorConnectToServer(String error) {
+                Toast.makeText(CreatePostActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     private void savePostToDatabase(String fileUrl) {
         String title = edtTitle.getText().toString().trim();
         String content = edtContent.getText().toString().trim();
-        int authorId = 1;  // Bạn có thể lấy từ user hiện tại nếu có authentication
+
+        profileId = SecureStorage.getToken("profileId");
+        getProfile();
+        int authorId = Integer.parseInt(profileId);  // Bạn có thể lấy từ user hiện tại nếu có authentication
         String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(new Date());
 
         Map<String, Object> newPost = new HashMap<>();

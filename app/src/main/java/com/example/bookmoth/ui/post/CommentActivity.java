@@ -76,7 +76,7 @@ public class CommentActivity extends AppCompatActivity {
         postViewModel = new PostViewModel(new PostUseCase(new SupabaseRepositoryImpl()));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         postAdapter = new PostAdapter(this, postList, new PostUseCase(new SupabaseRepositoryImpl()),new FlaskUseCase(new FlaskRepositoryImpl()));
-        commentAdapter = new CommentAdapter(this,commentList);
+        commentAdapter = new CommentAdapter(this,commentList,new FlaskUseCase(new FlaskRepositoryImpl()));
         ConcatAdapter concatAdapter = new ConcatAdapter(postAdapter, commentAdapter);
         recyclerView.setAdapter(concatAdapter);
 

@@ -57,7 +57,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         this.mediaPlayer = new MediaPlayer();
         this.postUseCase = postUseCase;
         this.flaskUseCase = flaskUseCase;
-
     }
 
     private void getProfile() {
@@ -120,7 +119,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
 
 
-        getImageProfile(1, new ImageCallback() {
+        getImageProfile(post.getAuthorId(), new ImageCallback() {
             @Override
             public void onSuccess(String imageUrl) {
                 Picasso.get().load(imageUrl).into(holder.btnProfile);

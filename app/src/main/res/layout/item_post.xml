@@ -20,12 +20,12 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="36dp"
+            android:layout_height="43dp"
             android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/imageProfile"
-                android:layout_width="33dp"
+                android:layout_width="23dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
