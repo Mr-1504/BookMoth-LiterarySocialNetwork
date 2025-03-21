@@ -49,7 +49,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private long lastClickTime = 0;
     private PostUseCase postUseCase;
     private FlaskUseCase flaskUseCase;
-    private static final long CLICK_DELAY = 500;
+    private static final long CLICK_DELAY = 0;
     private String profileId;
     public PostAdapter(Context context, List<Post> postList, PostUseCase postUseCase, FlaskUseCase flaskUseCase) {
         this.context = context;
@@ -134,15 +134,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         checkLikeStatus(post.getPostId(), holder);
         holder.btnLike.setOnClickListener(v -> {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastClickTime > CLICK_DELAY) {
-                lastClickTime = currentTime;
-                if (holder.isLiked) {
-                    removeLike(post.getPostId(), holder);
-                } else {
-                    addLike(post.getPostId(), holder);
-                }
+            if (holder.isLiked) {
+                removeLike(post.getPostId(), holder);
+            } else {
+                addLike(post.getPostId(), holder);
             }
+//            long currentTime = System.currentTimeMillis();
+//            if (currentTime - lastClickTime > CLICK_DELAY) {
+//                lastClickTime = currentTime;
+//
+//            }
         });
         holder.btnComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,90 +259,163 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 });
     }
 
+    private void toggleLike(int postId, PostViewHolder holder, boolean isAddingLike) {
+        String profileId = SecureStorage.getToken("profileId");
+        getProfile();
 
-    private void addLike(int postId, PostViewHolder holder) {
         getCurrentLikeCount(postId, new LikeCountCallback() {
             @Override
             public void onLikeCountReceived(int currentLikeCount) {
-                // Tăng số lượng like
-                int newLikeCount = currentLikeCount + 1;
-                holder.isLiked = true;
-                holder.btnLike.setImageResource(R.drawable.button_liked);
+                int likeChange = isAddingLike ? 1 : -1;
+                int updatedLikeCount = Math.max(0, currentLikeCount + likeChange);
+                holder.countLike.setText(String.valueOf(updatedLikeCount));
+                holder.isLiked = isAddingLike;
+                holder.btnLike.setImageResource(isAddingLike ? R.drawable.button_liked : R.drawable.button_like);
 
-                // Cập nhật UI tạm thời
-                holder.countLike.setText(String.valueOf(newLikeCount));
-
-                // Chuẩn bị dữ liệu gửi API
-                Map<String, Object> body = new HashMap<>();
-                body.put("post_id", postId);
-                profileId = SecureStorage.getToken("profileId");
-                getProfile();
-                body.put("user_id", profileId); // Thay bằng getCurrentUserId() nếu có
-
-                // Gửi request đến API để thêm like
-                postUseCase.addLike(body).enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (!response.isSuccessful()) {
-                            Log.e("Like", "Lỗi thêm like: " + response.errorBody());
-                            rollbackLikeUI(holder, currentLikeCount, false);
-                        } else {
-                            updateLikeCount(postId, newLikeCount);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.e("Like", "Lỗi kết nối khi thêm like", t);
-                        rollbackLikeUI(holder, currentLikeCount, false);
-                    }
-                });
+                if (isAddingLike) {
+                    Map<String, Object> body = new HashMap<>();
+                    body.put("post_id", postId);
+                    body.put("user_id", profileId);
+                    postUseCase.addLike(body).enqueue(new LikeCallback(holder, postId, currentLikeCount, isAddingLike));
+                } else {
+                    String url = "https://vhqcdiaoqrlcsnqvjpqh.supabase.co/rest/v1/likes?post_id=eq." + postId + "&user_id=eq." + profileId;
+                    postUseCase.removeLike(url).enqueue(new LikeCallback(holder, postId, currentLikeCount, isAddingLike));
+                }
             }
         });
     }
 
+    private class LikeCallback implements Callback<ResponseBody> {
+        private final PostViewHolder holder;
+        private final int postId;
+        private final int previousLikeCount;
+        private final boolean isAddingLike;
 
-    private void removeLike(int postId, PostViewHolder holder) {
-        profileId = SecureStorage.getToken("profileId");
-        getProfile();
-        String userId = profileId; // Cần lấy userId thực tế từ session hoặc database
-        String url = "https://vhqcdiaoqrlcsnqvjpqh.supabase.co/rest/v1/likes?" + "post_id=eq." + postId + "&user_id=eq." + userId;
+        public LikeCallback(PostViewHolder holder, int postId, int previousLikeCount, boolean isAddingLike) {
+            this.holder = holder;
+            this.postId = postId;
+            this.previousLikeCount = previousLikeCount;
+            this.isAddingLike = isAddingLike;
+        }
 
-        // Cập nhật UI ngay lập tức
-        holder.isLiked = false;
-        String likeText = holder.countLike.getText().toString().trim();
-        int currentLikeCount = likeText.isEmpty() ? 0 : Integer.parseInt(likeText);
-        int newLikeCount = currentLikeCount - 1;
-        holder.btnLike.setImageResource(R.drawable.button_like);
-        // Gửi request đến API
-        postUseCase.removeLike(url).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (!response.isSuccessful()) {
-                    Log.e("Like", "Lỗi xóa like: " + response.errorBody());
-                    rollbackLikeUI(holder, currentLikeCount, true);
-                }
-                else {
-                    updateLikeCount(postId, newLikeCount);
-                    holder.countLike.setText(String.valueOf(newLikeCount));
-                }
+        @Override
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            if (!response.isSuccessful()) {
+                Log.e("Like", "Lỗi khi cập nhật like: " + response.errorBody());
+                rollbackLikeUI();
+            } else {
+                updateLikeCount(postId, Math.max(0, previousLikeCount + (isAddingLike ? 1 : -1)));
             }
+        }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("Like", "Lỗi kết nối API: " + t.getMessage());
-                holder.isLiked = true;
-                holder.countLike.setText(String.valueOf(currentLikeCount));
-                holder.btnLike.setImageResource(R.drawable.button_liked);
-            }
-        });
+        @Override
+        public void onFailure(Call<ResponseBody> call, Throwable t) {
+            Log.e("Like", "Lỗi kết nối API: " + t.getMessage());
+            rollbackLikeUI();
+        }
+
+        private void rollbackLikeUI() {
+            holder.isLiked = !isAddingLike;
+            holder.btnLike.setImageResource(isAddingLike ? R.drawable.button_like : R.drawable.button_liked);
+            holder.countLike.setText(String.valueOf(Math.max(0, previousLikeCount)));
+        }
     }
+
+    public void addLike(int postId, PostViewHolder holder) {
+        toggleLike(postId, holder, true);
+    }
+
+    public void removeLike(int postId, PostViewHolder holder) {
+        toggleLike(postId, holder, false);
+    }
+
+//    private void addLike(int postId, PostViewHolder holder) {
+//        holder.countLike.setText(String.valueOf(Integer.parseInt(holder.countLike.getText().toString()) + 1));
+//        holder.btnLike.setImageResource(R.drawable.button_liked);
+//        getCurrentLikeCount(postId, new LikeCountCallback() {
+//            @Override
+//            public void onLikeCountReceived(int currentLikeCount) {
+//                // Tăng số lượng like
+//                int newLikeCount = currentLikeCount + 1;
+//                holder.isLiked = true;
+//                holder.btnLike.setImageResource(R.drawable.button_liked);
+//
+//                // Cập nhật UI tạm thời
+//                holder.countLike.setText(String.valueOf(newLikeCount));
+//
+//                // Chuẩn bị dữ liệu gửi API
+//                Map<String, Object> body = new HashMap<>();
+//                body.put("post_id", postId);
+//                profileId = SecureStorage.getToken("profileId");
+//                getProfile();
+//                body.put("user_id", profileId); // Thay bằng getCurrentUserId() nếu có
+//
+//                // Gửi request đến API để thêm like
+//                postUseCase.addLike(body).enqueue(new Callback<ResponseBody>() {
+//                    @Override
+//                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                        if (!response.isSuccessful()) {
+//                            Log.e("Like", "Lỗi thêm like: " + response.errorBody());
+//                            rollbackLikeUI(holder, currentLikeCount, false);
+//                        } else {
+//                            updateLikeCount(postId, newLikeCount);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                        Log.e("Like", "Lỗi kết nối khi thêm like", t);
+//                        rollbackLikeUI(holder, currentLikeCount, false);
+//                    }
+//                });
+//            }
+//        });
+//    }
+
+
+
+//    private void removeLike(int postId, PostViewHolder holder) {
+//        profileId = SecureStorage.getToken("profileId");
+//        getProfile();
+//        String userId = profileId; // Cần lấy userId thực tế từ session hoặc database
+//        String url = "https://vhqcdiaoqrlcsnqvjpqh.supabase.co/rest/v1/likes?" + "post_id=eq." + postId + "&user_id=eq." + userId;
+//
+//        // Cập nhật UI ngay lập tức
+//        holder.isLiked = false;
+//        String likeText = holder.countLike.getText().toString().trim();
+//        int currentLikeCount = likeText.isEmpty() ? 0 : Integer.parseInt(likeText);
+//        int newLikeCount = currentLikeCount - 1;
+//        holder.btnLike.setImageResource(R.drawable.button_like);
+//        holder.countLike.setText(String.valueOf(newLikeCount));
+//        // Gửi request đến API
+//        postUseCase.removeLike(url).enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                if (!response.isSuccessful()) {
+//                    Log.e("Like", "Lỗi xóa like: " + response.errorBody());
+//                    rollbackLikeUI(holder, currentLikeCount, true);
+//                    holder.countLike.setText(String.valueOf(newLikeCount+1));
+//                }
+//                else {
+//                    updateLikeCount(postId, newLikeCount);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                Log.e("Like", "Lỗi kết nối API: " + t.getMessage());
+//                holder.isLiked = true;
+//                holder.countLike.setText(String.valueOf(currentLikeCount));
+//                holder.btnLike.setImageResource(R.drawable.button_liked);
+//            }
+//        });
+//    }
     // Hàm rollback UI khi request thất bại
-    private void rollbackLikeUI(PostViewHolder holder, int likeCount, boolean isLiked) {
-        holder.isLiked = isLiked;
-        holder.countLike.setText(String.valueOf(likeCount));
-        holder.btnLike.setImageResource(isLiked ? R.drawable.button_liked : R.drawable.button_like);
-    }
+//    private void rollbackLikeUI(PostViewHolder holder, int likeCount, boolean isLiked) {
+//        holder.isLiked = isLiked;
+//        holder.countLike.setText(String.valueOf(likeCount));
+//        holder.btnLike.setImageResource(isLiked ? R.drawable.button_liked : R.drawable.button_like);
+//    }
     private void getCurrentLikeCount(int postID, LikeCountCallback callback) {
         postUseCase.getLikeForId("eq." + postID).enqueue(new Callback<Integer>() {
             @Override

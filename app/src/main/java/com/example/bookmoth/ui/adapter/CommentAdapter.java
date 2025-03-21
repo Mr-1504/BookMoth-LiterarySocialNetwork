@@ -93,15 +93,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             }
         });
         holder.btnLike.setOnClickListener(view -> {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastClickTime > CLICK_DELAY) {
-                lastClickTime = currentTime;
-                if (holder.isLiked) {
-                    removeLike(comment.getId(), holder);
-                } else {
-                    addLike(comment.getId(), holder);
-                }
+            if (holder.isLiked) {
+                removeLike(comment.getId(), holder);
+            } else {
+                addLike(comment.getId(), holder);
             }
+//            long currentTime = System.currentTimeMillis();
+//            if (currentTime - lastClickTime > CLICK_DELAY) {
+//                lastClickTime = currentTime;
+//
+//            }
         });
     }
 
@@ -219,6 +220,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         int currentLikeCount = likeText.isEmpty() ? 0 : Integer.parseInt(likeText);
         int newLikeCount = currentLikeCount + 1;
         holder.btnLike.setImageResource(R.drawable.button_liked);
+        holder.countLike.setText(String.valueOf(newLikeCount));
 
         // Gửi request đến API
         postUseCase.addLikeComment(body).enqueue(new Callback<ResponseBody>() {
@@ -230,7 +232,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                 }
                 else {
                     updateLikeCount(commentID, newLikeCount);
-                    holder.countLike.setText(String.valueOf(newLikeCount));
                 }
             }
 
@@ -252,6 +253,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         int currentLikeCount = likeText.isEmpty() ? 0 : Integer.parseInt(likeText);
         int newLikeCount = currentLikeCount - 1;
         holder.btnLike.setImageResource(R.drawable.button_like);
+        holder.countLike.setText(String.valueOf(newLikeCount));
         postUseCase.removeLikeComment(url).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -261,7 +263,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                 }
                 else {
                     updateLikeCount(idComment, newLikeCount);
-                    holder.countLike.setText(String.valueOf(newLikeCount));
+
                 }
             }
 
