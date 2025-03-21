@@ -20,7 +20,6 @@ import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.home.HomeActivity;
 import com.example.bookmoth.ui.login.LoginActivity;
-import com.example.bookmoth.ui.payment.PayActivity;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
 /**

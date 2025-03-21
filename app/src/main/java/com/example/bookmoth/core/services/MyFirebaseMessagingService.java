@@ -117,7 +117,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param title   Tiêu đề của thông báo.
      * @param message Nội dung của thông báo.
      */
-    private void showNotification(String title, String message) {
+    public void showNotification(String title, String message) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -136,13 +136,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         manager.notify(1, builder.build());
     }
 
+
     /**
      * Lấy ID của thiết bị.
      *
      * @param context Context của ứng dụng.
      * @return ID của thiết bị.
      */
-    private static String getDeviceId(Context context) {
+    public static String getDeviceId(Context context) {
         return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
