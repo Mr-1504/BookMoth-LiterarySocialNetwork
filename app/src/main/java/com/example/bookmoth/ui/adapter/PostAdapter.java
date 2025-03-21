@@ -10,21 +10,26 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.remote.post.Api;
 import com.example.bookmoth.data.remote.post.ApiResponse;
 import com.example.bookmoth.data.remote.post.SupabaseApiService;
 import com.example.bookmoth.data.remote.utils.RetrofitClient;
+import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.post.Post;
 import com.example.bookmoth.domain.model.post.Profile;
 import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
+import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.post.CommentActivity;
+import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -45,12 +50,38 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private PostUseCase postUseCase;
     private FlaskUseCase flaskUseCase;
     private static final long CLICK_DELAY = 500;
+    private String profileId;
     public PostAdapter(Context context, List<Post> postList, PostUseCase postUseCase, FlaskUseCase flaskUseCase) {
         this.context = context;
         this.postList = postList;
         this.mediaPlayer = new MediaPlayer();
         this.postUseCase = postUseCase;
         this.flaskUseCase = flaskUseCase;
+
+    }
+
+    private void getProfile() {
+        ProfileViewModel profileViewModel = new ProfileViewModel(
+                new ProfileUseCase(new ProfileRepositoryImpl())
+        );
+
+        profileViewModel.getProfile(context, new ProfileViewModel.OnProfileListener() {
+            @Override
+            public void onProfileSuccess(com.example.bookmoth.domain.model.profile.Profile profile) {
+                SecureStorage.saveToken("profileId", profile.getProfileId());
+                profileId = profile.getProfileId();
+            }
+
+            @Override
+            public void onProfileFailure(String error) {
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onErrorConnectToServer(String error) {
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @NonNull
@@ -203,8 +234,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     private void checkLikeStatus(int postId, PostViewHolder holder) {
-        int userId = 1; // Lấy ID người dùng hiện tại
-//        int userId = getCurrentUserId();
+        profileId = SecureStorage.getToken("profileId");
+        getProfile();
+        int userId = Integer.parseInt(profileId); // Cần lấy userId thực tế từ session hoặc database
         postUseCase.checkLikeStatus("eq." + postId, "eq." + userId, "*")
                 .enqueue(new Callback<List<Map<String, Object>>>() {
                     @Override
@@ -243,7 +275,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 // Chuẩn bị dữ liệu gửi API
                 Map<String, Object> body = new HashMap<>();
                 body.put("post_id", postId);
-                body.put("user_id", 1); // Thay bằng getCurrentUserId() nếu có
+                profileId = SecureStorage.getToken("profileId");
+                getProfile();
+                body.put("user_id", profileId); // Thay bằng getCurrentUserId() nếu có
 
                 // Gửi request đến API để thêm like
                 postUseCase.addLike(body).enqueue(new Callback<ResponseBody>() {
@@ -269,7 +303,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
 
     private void removeLike(int postId, PostViewHolder holder) {
-        String userId = "1"; // Cần lấy userId thực tế từ session hoặc database
+        profileId = SecureStorage.getToken("profileId");
+        getProfile();
+        String userId = profileId; // Cần lấy userId thực tế từ session hoặc database
         String url = "https://vhqcdiaoqrlcsnqvjpqh.supabase.co/rest/v1/likes?" + "post_id=eq." + postId + "&user_id=eq." + userId;
 
         // Cập nhật UI ngay lập tức

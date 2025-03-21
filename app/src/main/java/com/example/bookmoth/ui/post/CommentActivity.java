@@ -103,7 +103,6 @@ public class CommentActivity extends AppCompatActivity {
                 } else {
                     commentBar.animate().translationY(0).setDuration(200).start();
                 }
-                rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
         btnBack.setOnClickListener(view -> finish());
