@@ -5,16 +5,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.remote.post.Api;
+import com.example.bookmoth.data.remote.post.ApiResponse;
 import com.example.bookmoth.data.repository.post.SupabaseRepositoryImpl;
+import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.post.Comment;
+import com.example.bookmoth.domain.model.post.Profile;
+import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
+import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
+import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,10 +42,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     private long lastClickTime = 0;
     private static final long CLICK_DELAY = 500;
     private final PostUseCase postUseCase = new PostUseCase(new SupabaseRepositoryImpl());
+    private String profileId;
+    private FlaskUseCase flaskUseCase;
 
-    public CommentAdapter(Context context,List<Comment> commentList){
+    public CommentAdapter(Context context,List<Comment> commentList,  FlaskUseCase flaskUseCase){
         this.context = context;
         this.commentList = commentList;
+        this.flaskUseCase = flaskUseCase;
     }
 
     @NonNull
@@ -52,6 +66,32 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         holder.tvTimestamp.setText(comment.getTime());
         holder.countLike.setText(String.valueOf(comment.getCount_like()));
         checkLikeComment(comment.getId(),holder);
+        getNameProfile(comment.getUser_id(), new PostAdapter.NameCallback() {
+            @Override
+            public void onSuccess(String name) {
+                Log.d("Profile Name", "Tên người dùng: " + name);
+                holder.nameProfile.setText(name);
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e("Profile API", error);
+            }
+        });
+
+
+        getImageProfile(comment.getUser_id(), new PostAdapter.ImageCallback() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                Picasso.get().load(imageUrl).into(holder.btnProfile);
+                Log.e("Profile Image", "Ảnh đại diện: " + imageUrl);
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e("Profile API", error);
+            }
+        });
         holder.btnLike.setOnClickListener(view -> {
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastClickTime > CLICK_DELAY) {
@@ -65,8 +105,86 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         });
     }
 
+    private void getProfile() {
+        ProfileViewModel profileViewModel = new ProfileViewModel(
+                new ProfileUseCase(new ProfileRepositoryImpl())
+        );
+
+        profileViewModel.getProfile(context, new ProfileViewModel.OnProfileListener() {
+            @Override
+            public void onProfileSuccess(com.example.bookmoth.domain.model.profile.Profile profile) {
+                SecureStorage.saveToken("profileId", profile.getProfileId());
+                profileId = profile.getProfileId();
+            }
+
+            @Override
+            public void onProfileFailure(String error) {
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onErrorConnectToServer(String error) {
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getImageProfile(int authorId, PostAdapter.ImageCallback callback) {
+        flaskUseCase.getProfileAvata(authorId).enqueue(new Callback<Api>() {
+            @Override
+            public void onResponse(Call<Api> call, Response<Api> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String imageUrl = response.body().getData();
+                    callback.onSuccess(imageUrl);
+                } else {
+                    callback.onError("Lỗi lấy ảnh profile: " + response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Api> call, Throwable t) {
+                callback.onError("Lỗi kết nối API: " + t.getMessage());
+            }
+        });
+    }
+
+
+    // Interface callback cho ảnh đại diện
+    public interface ImageCallback {
+        void onSuccess(String imageUrl);
+        void onError(String error);
+    }
+
+    private void getNameProfile(int authorId, PostAdapter.NameCallback callback) {
+        flaskUseCase.getProfile(authorId).enqueue(new Callback<ApiResponse<Profile>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Profile>> call, Response<ApiResponse<Profile>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Profile profile = response.body().getData();
+                    String fullName = profile.getFirstName() + " " + profile.getLastName();
+                    callback.onSuccess(fullName);
+                } else {
+                    callback.onError("Lỗi lấy thông tin profile: " + response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Profile>> call, Throwable t) {
+                callback.onError("Lỗi kết nối API: " + t.getMessage());
+            }
+        });
+    }
+
+
+    // Interface để callback kết quả
+    public interface NameCallback {
+        void onSuccess(String name);
+        void onError(String error);
+    }
     private void checkLikeComment(int id, CommentViewHolder holder) {
-        String user_id = "1";
+        profileId = SecureStorage.getToken("profileId");
+        getProfile();
+        String user_id = profileId;
         postUseCase.checkLikeComment("eq." + id, "eq." + user_id, "*").enqueue(new Callback<List<Map<String, Object>>>() {
             @Override
             public void onResponse(Call<List<Map<String, Object>>> call, Response<List<Map<String, Object>>> response) {
@@ -91,7 +209,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     private void addLike(int commentID, CommentViewHolder holder) {
         Map<String, Object> body = new HashMap<>();
         body.put("id_comment", commentID);
-        body.put("id_user", 1);  // Cần sửa nếu có userId thực tế
+        profileId = SecureStorage.getToken("profileId");
+        getProfile();
+        body.put("id_user", Integer.parseInt(profileId));  // Cần sửa nếu có userId thực tế
 //       body.put("user_id", getCurrentUserId());
 
         holder.isLiked = true;
@@ -123,7 +243,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     }
 
     public void removeLike(int idComment, CommentViewHolder holder){
-        String userId = "1";
+        profileId = SecureStorage.getToken("profileId");
+        getProfile();
+        String userId = profileId;
         String url = "https://vhqcdiaoqrlcsnqvjpqh.supabase.co/rest/v1/likecomment?"+ "id_comment=eq."+idComment+ "&id_user=eq."+userId;
         holder.isLiked = false;
         String likeText = holder.countLike.getText().toString().trim();
@@ -185,7 +307,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     }
 
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
-        TextView tvContent, tvTimestamp,countLike;
+        TextView tvContent, tvTimestamp,countLike, nameProfile;
+        ImageButton btnProfile;
+
         ImageButton btnLike;
         boolean isLiked = false;
         public CommentViewHolder(@NonNull View itemView) {
@@ -194,6 +318,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
             countLike = itemView.findViewById(R.id.count_like);
             btnLike = itemView.findViewById(R.id.button_like);
+            btnProfile = itemView.findViewById(R.id.imageProfile);
+            nameProfile = itemView.findViewById(R.id.nameProfile);
         }
     }
 }

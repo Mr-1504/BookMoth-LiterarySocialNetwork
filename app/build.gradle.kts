@@ -114,4 +114,6 @@ dependencies {
 
     //recyclerview
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
+    //picasso
+    implementation ("com.squareup.picasso:picasso:2.8")
 }
