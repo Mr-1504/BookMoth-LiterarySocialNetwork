@@ -12,8 +12,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.repository.login.LoginRepositoryImpl;
+import com.example.bookmoth.domain.usecase.login.LoginUseCase;
 import com.example.bookmoth.ui.login.LoginActivity;
 import com.example.bookmoth.ui.profile.ProfileActivity;
+import com.example.bookmoth.ui.viewmodel.login.LoginViewModel;
 import com.example.bookmoth.ui.wallet.PayActivity;
 import com.example.bookmoth.ui.wallet.WalletActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -53,7 +56,7 @@ public class OptionActivity extends AppCompatActivity {
 
     private void clickWallet() {
         btnWallet.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PayActivity.class);
+            Intent intent = new Intent(this, WalletActivity.class);
             startActivity(intent);
         });
     }
@@ -67,6 +70,7 @@ public class OptionActivity extends AppCompatActivity {
 
             GoogleSignInClient client = GoogleSignIn.getClient(this, signInOptions);
             client.signOut();
+            new LoginViewModel(new LoginUseCase(new LoginRepositoryImpl())).logout(this);
             SecureStorage.clearToken();
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
