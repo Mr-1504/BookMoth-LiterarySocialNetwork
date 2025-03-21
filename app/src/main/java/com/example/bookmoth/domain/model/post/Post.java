@@ -15,10 +15,11 @@ public class Post {
     private String media_type;
     private int count_like;
     private int count_comment;
+    private int tab_works;
 
     public Post() {}
 
-    public Post(int postId, int authorId, String title, String content, String timestamp, String media_url, String media_type, int count_like,int count_comment) {
+    public Post(int postId, int authorId, String title, String content, String timestamp, String media_url, String media_type, int count_like,int count_comment, int tab_works) {
         this.postId = postId;
         this.authorId = authorId;
         this.title = title;
@@ -28,6 +29,7 @@ public class Post {
         this.media_type = media_type;
         this.count_like = count_like;
         this.count_comment = count_comment;
+        this.tab_works = tab_works;
     }
 
     public int getPostId() { return postId; }
@@ -44,5 +46,8 @@ public class Post {
 
     public int getCount_comment() {
         return count_comment;
+    }
+    public int getTab_works() {
+        return tab_works;
     }
 }

@@ -28,6 +28,9 @@
             android:name=".ui.post.CreatePostActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.post.PinBooksActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.post.CommentActivity"
             android:exported="false" />
         <activity

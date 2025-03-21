@@ -23,9 +23,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.repository.post.FlaskRepositoryImpl;
 import com.example.bookmoth.data.repository.post.SupabaseRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;
+import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.adapter.CommentAdapter;
@@ -73,7 +75,7 @@ public class CommentActivity extends AppCompatActivity {
         editTextComment = findViewById(R.id.editTextComment);
         postViewModel = new PostViewModel(new PostUseCase(new SupabaseRepositoryImpl()));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        postAdapter = new PostAdapter(this, postList, new PostUseCase(new SupabaseRepositoryImpl()));
+        postAdapter = new PostAdapter(this, postList, new PostUseCase(new SupabaseRepositoryImpl()),new FlaskUseCase(new FlaskRepositoryImpl()));
         commentAdapter = new CommentAdapter(this,commentList);
         ConcatAdapter concatAdapter = new ConcatAdapter(postAdapter, commentAdapter);
         recyclerView.setAdapter(concatAdapter);
