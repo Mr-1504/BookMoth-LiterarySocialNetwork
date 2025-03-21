@@ -34,4 +34,10 @@ public interface LoginRepository {
      * @return Đối tượng Call chứa thông tin tài khoản Account.
      */
     Call<Account> getAccount();
+
+    /**
+     * Gửi request đăng xuất phiên hiện tại
+     * @param deviceId ID của thiết bị hiện tại
+     */
+    Call<Void> logout(String deviceId);
 }

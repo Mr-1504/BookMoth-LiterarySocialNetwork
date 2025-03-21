@@ -1,4 +1,4 @@
-package com.example.bookmoth.ui.payment;
+package com.example.bookmoth.ui.wallet;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,11 +14,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.core.utils.Api.CreateOrder;
 import com.example.bookmoth.core.utils.Constant.AppInfo;
 import com.example.bookmoth.ui.viewmodel.payment.PaymentViewModel;
-
-import org.json.JSONObject;
 
 import vn.zalopay.sdk.Environment;
 import vn.zalopay.sdk.ZaloPayError;
@@ -63,7 +60,7 @@ public class PayActivity extends AppCompatActivity {
             String soluongString = amount.getText().toString().equals("") ? price.getText().toString() : amount.getText().toString();
             long soluong = Long.parseLong(soluongString);
             paymentViewModel.createOrder(this, soluong,
-                    "MUA_KIM_CUONG_FREE_FIRE", true,
+                    "", true,
                     new PaymentViewModel.OnCreateOrderListener() {
                         @Override
                         public void onCreateOrderSuccess(String zaloPayTransToken) {

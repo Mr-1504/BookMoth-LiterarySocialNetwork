@@ -2,12 +2,14 @@ package com.example.bookmoth.data.remote.login;
 
 import com.example.bookmoth.data.model.login.GoogleLoginRequest;
 import com.example.bookmoth.data.model.login.LoginRequest;
+import com.example.bookmoth.data.model.login.LogoutRequest;
 import com.example.bookmoth.data.model.login.RefreshTokenRequest;
 import com.example.bookmoth.data.model.register.TokenResponse;
 import com.example.bookmoth.domain.model.login.Account;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 
@@ -50,4 +52,11 @@ public interface LoginApiService {
      */
     @GET("api/account/me")
     Call<Account> getAccount();
+
+    /**
+     * Đăng xuất
+     * @param request Đối tượng {@link LogoutRequest} chứa deviceId của thiết bị
+     */
+    @DELETE("api/account/logout")
+    Call<Void> logout(@Body LogoutRequest request);
 }

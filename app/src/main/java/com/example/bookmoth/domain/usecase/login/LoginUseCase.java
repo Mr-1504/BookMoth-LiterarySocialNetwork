@@ -51,4 +51,13 @@ public class LoginUseCase {
     public Call<Account> getAccount() {
         return authRepository.getAccount();
     }
+
+
+    /**
+     * Gửi yêu cầu đăng xuất
+     * @param deviceId ID của thiết bị
+     */
+    public Call<Void> logout(String deviceId) {
+        return authRepository.logout(deviceId);
+    }
 }

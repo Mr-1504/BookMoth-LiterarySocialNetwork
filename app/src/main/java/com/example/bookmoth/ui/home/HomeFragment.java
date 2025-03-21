@@ -27,6 +27,7 @@ import com.example.bookmoth.domain.model.post.Post;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.post.CreatePostActivity;
+import com.example.bookmoth.ui.profile.ProfileActivity;
 import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
 import com.example.bookmoth.ui.viewmodel.post.SharedViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
@@ -39,10 +40,11 @@ public class HomeFragment extends Fragment {
     private PostAdapter postAdapter;
     private List<Post> postList = new ArrayList<>();
     private Button btnLoad;
-    private ImageButton btnCreatePost;
+    private ImageButton btnCreatePost, btnAcc;
     private PostViewModel postViewModel;
 
     private String profileId;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,10 +61,11 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getActivity(), CreatePostActivity.class);
             startActivity(intent);
         });
+
+        btnAcc = view.findViewById(R.id.button_acc);
+
         profileId = SecureStorage.getToken("profileId");
-        if(profileId == null || profileId.isEmpty()){
-            getProfile();
-        }
+        getProfile();
         postViewModel = new PostViewModel(new PostUseCase(new SupabaseRepositoryImpl()));
         // lấy sự kiện click ở button reload homeactivity
         SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
@@ -77,9 +80,17 @@ public class HomeFragment extends Fragment {
 //        });
 
         Log.d("Supabase", "HomeFragment onCreateView - Gọi loadPosts()");
-        loadPosts();
+//        loadPosts();
         loadPostProfileID();
+        clickViewProfile();
         return view;
+    }
+
+    private void clickViewProfile() {
+        btnAcc.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), ProfileActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void getProfile() {
@@ -122,6 +133,7 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
     private void loadPostProfileID() {
         postViewModel.getPostByIdUser("eq." + profileId, new PostViewModel.OnGetPost() {
             @Override

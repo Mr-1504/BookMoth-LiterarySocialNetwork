@@ -2,6 +2,7 @@ package com.example.bookmoth.data.repository.login;
 
 import com.example.bookmoth.data.model.login.GoogleLoginRequest;
 import com.example.bookmoth.data.model.login.LoginRequest;
+import com.example.bookmoth.data.model.login.LogoutRequest;
 import com.example.bookmoth.data.model.register.TokenResponse;
 import com.example.bookmoth.data.remote.utils.RetrofitClient;
 import com.example.bookmoth.data.remote.login.LoginApiService;
@@ -55,5 +56,14 @@ public class LoginRepositoryImpl implements LoginRepository {
     @Override
     public Call<Account> getAccount() {
         return loginApiService.getAccount();
+    }
+
+    /**
+     * Gửi yêu cầu đăng xuất
+     * @param deviceId id của thiết bị hiện tại
+     */
+    @Override
+    public Call<Void> logout(String deviceId) {
+        return loginApiService.logout(new LogoutRequest(deviceId));
     }
 }

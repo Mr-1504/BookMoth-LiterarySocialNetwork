@@ -79,4 +79,8 @@
     <string name="connection_restored">Đã khôi phục kết nối</string>
     <string name="follower">người theo dõi</string>
     <string name="error_get_post">"Lỗi lấy bài viết: "</string>
+    <string name="payment_account">Tài khoản thanh toán</string>
+    <string name="deposit">Nạp tiền</string>
+    <string name="transfer">Chuyển tiền</string>
+    <string name="withdraw">Rút tiền</string>
 </resources>
