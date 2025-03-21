@@ -1,28 +1,48 @@
 package com.example.bookmoth.ui.profile;
 
+
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.repository.post.FlaskRepositoryImpl;
+import com.example.bookmoth.data.repository.post.SupabaseRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
+import com.example.bookmoth.domain.model.post.Post;
 import com.example.bookmoth.domain.model.profile.Profile;
+import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
+import com.example.bookmoth.domain.usecase.post.PostUseCase;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
+import com.example.bookmoth.ui.adapter.PostAdapter;
+import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity {
 
     private ProfileViewModel profileViewModel;
-    private TextView txtFollower, txtName, txtUsername;
+    private TextView txtFollower, txtName, txtUsername, txtBack;
     private ImageView avatar, coverPhoto;
+    private PostViewModel postViewModel;
+    private PostAdapter postAdapter;
+    private List<Post> postList = new ArrayList<>();
+    private RecyclerView content;
+    private String profileId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +58,30 @@ public class ProfileActivity extends AppCompatActivity {
 
         initViews();
         getProfile();
+        loadPostProfileID();
+        clickReturn();
+    }
+
+    private void clickReturn() {
+        txtBack.setOnClickListener(v -> {
+            finish();
+        });
     }
 
     private void initViews() {
+        txtBack = findViewById(R.id.txtBack);
+        profileId = SecureStorage.getToken("profileId");
+        postViewModel = new PostViewModel(new PostUseCase(new SupabaseRepositoryImpl()));
+        postAdapter = new PostAdapter(this, postList, new PostUseCase(new SupabaseRepositoryImpl()), new FlaskUseCase(new FlaskRepositoryImpl()));
         profileViewModel = new ProfileViewModel(new ProfileUseCase(new ProfileRepositoryImpl()));
         txtFollower = findViewById(R.id.txtFollower);
         txtName = findViewById(R.id.txtName);
         avatar = findViewById(R.id.imageViewAvatar);
         coverPhoto = findViewById(R.id.imageViewCover);
         txtUsername = findViewById(R.id.txUsername);
+        content = findViewById(R.id.contentRecyclerView);
+        content.setLayoutManager(new LinearLayoutManager(this));
+        content.setAdapter(postAdapter);
     }
 
     private void getProfile() {
@@ -94,6 +129,22 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onErrorConnectToServer(String error) {
                 // Xử lý lỗi kết nối (Hiển thị thông báo lỗi nếu cần)
+            }
+        });
+    }
+
+    private void loadPostProfileID() {
+        postViewModel.getPostByIdUser("eq." + profileId, new PostViewModel.OnGetPost() {
+            @Override
+            public void onGetPostSuccess(List<Post> posts) {
+                postList.clear();
+                postList.addAll(posts);
+                postAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onGetPostFailure(String message) {
+                Toast.makeText(ProfileActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -108,6 +108,22 @@ public class LoginViewModel extends ViewModel {
         });
     }
 
+    public void logout(Context context){
+        String deviceId = MyFirebaseMessagingService.getDeviceId(context);
+
+        loginUseCase.logout(deviceId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
+
     /**
      * Interface dùng để lắng nghe kết quả đăng nhập.
      */

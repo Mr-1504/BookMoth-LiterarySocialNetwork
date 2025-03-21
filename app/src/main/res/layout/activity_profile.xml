@@ -23,6 +23,20 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:contentScrim="?attr/colorPrimary">
 
+                <TextView
+                    android:id="@+id/txtBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:padding="8dp"
+                    android:text="@string/return_button"
+                    android:textSize="20sp"
+                    android:textColor="@android:color/white"
+                    android:background="@android:color/transparent"
+                    android:fontFamily="sans-serif-medium"
+                    android:rotationY="180"
+                    android:elevation="4dp"/>
                 <!-- Ảnh bìa -->
                 <ImageView
                     android:id="@+id/imageViewCover"
@@ -57,13 +71,11 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-
-
+                <!-- Thông tin cá nhân -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <!-- Tên & số follower -->
                     <TextView
                         android:id="@+id/txtName"
                         android:layout_width="wrap_content"
@@ -72,7 +84,6 @@
                         android:textSize="20sp"
                         android:textStyle="bold"/>
 
-                    <!-- Tên & số follower -->
                     <TextView
                         android:id="@+id/txUsername"
                         android:layout_width="wrap_content"
@@ -100,8 +111,16 @@
                     android:text="Chỉnh sửa trang cá nhân"
                     android:textColor="@android:color/white"/>
 
+                <!-- RecyclerView -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/contentRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
+
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
+
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -2,7 +2,6 @@ package com.example.bookmoth.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
@@ -16,13 +15,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.core.utils.SecureStorage;
-import com.example.bookmoth.ui.login.LoginActivity;
-import com.example.bookmoth.ui.payment.PayActivity;
+import com.example.bookmoth.ui.option.OptionActivity;
 import com.example.bookmoth.ui.viewmodel.post.SharedViewModel;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -66,6 +60,15 @@ public class HomeActivity extends AppCompatActivity {
         // Xử lý sự kiện reload
         buttonReload.setOnClickListener(v -> {
             viewModel.setButtonClicked();
+        });
+        
+        clickOption();
+    }
+
+    private void clickOption() {
+        buttonSetting.setOnClickListener(view -> {
+            Intent intent = new Intent(HomeActivity.this, OptionActivity.class);
+            startActivity(intent);
         });
     }
 

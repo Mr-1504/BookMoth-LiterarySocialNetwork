@@ -88,7 +88,7 @@ public class PostViewModel {
                     listener.onGetPostSuccess(posts);
 
                 } else {
-                    Log.e("Supabase", "Lỗi lấy bài đăng: " + response.errorBody());
+                    Log.e("Supabase", "Lỗi lấy bài đăng: ");
                     listener.onGetPostFailure(
                             "Lỗi lấy bài đăng"
                     );

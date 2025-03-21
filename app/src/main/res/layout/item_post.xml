@@ -18,6 +18,49 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="43dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/imageProfile"
+                android:layout_width="23dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                tools:srcCompat="@drawable/button_liked" />
+
+            <LinearLayout
+                android:layout_width="193dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/nameProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Họ và tên"
+                    android:textSize="16sp"
+                    android:textStyle="normal|bold" />
+
+                <TextView
+                    android:id="@+id/tvTimestamp"
+                    android:layout_width="195dp"
+                    android:layout_height="wrap_content"
+                    android:text="time bài viết"
+                    android:textColor="#000"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="117dp"
+                android:layout_height="20dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
@@ -36,13 +79,12 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/tvTimestamp"
+            android:id="@+id/tvTabWorks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="time bài viết"
-            android:textColor="#000"
-            android:textSize="16sp" />
+            android:text="TabWorks"
+            android:textColor="#333"
+            android:textSize="14sp" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -147,15 +189,15 @@
 
 
         <!--        <VideoView-->
-<!--            android:id="@+id/videoView"-->
-<!--            android:layout_width="407dp"-->
-<!--            android:layout_height="172dp" />-->
+        <!--            android:id="@+id/videoView"-->
+        <!--            android:layout_width="407dp"-->
+        <!--            android:layout_height="172dp" />-->
 
-<!--        <Button-->
-<!--            android:id="@+id/btnPlayAudio"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="59dp"-->
-<!--            android:text="Play" />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/btnPlayAudio"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="59dp"-->
+        <!--            android:text="Play" />-->
 
     </LinearLayout>
 
