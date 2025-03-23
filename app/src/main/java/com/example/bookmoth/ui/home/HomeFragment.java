@@ -19,7 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.repository.post.FlaskRepositoryImpl;
 import com.example.bookmoth.data.repository.post.SupabaseRepositoryImpl;
+import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
 import com.example.bookmoth.ui.adapter.PostAdapter;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
@@ -53,7 +55,7 @@ public class HomeFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewComments);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        postAdapter = new PostAdapter(getContext(), postList, new PostUseCase(new SupabaseRepositoryImpl()));
+        postAdapter = new PostAdapter(getContext(), postList, new PostUseCase(new SupabaseRepositoryImpl()), new FlaskUseCase(new FlaskRepositoryImpl()));
         recyclerView.setAdapter(postAdapter);
 
         btnCreatePost = view.findViewById(R.id.btnCreatePost);
@@ -80,7 +82,6 @@ public class HomeFragment extends Fragment {
 //        });
 
         Log.d("Supabase", "HomeFragment onCreateView - Gọi loadPosts()");
-//        loadPosts();
         loadPostProfileID();
         clickViewProfile();
         return view;

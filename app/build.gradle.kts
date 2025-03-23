@@ -118,4 +118,7 @@ dependencies {
     //room database
     implementation("androidx.room:room-runtime:2.6.1")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
+
+    //picasso
+    implementation ("com.squareup.picasso:picasso:2.8")
 }

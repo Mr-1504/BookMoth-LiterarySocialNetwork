@@ -10,17 +10,27 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.remote.post.Api;
+import com.example.bookmoth.data.remote.post.ApiResponse;
 import com.example.bookmoth.data.remote.post.SupabaseApiService;
 import com.example.bookmoth.data.remote.utils.RetrofitClient;
+import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.post.Post;
+import com.example.bookmoth.domain.model.post.Profile;
+import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
+import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.post.CommentActivity;
+import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -38,12 +48,39 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private MediaPlayer mediaPlayer; // Giữ một MediaPlayer để tránh lỗi khi phát nhiều lần
     private long lastClickTime = 0;
     private PostUseCase postUseCase;
+    private FlaskUseCase flaskUseCase;
     private static final long CLICK_DELAY = 500;
-    public PostAdapter(Context context, List<Post> postList, PostUseCase postUseCase) {
+    private String profileId;
+    public PostAdapter(Context context, List<Post> postList, PostUseCase postUseCase, FlaskUseCase flaskUseCase) {
         this.context = context;
         this.postList = postList;
         this.mediaPlayer = new MediaPlayer();
         this.postUseCase = postUseCase;
+        this.flaskUseCase = flaskUseCase;
+    }
+
+    private void getProfile() {
+        ProfileViewModel profileViewModel = new ProfileViewModel(
+                new ProfileUseCase(new ProfileRepositoryImpl())
+        );
+
+        profileViewModel.getProfile(context, new ProfileViewModel.OnProfileListener() {
+            @Override
+            public void onProfileSuccess(com.example.bookmoth.domain.model.profile.Profile profile) {
+                SecureStorage.saveToken("profileId", profile.getProfileId());
+                profileId = profile.getProfileId();
+            }
+
+            @Override
+            public void onProfileFailure(String error) {
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onErrorConnectToServer(String error) {
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @NonNull
@@ -61,6 +98,40 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.tvTimestamp.setText(post.getTimestamp());
         holder.countLike.setText(String.valueOf(post.getCount_like()));
         holder.countComment.setText(String.valueOf(post.getCount_comment()));
+        if(post.getTab_works() == -1){
+            holder.tabWorks.setVisibility(View.GONE);
+        }
+        else{
+            holder.tabWorks.setVisibility(View.VISIBLE);
+            holder.tabWorks.setText(String.valueOf(post.getTab_works()));
+        }
+        getNameProfile(post.getAuthorId(), new NameCallback() {
+            @Override
+            public void onSuccess(String name) {
+                Log.d("Profile Name", "Tên người dùng: " + name);
+                holder.nameProfile.setText(name);
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e("Profile API", error);
+            }
+        });
+
+
+        getImageProfile(post.getAuthorId(), new ImageCallback() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                Picasso.get().load(imageUrl).into(holder.btnProfile);
+                Log.e("Profile Image", "Ảnh đại diện: " + imageUrl);
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e("Profile API", error);
+            }
+        });
+
         checkLikeStatus(post.getPostId(), holder);
         holder.btnLike.setOnClickListener(v -> {
             long currentTime = System.currentTimeMillis();
@@ -108,9 +179,63 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 //            }
         }
     }
+    private void getImageProfile(int authorId, ImageCallback callback) {
+        flaskUseCase.getProfileAvata(authorId).enqueue(new Callback<Api>() {
+            @Override
+            public void onResponse(Call<Api> call, Response<Api> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String imageUrl = response.body().getData();
+                    callback.onSuccess(imageUrl);
+                } else {
+                    callback.onError("Lỗi lấy ảnh profile: " + response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Api> call, Throwable t) {
+                callback.onError("Lỗi kết nối API: " + t.getMessage());
+            }
+        });
+    }
+
+
+    // Interface callback cho ảnh đại diện
+    public interface ImageCallback {
+        void onSuccess(String imageUrl);
+        void onError(String error);
+    }
+
+    private void getNameProfile(int authorId, NameCallback callback) {
+        flaskUseCase.getProfile(authorId).enqueue(new Callback<ApiResponse<Profile>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Profile>> call, Response<ApiResponse<Profile>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Profile profile = response.body().getData();
+                    String fullName = profile.getFirstName() + " " + profile.getLastName();
+                    callback.onSuccess(fullName);
+                } else {
+                    callback.onError("Lỗi lấy thông tin profile: " + response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Profile>> call, Throwable t) {
+                callback.onError("Lỗi kết nối API: " + t.getMessage());
+            }
+        });
+    }
+
+
+    // Interface để callback kết quả
+    public interface NameCallback {
+        void onSuccess(String name);
+        void onError(String error);
+    }
+
     private void checkLikeStatus(int postId, PostViewHolder holder) {
-        int userId = 1; // Lấy ID người dùng hiện tại
-//        int userId = getCurrentUserId();
+        profileId = SecureStorage.getToken("profileId");
+        getProfile();
+        int userId = Integer.parseInt(profileId); // Cần lấy userId thực tế từ session hoặc database
         postUseCase.checkLikeStatus("eq." + postId, "eq." + userId, "*")
                 .enqueue(new Callback<List<Map<String, Object>>>() {
                     @Override
@@ -149,7 +274,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 // Chuẩn bị dữ liệu gửi API
                 Map<String, Object> body = new HashMap<>();
                 body.put("post_id", postId);
-                body.put("user_id", 1); // Thay bằng getCurrentUserId() nếu có
+                profileId = SecureStorage.getToken("profileId");
+                getProfile();
+                body.put("user_id", profileId); // Thay bằng getCurrentUserId() nếu có
 
                 // Gửi request đến API để thêm like
                 postUseCase.addLike(body).enqueue(new Callback<ResponseBody>() {
@@ -175,7 +302,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
 
     private void removeLike(int postId, PostViewHolder holder) {
-        String userId = "1"; // Cần lấy userId thực tế từ session hoặc database
+        profileId = SecureStorage.getToken("profileId");
+        getProfile();
+        String userId = profileId; // Cần lấy userId thực tế từ session hoặc database
         String url = "https://vhqcdiaoqrlcsnqvjpqh.supabase.co/rest/v1/likes?" + "post_id=eq." + postId + "&user_id=eq." + userId;
 
         // Cập nhật UI ngay lập tức
@@ -279,9 +408,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvContent, tvTimestamp,countLike, countComment;
+        TextView tvTitle, tvContent, tvTimestamp,countLike, countComment, tabWorks, nameProfile;
         ImageView imageView;
-        ImageButton btnLike, btnComment;
+        ImageButton btnLike, btnComment, btnProfile;
         boolean isLiked = false;
 //        VideoView videoView;
 //        Button btnPlayAudio;
@@ -297,6 +426,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             btnLike = itemView.findViewById(R.id.button_like);
             countLike = itemView.findViewById(R.id.countLike);
             countComment = itemView.findViewById(R.id.countComment);
+            tabWorks = itemView.findViewById(R.id.tvTabWorks);
+            btnProfile = itemView.findViewById(R.id.imageProfile);
+            nameProfile = itemView.findViewById(R.id.nameProfile);
 //            videoView = itemView.findViewById(R.id.videoView);
 //            btnPlayAudio = itemView.findViewById(R.id.btnPlayAudio);
 
