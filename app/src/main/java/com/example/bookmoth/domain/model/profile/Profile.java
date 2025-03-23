@@ -1,5 +1,7 @@
 package com.example.bookmoth.domain.model.profile;
 
+import com.example.bookmoth.data.model.profile.ProfileEntity;
+
 import java.io.Serializable;
 
 /**
@@ -17,6 +19,20 @@ public class Profile implements Serializable {
     private int gender;         // Giới tính (0: Nam, 1: Nữ, 2: Khác)
     private boolean identifier; // Xác định tài khoản cá nhân hay nhóm
     private String dateOfBirth; // Ngày sinh
+
+
+    public Profile(ProfileEntity entity) {
+        this.profileId = entity.profileId;
+        this.accountId = entity.accountId;
+        this.firstName = entity.firstName;
+        this.lastName = entity.lastName;
+        this.username = entity.username;
+        this.avatar = entity.avatar;
+        this.coverPhoto = entity.coverPhoto;
+        this.gender = entity.gender;
+        this.identifier = entity.identifier;
+        this.dateOfBirth = entity.dateOfBirth;
+    }
 
     /**
      * Lấy ngày sinh của người dùng.

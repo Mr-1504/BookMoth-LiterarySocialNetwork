@@ -1,6 +1,7 @@
 package com.example.bookmoth.domain.usecase.profile;
 
 import com.example.bookmoth.domain.model.profile.Profile;
+import com.example.bookmoth.domain.repository.profile.LocalProfileRepository;
 import com.example.bookmoth.domain.repository.profile.ProfileRepository;
 
 import retrofit2.Call;
@@ -10,15 +11,17 @@ import retrofit2.Call;
  * Đóng vai trò trung gian giữa Repository và ViewModel/Controller.
  */
 public class ProfileUseCase {
-    private final ProfileRepository profileRepository;
+    private final LocalProfileRepository localRepo;
+    private final ProfileRepository remoteRepo;
 
     /**
      * Constructor khởi tạo `ProfileUseCase` với `ProfileRepository`.
      *
-     * @param profileRepository Repository xử lý logic lấy dữ liệu hồ sơ người dùng.
+     * @param remoteRepo Repository xử lý logic lấy dữ liệu hồ sơ người dùng.
      */
-    public ProfileUseCase(ProfileRepository profileRepository) {
-        this.profileRepository = profileRepository;
+    public ProfileUseCase(LocalProfileRepository localRepo, ProfileRepository remoteRepo) {
+        this.localRepo = localRepo;
+        this.remoteRepo = remoteRepo;
     }
 
     /**
@@ -27,6 +30,29 @@ public class ProfileUseCase {
      * @return Đối tượng Call chứa thông tin hồ sơ của người dùng.
      */
     public Call<Profile> getProfile() {
-        return profileRepository.getProfile();
+        return remoteRepo.getProfile();
+    }
+
+    /**
+     * Lưu thông tin hồ sơ người dùng.
+     * @param profile Đối tượng chứa thông tin hồ sơ người dùng.
+     */
+    void saveProfile(Profile profile) {
+        localRepo.saveProfile(profile);
+    }
+
+    /**
+     * Lấy thông tin hồ sơ người dùng từ bộ nhớ cục bộ.
+     * @return Đối tượng chứa thông tin hồ sơ người dùng.
+     */
+    Profile getProfileLocal() {
+        return localRepo.getProfileLocal();
+    }
+
+    /**
+     * Xóa thông tin hồ sơ người dùng khỏi bộ nhớ cục bộ.
+     */
+    void deleteProfileLocal() {
+        localRepo.deleteProfileLocal();
     }
 }
