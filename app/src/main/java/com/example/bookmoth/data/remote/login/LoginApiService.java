@@ -57,6 +57,6 @@ public interface LoginApiService {
      * Đăng xuất
      * @param request Đối tượng {@link LogoutRequest} chứa deviceId của thiết bị
      */
-    @DELETE("api/account/logout")
+    @POST("api/account/logout")
     Call<Void> logout(@Body LogoutRequest request);
 }
