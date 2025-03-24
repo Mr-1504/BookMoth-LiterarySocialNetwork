@@ -3,12 +3,18 @@ package com.example.bookmoth.data.repository.profile;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.bookmoth.data.local.utils.ImageCache;
 import com.example.bookmoth.data.model.profile.ProfileDao;
@@ -32,48 +38,98 @@ public class LocalProfileRepositoryImpl implements LocalProfileRepository {
 
     @Override
     public void saveProfile(Profile profile) {
-        Glide.with(context).asBitmap().load(profile.getAvatar()).into(new CustomTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(@NonNull Bitmap resource,
-                                        @Nullable Transition<? super Bitmap> transition) {
-                String avatarPath = ImageCache.saveBitmap(context, resource, "avatar.png");
+        Glide.with(context.getApplicationContext())
+                .asBitmap()
+                .load(profile.getAvatar())
+                .diskCacheStrategy(DiskCacheStrategy.NONE) // Không dùng cache để kiểm tra ảnh mới nhất
+                .skipMemoryCache(true)
+                .listener(new RequestListener<Bitmap>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                Target<Bitmap> target, boolean isFirstResource) {
+                        Log.e("Glide", "Failed to load avatar", e);
+                        return false;
+                    }
 
-                Glide.with(context).asBitmap().load(profile.getCoverPhoto()).into(
-                        new CustomTarget<Bitmap>() {
+                    @Override
+                    public boolean onResourceReady(Bitmap resource, Object model,
+                                                   Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                        Log.d("Glide", "Avatar loaded - Width: " + resource.getWidth() + " Height: " + resource.getHeight());
+                        return false;
+                    }
+                })
+                .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource,
                                                 @Nullable Transition<? super Bitmap> transition) {
-                        String coverPhotoPath = ImageCache.saveBitmap(context, resource, "cover.png");
+                        Log.d("Glide", "Avatar Bitmap received - Width: " + resource.getWidth() + " Height: " + resource.getHeight());
 
-                        executor.execute(() -> {
-                            ProfileEntity entity = new ProfileEntity();
-                            entity.profileId = profile.getProfileId();
-                            entity.accountId = profile.getAccountId();
-                            entity.firstName = profile.getFirstName();
-                            entity.lastName = profile.getLastName();
-                            entity.username = profile.getUsername();
-                            entity.avatar = avatarPath;
-                            entity.coverPhoto = coverPhotoPath;
-                            entity.dateOfBirth = profile.getDateOfBirth();
-                            entity.identifier = profile.isIdentifier();
+                        String avatarPath = ImageCache.saveBitmap(
+                                context.getApplicationContext(), resource, "avatar.png");
+                        Log.d("saveProfile", "Avatar saved at: " + avatarPath);
 
-                            profileDao.saveProfile(profile);
-                        });
+                        Glide.with(context.getApplicationContext())
+                                .asBitmap()
+                                .load(profile.getCoverphoto())
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .listener(new RequestListener<Bitmap>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                                Target<Bitmap> target, boolean isFirstResource) {
+                                        Log.e("Glide", "Failed to load cover photo", e);
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Bitmap resource, Object model,
+                                                                   Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                                        Log.d("Glide", "Cover Photo loaded - Width: " + resource.getWidth() + " Height: " + resource.getHeight());
+                                        return false;
+                                    }
+                                })
+                                .into(new CustomTarget<Bitmap>() {
+                                    @Override
+                                    public void onResourceReady(@NonNull Bitmap resource,
+                                                                @Nullable Transition<? super Bitmap> transition) {
+                                        Log.d("Glide", "Cover Photo Bitmap received - Width: " + resource.getWidth() + " Height: " + resource.getHeight());
+
+                                        String coverPhotoPath = ImageCache.saveBitmap(
+                                                context.getApplicationContext(), resource, "cover.png");
+                                        Log.d("saveProfile", "Cover photo saved at: " + coverPhotoPath);
+
+                                        executor.execute(() -> {
+                                            ProfileEntity entity = new ProfileEntity(
+                                                    profile.getProfileId(),
+                                                    profile.getAccountId(),
+                                                    profile.getFirstName(),
+                                                    profile.getLastName(),
+                                                    profile.getUsername(),
+                                                    avatarPath,
+                                                    coverPhotoPath,
+                                                    profile.getGender(),
+                                                    profile.isIdentifier(),
+                                                    profile.getBirth()
+                                            );
+
+                                            profileDao.saveProfile(entity);
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                                        Log.d("saveProfile", "Cover photo load cleared");
+                                    }
+                                });
                     }
 
                     @Override
                     public void onLoadCleared(@Nullable Drawable placeholder) {
-
+                        Log.d("saveProfile", "Avatar load cleared");
                     }
-                })
-            }
-
-            @Override
-            public void onLoadCleared(@Nullable Drawable placeholder) {
-
-            }
-        })
+                });
     }
+
 
     @Override
     public Profile getProfileLocal() {
@@ -83,13 +139,19 @@ public class LocalProfileRepositoryImpl implements LocalProfileRepository {
 
     @Override
     public void deleteProfileLocal() {
-        executor.execute(() ->{
+        executor.execute(() -> {
             profileDao.deleteProfileLocal();
             deleteCacheFiles();
         });
     }
 
+    @Override
+    public boolean isProfileExist() {
+        return getProfileLocal() != null;
+    }
+
     private void deleteCacheFiles() {
+        Log.i("DELETE PROFILE", "Deleting cache files");
         File avatarFile = new File(context.getCacheDir(), "avatar.png");
         if (avatarFile.exists()) {
             avatarFile.delete();
