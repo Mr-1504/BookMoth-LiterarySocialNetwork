@@ -1,7 +1,9 @@
 package com.example.bookmoth.ui.profile;
 
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,8 +20,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.data.local.utils.ImageCache;
 import com.example.bookmoth.data.repository.post.FlaskRepositoryImpl;
 import com.example.bookmoth.data.repository.post.SupabaseRepositoryImpl;
+import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.post.Post;
 import com.example.bookmoth.domain.model.profile.Profile;
@@ -33,6 +38,9 @@ import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ */
 public class ProfileActivity extends AppCompatActivity {
 
     private ProfileViewModel profileViewModel;
@@ -72,8 +80,14 @@ public class ProfileActivity extends AppCompatActivity {
         txtBack = findViewById(R.id.txtBack);
         profileId = SecureStorage.getToken("profileId");
         postViewModel = new PostViewModel(new PostUseCase(new SupabaseRepositoryImpl()));
-        postAdapter = new PostAdapter(this, postList, new PostUseCase(new SupabaseRepositoryImpl()), new FlaskUseCase(new FlaskRepositoryImpl()));
-        profileViewModel = new ProfileViewModel(new ProfileUseCase(new ProfileRepositoryImpl()));
+        postAdapter = new PostAdapter(this, postList, new PostUseCase(
+                new SupabaseRepositoryImpl()), new FlaskUseCase(new FlaskRepositoryImpl())
+        );
+
+        LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
+                this, ProfileDatabase.getInstance(this).profileDao()
+        );
+        profileViewModel = new ProfileViewModel(new ProfileUseCase(localRepo, new ProfileRepositoryImpl()));
         txtFollower = findViewById(R.id.txtFollower);
         txtName = findViewById(R.id.txtName);
         avatar = findViewById(R.id.imageViewAvatar);
@@ -85,52 +99,78 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void getProfile() {
-        profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
-            @Override
-            public void onProfileSuccess(Profile profile) {
-                if (profile == null) return; // Kiểm tra null để tránh crash
+        profileViewModel.isProfileExist(exist -> {
+            if (exist) {
+                profileViewModel.getProfileLocal(new ProfileViewModel.OnProfileListener() {
+                    @Override
+                    public void onProfileSuccess(Profile profile) {
+                        setProfile(profile, true);
+                    }
 
-                runOnUiThread(() -> {
-                    // Set text
-                    txtName.setText(String.format("%s %s",
-                            profile.getLastName(), profile.getFirstName()));
+                    @Override
+                    public void onProfileFailure(String error) {
+                        Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
+                    @Override
+                    public void onProfileSuccess(Profile profile) {
+                        if (profile == null) return;
+                        runOnUiThread(() -> {
+                            profileViewModel.saveProfile(profile);
+                            setProfile(profile, false);
+                        });
+                    }
 
-                    txtFollower.setText(String.format("%s %s", 0, getString(R.string.follower)));
-
-                    txtUsername.setText(String.format("(%s)", profile.getUsername()));
-
-                    // Load Avatar
-                    Glide.with(ProfileActivity.this)
-                            .load(profile.getAvatar())
-                            .placeholder(R.drawable.avatar)
-                            .error(R.drawable.avatar)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .override(200, 200) // Giảm kích thước ảnh để tăng tốc
-                            .thumbnail(0.1f) // Load ảnh nhỏ trước để hiển thị nhanh hơn
-                            .into(avatar);
-
-                    // Load Cover Photo
-                    Glide.with(ProfileActivity.this)
-                            .load(profile.getCoverPhoto())
-                            .placeholder(R.drawable.avatar)
-                            .error(R.drawable.cover)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .override(800, 400) // Kích thước hợp lý hơn cho ảnh bìa
-                            .thumbnail(0.1f)
-                            .into(coverPhoto);
+                    @Override
+                    public void onProfileFailure(String error) {
+                        Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_SHORT).show();
+                    }
                 });
             }
-
-            @Override
-            public void onProfileFailure(String error) {
-                // Xử lý lỗi (Có thể thêm Toast hoặc Log để debug)
-            }
-
-            @Override
-            public void onErrorConnectToServer(String error) {
-                // Xử lý lỗi kết nối (Hiển thị thông báo lỗi nếu cần)
-            }
         });
+    }
+
+    private void setProfile(Profile profile, boolean isExist) {
+        // Set text
+        txtName.setText(String.format("%s %s",
+                profile.getLastName(), profile.getFirstName()));
+
+        txtFollower.setText(String.format("%s %s", 0, getString(R.string.follower)));
+
+        txtUsername.setText(String.format("(%s)", profile.getUsername()));
+
+        if (isExist) {
+            if (ImageCache.isBitmapExists(this, "avatar.png")) {
+                Bitmap avatarBitmap = ImageCache.loadBitmap(this, "avatar.png");
+                avatar.setImageBitmap(avatarBitmap);
+            }
+            if (ImageCache.isBitmapExists(this, "cover.png")) {
+                Bitmap coverBitmap = ImageCache.loadBitmap(this, "cover.png");
+                coverPhoto.setImageBitmap(coverBitmap);
+            }
+            return;
+        }
+        // Load Avatar
+        Glide.with(ProfileActivity.this)
+                .load(profile.getAvatar())
+                .placeholder(R.drawable.avatar)
+                .error(R.drawable.avatar)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .override(200, 200) // Giảm kích thước ảnh để tăng tốc
+                .thumbnail(0.1f) // Load ảnh nhỏ trước để hiển thị nhanh hơn
+                .into(avatar);
+
+        // Load Cover Photo
+        Glide.with(ProfileActivity.this)
+                .load(profile.getCoverphoto())
+                .placeholder(R.drawable.avatar)
+                .error(R.drawable.cover)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .override(800, 400) // Kích thước hợp lý hơn cho ảnh bìa
+                .thumbnail(0.1f)
+                .into(coverPhoto);
     }
 
     private void loadPostProfileID() {
