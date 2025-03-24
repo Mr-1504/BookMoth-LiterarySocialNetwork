@@ -3,6 +3,7 @@ package com.example.bookmoth.ui.option;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,18 +12,29 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.InternetHelper;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.data.local.utils.ImageCache;
+import com.example.bookmoth.data.model.profile.ProfileDao;
 import com.example.bookmoth.data.repository.login.LoginRepositoryImpl;
+import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
+import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.usecase.login.LoginUseCase;
+import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.login.LoginActivity;
 import com.example.bookmoth.ui.profile.ProfileActivity;
 import com.example.bookmoth.ui.viewmodel.login.LoginViewModel;
+import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.example.bookmoth.ui.wallet.PayActivity;
 import com.example.bookmoth.ui.wallet.WalletActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
+/**
+ *
+ */
 public class OptionActivity extends AppCompatActivity {
 
     private Button btnProfile, btnWallet, btnLogout;
@@ -47,6 +59,9 @@ public class OptionActivity extends AppCompatActivity {
         clickProfile();
     }
 
+    /**
+     *
+     */
     private void clickProfile() {
         btnProfile.setOnClickListener(v -> {
             Intent intent = new Intent(this, ProfileActivity.class);
@@ -63,18 +78,37 @@ public class OptionActivity extends AppCompatActivity {
 
     private void clickLogout() {
         btnLogout.setOnClickListener(v -> {
-            GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.WEB_CLIENT_ID))
-                    .requestEmail()
-                    .build();
-
-            GoogleSignInClient client = GoogleSignIn.getClient(this, signInOptions);
-            client.signOut();
-            new LoginViewModel(new LoginUseCase(new LoginRepositoryImpl())).logout(this);
-            SecureStorage.clearToken();
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            if (InternetHelper.isNetworkAvailable(this)){
+                logout();
+                return;
+            }
+            Toast.makeText(OptionActivity.this, getString(R.string.no_internet), Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private void logout() {
+        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.WEB_CLIENT_ID))
+                .requestEmail()
+                .build();
+
+        GoogleSignInClient client = GoogleSignIn.getClient(this, signInOptions);
+        client.signOut();
+
+        new LoginViewModel(new LoginUseCase(new LoginRepositoryImpl())).logout(this);
+
+        new ProfileViewModel(new ProfileUseCase(
+                new LocalProfileRepositoryImpl(
+                        this, ProfileDatabase.getInstance(this).profileDao()),
+                new ProfileRepositoryImpl()
+        )).deleteProfile();
+        ImageCache.deleteBitmap(this, "avatar.png");
+        ImageCache.deleteBitmap(this, "cover.png");
+
+        SecureStorage.clearToken();
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 }

@@ -15,6 +15,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
@@ -62,7 +64,12 @@ public class LoginFailedActivity extends AppCompatActivity {
     private void retryGetProfile() {
         if (!isActivityActive) return; // Kiểm tra nếu Activity đã bị hủy thì không retry
 
-        ProfileViewModel profileViewModel = new ProfileViewModel(new ProfileUseCase(new ProfileRepositoryImpl()));
+        LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
+                this, ProfileDatabase.getInstance(this).profileDao()
+        );
+        ProfileViewModel profileViewModel = new ProfileViewModel(
+                new ProfileUseCase(localRepo, new ProfileRepositoryImpl())
+        );
 
         profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
             @Override
@@ -93,19 +100,6 @@ public class LoginFailedActivity extends AppCompatActivity {
 
                 startActivity(new Intent(LoginFailedActivity.this, LoginActivity.class));
                 finish();
-            }
-
-            @Override
-            public void onErrorConnectToServer(String error) {
-                if (!isActivityActive) return;
-
-                Toast.makeText(
-                        LoginFailedActivity.this,
-                        "Lỗi kết nối, thử lại sau " + (RETRY_DELAY / 1000) + " giây...",
-                        Toast.LENGTH_SHORT
-                ).show();
-
-                retryHandler.postDelayed(LoginFailedActivity.this::retryGetProfile, RETRY_DELAY);
             }
         });
     }

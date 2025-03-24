@@ -16,10 +16,11 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.bookmoth.R;
+import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
-import com.example.bookmoth.ui.profile.ProfileActivity;
 import com.example.bookmoth.ui.profile.SetAvatarActivity;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
@@ -43,12 +44,19 @@ public class RegisterResultActivity extends AppCompatActivity {
         tvWelcome = findViewById(R.id.tvWelcome);
         countdown = findViewById(R.id.countdown);
 
-        ProfileViewModel profileViewModel = new ProfileViewModel(new ProfileUseCase(new ProfileRepositoryImpl()));
+        LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
+                this, ProfileDatabase.getInstance(this).profileDao()
+        );
+        ProfileViewModel profileViewModel = new ProfileViewModel(
+                new ProfileUseCase(localRepo, new ProfileRepositoryImpl())
+        );
 
         profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
             @Override
             public void onProfileSuccess(Profile profile) {
-                tvWelcome.setText(profile.getFirstName() + " " + getString(R.string.welcom_to_bookmoth));
+                tvWelcome.setText(String.format("%s %s",
+                        profile.getFirstName(), getString(R.string.welcom_to_bookmoth))
+                );
 
                 Glide.with(RegisterResultActivity.this)
                         .load(profile.getAvatar())
@@ -73,11 +81,6 @@ public class RegisterResultActivity extends AppCompatActivity {
             @Override
             public void onProfileFailure(String error) {
                 Toast.makeText(RegisterResultActivity.this, error, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onErrorConnectToServer(String error) {
-
             }
         });
     }

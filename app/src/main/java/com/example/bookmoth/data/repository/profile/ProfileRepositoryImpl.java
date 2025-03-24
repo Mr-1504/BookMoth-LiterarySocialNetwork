@@ -29,4 +29,15 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     public Call<Profile> getProfile() {
         return profileApiService.getProfile();
     }
+
+    /**
+     * Lấy thông tin hồ sơ người dùng theo id từ API.
+     *
+     * @param profileId id của hồ sơ người dùng.
+     * @return {@code Call<Profile>} phản hồi chứa thông tin hồ sơ người dùng.
+     */
+    @Override
+    public Call<Profile> getProfileById(String profileId) {
+        return profileApiService.getProfileById(profileId);
+    }
 }

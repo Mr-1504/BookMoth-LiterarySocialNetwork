@@ -18,10 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.local.profile.ProfileDatabase;
 import com.example.bookmoth.data.remote.post.Api;
 import com.example.bookmoth.data.remote.post.ApiResponse;
 import com.example.bookmoth.data.remote.post.SupabaseApiService;
 import com.example.bookmoth.data.remote.utils.RetrofitClient;
+import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.post.Post;
 import com.example.bookmoth.domain.model.post.Profile;
@@ -60,8 +62,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     private void getProfile() {
+        LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
+                this.context, ProfileDatabase.getInstance(this.context).profileDao()
+        );
         ProfileViewModel profileViewModel = new ProfileViewModel(
-                new ProfileUseCase(new ProfileRepositoryImpl())
+                new ProfileUseCase(localRepo, new ProfileRepositoryImpl())
         );
 
         profileViewModel.getProfile(context, new ProfileViewModel.OnProfileListener() {
@@ -73,11 +78,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             @Override
             public void onProfileFailure(String error) {
-                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onErrorConnectToServer(String error) {
                 Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
             }
         });

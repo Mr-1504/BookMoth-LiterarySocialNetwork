@@ -5,12 +5,22 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
 
+import androidx.lifecycle.ProcessLifecycleOwner;
+
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.data.local.utils.DatabaseManager;
 
 public class BookMothApplication extends Application {
+    private DatabaseManager databaseManager;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        databaseManager = new DatabaseManager(this);
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(databaseManager);
+
         try {
             SecureStorage.init(this);
         } catch (Exception e) {
@@ -27,6 +37,5 @@ public class BookMothApplication extends Application {
                 manager.createNotificationChannel(channel);
             }
         }
-
     }
 }
