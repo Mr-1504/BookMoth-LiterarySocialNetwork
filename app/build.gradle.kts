@@ -124,4 +124,7 @@ dependencies {
 
     //processLifecycle
     implementation("androidx.lifecycle:lifecycle-process:2.8.7")
+
+    //cardview
+    implementation(libs.cardview)
 }
