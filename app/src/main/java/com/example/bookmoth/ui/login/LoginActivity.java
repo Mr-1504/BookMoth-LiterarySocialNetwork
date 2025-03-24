@@ -69,8 +69,8 @@ public class LoginActivity extends AppCompatActivity {
 
         forgotPassword = binding.forgotPasswordButton;
         register = binding.registerButton;
-        email = (TextInputEditText) binding.username;
-        password = (TextInputEditText) binding.password;
+        email = findViewById(R.id.username);
+        password = findViewById(R.id.password);
         loginWithEmail = binding.loginWithEmail;
         loginWithGoogle = binding.loginWithGoogleButton;
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

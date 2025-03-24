@@ -121,8 +121,8 @@
 
                 <ImageView
                     android:id="@+id/transfer"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:background="@drawable/bg_item"
                     android:rotation="90"
                     android:src="@drawable/transfer" />
@@ -147,8 +147,8 @@
 
                 <ImageView
                     android:id="@+id/deposit"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:background="@drawable/bg_item"
                     android:src="@drawable/deposit" />
 
@@ -173,8 +173,8 @@
 
                 <ImageView
                     android:id="@+id/withdraw"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:background="@drawable/bg_item"
                     android:src="@drawable/withdraw" />
 

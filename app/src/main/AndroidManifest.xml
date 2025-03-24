@@ -37,9 +37,6 @@
         </service>
 
         <activity
-            android:name=".ui.error.LoginFailedActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.post.CreatePostActivity"
             android:exported="false" />
         <activity

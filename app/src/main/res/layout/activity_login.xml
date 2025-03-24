@@ -12,13 +12,31 @@
     tools:context=".ui.login.LoginActivity">
 
     <LinearLayout
+        android:id="@+id/logo_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_app"
+            tools:layout_editor_absoluteX="164dp"
+            tools:layout_editor_absoluteY="12dp" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/name_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="150dp"
         android:orientation="vertical"
+        android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo_container"
         app:layout_constraintVertical_bias="0.5">
 
         <LinearLayout
@@ -73,41 +91,41 @@
                 android:backgroundTint="#346FA9"
                 android:text="@string/loginWithEmail" />
         </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/forgot_register"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_container">
-
-        <TextView
-            android:id="@+id/forgot_password_button"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/forgot_register"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_weight="1"
-            android:backgroundTint="@android:color/transparent"
-            android:text="@string/forgot_password"
-            android:textColor="?attr/colorOnBackground"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name_container">
 
-        <TextView
-            android:id="@+id/register_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="18dp"
-            android:layout_weight="1"
-            android:text="@string/register"
-            android:textAlignment="textEnd"
-            android:textColor="?attr/colorOnBackground"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/forgot_password_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
+                android:layout_weight="1"
+                android:backgroundTint="@android:color/transparent"
+                android:text="@string/forgot_password"
+                android:textColor="?attr/colorOnBackground"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/register_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="18dp"
+                android:layout_weight="1"
+                android:text="@string/register"
+                android:textAlignment="textEnd"
+                android:textColor="?attr/colorOnBackground"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -116,7 +134,7 @@
         android:layout_marginTop="104dp"
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/forgot_register">
+        app:layout_constraintTop_toBottomOf="@+id/name_container">
 
         <LinearLayout
             android:id="@+id/loginWithGoogleButton"

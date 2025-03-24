@@ -18,7 +18,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.core.utils.InternetHelper;
 import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.local.profile.ProfileDatabase;
 import com.example.bookmoth.data.model.profile.ProfileDao;
@@ -26,7 +25,6 @@ import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
-import com.example.bookmoth.ui.error.LoginFailedActivity;
 import com.example.bookmoth.ui.login.LoginActivity;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
