@@ -23,8 +23,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.local.profile.ProfileDatabase;
 import com.example.bookmoth.data.repository.post.FlaskRepositoryImpl;
 import com.example.bookmoth.data.repository.post.SupabaseRepositoryImpl;
+import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
@@ -333,8 +335,10 @@ public class CommentActivity extends AppCompatActivity {
 //        });
     }
     private void getProfile() {
-        ProfileViewModel profileViewModel = new ProfileViewModel(
-                new ProfileUseCase(new ProfileRepositoryImpl())
+        LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
+                this, ProfileDatabase.getInstance(this).profileDao()
+        );        ProfileViewModel profileViewModel = new ProfileViewModel(
+                new ProfileUseCase(localRepo, new ProfileRepositoryImpl())
         );
 
         profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
@@ -345,11 +349,6 @@ public class CommentActivity extends AppCompatActivity {
 
             @Override
             public void onProfileFailure(String error) {
-                Toast.makeText(CommentActivity.this, error, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onErrorConnectToServer(String error) {
                 Toast.makeText(CommentActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         });
