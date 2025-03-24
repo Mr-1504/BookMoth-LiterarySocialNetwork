@@ -66,6 +66,33 @@ public class ProfileViewModel {
     }
 
     /**
+     * Lấy thông tin hồ sơ từ server theo id và gọi callback tương ứng.
+     *
+     * @param context  Context của ứng dụng, dùng để lấy string resource.
+     * @param profileId id của hồ sơ người dùng.
+     * @param listener Lắng nghe kết quả của quá trình lấy hồ sơ.
+     */
+    public void getProfileById(Context context, String profileId, final OnProfileListener listener) {
+        profileUseCase.getProfileById(profileId).enqueue(new Callback<Profile>() {
+            @Override
+            public void onResponse(Call<Profile> call, Response<Profile> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listener.onProfileSuccess(response.body());
+                } else if (response.code() == 404) {
+                    listener.onProfileFailure(context.getString(R.string.account_does_not_exist));
+                } else {
+                    listener.onProfileFailure(context.getString(R.string.undefined_error));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Profile> call, Throwable t) {
+                listener.onProfileFailure(context.getString(R.string.error_connecting_to_server));
+            }
+        });
+    }
+
+    /**
      * Xóa thông tin hồ sơ người dùng khỏi bộ nhớ cục bộ.
      */
     public void deleteProfile() {

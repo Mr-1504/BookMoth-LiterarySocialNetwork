@@ -63,4 +63,8 @@ public class ProfileUseCase {
     public boolean isProfileExist() {
         return localRepo.isProfileExist();
     }
+
+    public Call<Profile> getProfileById(String profileId) {
+        return remoteRepo.getProfileById(profileId);
+    }
 }

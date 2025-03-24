@@ -65,7 +65,6 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         initViews();
-        getProfile();
         loadPostProfileID();
         clickReturn();
     }
@@ -78,7 +77,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void initViews() {
         txtBack = findViewById(R.id.txtBack);
-        profileId = SecureStorage.getToken("profileId");
         postViewModel = new PostViewModel(new PostUseCase(new SupabaseRepositoryImpl()));
         postAdapter = new PostAdapter(this, postList, new PostUseCase(
                 new SupabaseRepositoryImpl()), new FlaskUseCase(new FlaskRepositoryImpl())
@@ -96,9 +94,33 @@ public class ProfileActivity extends AppCompatActivity {
         content = findViewById(R.id.contentRecyclerView);
         content.setLayoutManager(new LinearLayoutManager(this));
         content.setAdapter(postAdapter);
+
+        profileId = getIntent().getStringExtra("profileId");
+        if (profileId != null) {
+            getProfileById(profileId);
+        } else {
+            profileId = SecureStorage.getToken("profileId");
+            getMe();
+        }
     }
 
-    private void getProfile() {
+    private void getProfileById(String profileId) {
+        profileViewModel.getProfileById(this, profileId, new ProfileViewModel.OnProfileListener() {
+            @Override
+            public void onProfileSuccess(Profile profile) {
+                runOnUiThread(() -> {
+                    setProfile(profile, false);
+                });
+            }
+
+            @Override
+            public void onProfileFailure(String error) {
+                Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void getMe() {
         profileViewModel.isProfileExist(exist -> {
             if (exist) {
                 profileViewModel.getProfileLocal(new ProfileViewModel.OnProfileListener() {
