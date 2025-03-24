@@ -20,4 +20,10 @@ public interface LocalProfileRepository {
      * Xóa thông tin hồ sơ người dùng khỏi bộ nhớ cục bộ.
      */
     void deleteProfileLocal();
+
+    /**
+     * Kiểm tra xem hồ sơ người dùng đã tồn tại hay chưa.
+     * @return True nếu đã tồn tại, False nếu chưa tồn tại.
+     */
+    boolean isProfileExist();
 }
