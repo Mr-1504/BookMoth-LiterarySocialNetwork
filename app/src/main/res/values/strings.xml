@@ -83,4 +83,9 @@
     <string name="deposit">Nạp tiền</string>
     <string name="transfer">Chuyển tiền</string>
     <string name="withdraw">Rút tiền</string>
+    <string name="receive_money">Nhận tiền</string>
+    <string name="history">Lịch sử</string>
+    <string name="bill">Hóa đơn</string>
+    <string name="movie_ticket">Vé xem phim</string>
+    <string name="train_tiket">Vé tàu</string>
 </resources>

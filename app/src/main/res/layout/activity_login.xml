@@ -43,18 +43,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:gravity="center"
             android:padding="16dp">
 
             <!-- Email -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/TextInputOutlinedStyle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_email">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/username"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
+                    android:minWidth="400dp"
+                    android:maxWidth="500dp"
                     android:layout_height="50dp"
                     android:inputType="textEmailAddress"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -62,14 +65,16 @@
             <!-- Password -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/TextInputOutlinedStyle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"
                 app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
+                    android:minWidth="400dp"
+                    android:maxWidth="500dp"
                     android:layout_height="50dp"
                     android:inputType="textPassword"/>
             </com.google.android.material.textfield.TextInputLayout>
@@ -79,14 +84,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/loginWithEmail"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minWidth="400dp"
+                android:maxWidth="500dp"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="20dp"
                 android:layout_marginEnd="15dp"
                 android:backgroundTint="#346FA9"
                 android:text="@string/loginWithEmail" />
@@ -94,9 +102,11 @@
 
         <LinearLayout
             android:id="@+id/forgot_register"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
+            android:minWidth="400dp"
+            android:maxWidth="500dp"
             android:gravity="center"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"

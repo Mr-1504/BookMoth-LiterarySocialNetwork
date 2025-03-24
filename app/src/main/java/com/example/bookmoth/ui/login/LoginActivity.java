@@ -19,8 +19,8 @@ import com.example.bookmoth.data.local.profile.ProfileDatabase;
 import com.example.bookmoth.data.repository.login.LoginRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
-import com.example.bookmoth.databinding.ActivityLoginBinding;
 import com.example.bookmoth.core.utils.InternetHelper;
+import com.example.bookmoth.databinding.ActivityLoginBinding;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.login.LoginUseCase;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
@@ -47,11 +47,11 @@ public class LoginActivity extends AppCompatActivity {
     private TextView forgotPassword, register;
     private LinearLayout loginWithGoogle;
     private LoginViewModel loginViewModel;
-    private ActivityLoginBinding binding;
     private GoogleSignInOptions signInOptions;
     private GoogleSignInClient client;
     private TextInputEditText email, password;
     int RC_LOGIN = 20;
+    private ActivityLoginBinding binding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
