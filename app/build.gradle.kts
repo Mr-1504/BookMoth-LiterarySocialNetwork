@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.bookmoth"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.bookmoth"
@@ -113,12 +113,15 @@ dependencies {
     implementation("com.jsibbold:zoomage:1.3.1")
 
     //recyclerview
-    implementation ("androidx.recyclerview:recyclerview:1.2.1")
+    implementation (libs.recyclerview)
 
     //room database
-    implementation("androidx.room:room-runtime:2.6.1")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.room.compiler)
 
     //picasso
     implementation ("com.squareup.picasso:picasso:2.8")
+
+    //processLifecycle
+    implementation("androidx.lifecycle:lifecycle-process:2.8.7")
 }
