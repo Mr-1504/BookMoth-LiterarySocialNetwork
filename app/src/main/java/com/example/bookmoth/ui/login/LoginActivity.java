@@ -15,13 +15,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.data.local.profile.ProfileDatabase;
 import com.example.bookmoth.data.repository.login.LoginRepositoryImpl;
+import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
+import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.databinding.ActivityLoginBinding;
 import com.example.bookmoth.core.utils.InternetHelper;
+import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.login.LoginUseCase;
+import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.home.HomeActivity;
 import com.example.bookmoth.ui.register.OptionActivity;
 import com.example.bookmoth.ui.viewmodel.login.LoginViewModel;
+import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -53,6 +59,13 @@ public class LoginActivity extends AppCompatActivity {
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+        new ProfileViewModel(new ProfileUseCase(
+                new LocalProfileRepositoryImpl(
+                        this, ProfileDatabase.getInstance(this).profileDao()),
+                new ProfileRepositoryImpl()
+        )).deleteProfile();
 
         forgotPassword = binding.forgotPasswordButton;
         register = binding.registerButton;
@@ -108,6 +121,7 @@ public class LoginActivity extends AppCompatActivity {
             loginViewModel.login(this, mail, pass, new LoginViewModel.OnLoginListener() {
                 @Override
                 public void onSuccess() {
+                    saveProfile();
                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                     startActivity(intent);
                     finish();
@@ -170,6 +184,7 @@ public class LoginActivity extends AppCompatActivity {
                 loginViewModel.loginWithGoogle(this, account.getIdToken(), new LoginViewModel.OnLoginListener() {
                     @Override
                     public void onSuccess() {
+                        saveProfile();
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);
                         finish();
@@ -186,6 +201,26 @@ public class LoginActivity extends AppCompatActivity {
                 handleGoogleSignInError(e);
             }
         }
+    }
+
+    private void saveProfile() {
+        LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
+                this, ProfileDatabase.getInstance(this).profileDao()
+        );
+        ProfileViewModel profileViewModel = new ProfileViewModel(
+                new ProfileUseCase(localRepo, new ProfileRepositoryImpl()));
+
+        profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
+            @Override
+            public void onProfileSuccess(Profile profile) {
+                if (profile == null) return; // Kiểm tra null để tránh crash
+                profileViewModel.saveProfile(profile);
+            }
+            @Override
+            public void onProfileFailure(String error) {
+                // Xử lý lỗi (Có thể thêm Toast hoặc Log để debug)
+            }
+        });
     }
 
     /**
