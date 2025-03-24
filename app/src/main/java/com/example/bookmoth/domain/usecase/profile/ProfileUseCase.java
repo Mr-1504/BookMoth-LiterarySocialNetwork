@@ -37,7 +37,7 @@ public class ProfileUseCase {
      * Lưu thông tin hồ sơ người dùng.
      * @param profile Đối tượng chứa thông tin hồ sơ người dùng.
      */
-    void saveProfile(Profile profile) {
+    public void saveProfile(Profile profile) {
         localRepo.saveProfile(profile);
     }
 
@@ -45,14 +45,22 @@ public class ProfileUseCase {
      * Lấy thông tin hồ sơ người dùng từ bộ nhớ cục bộ.
      * @return Đối tượng chứa thông tin hồ sơ người dùng.
      */
-    Profile getProfileLocal() {
+    public Profile getProfileLocal() {
         return localRepo.getProfileLocal();
     }
 
     /**
      * Xóa thông tin hồ sơ người dùng khỏi bộ nhớ cục bộ.
      */
-    void deleteProfileLocal() {
+    public void deleteProfileLocal() {
         localRepo.deleteProfileLocal();
+    }
+
+    /**
+     * Kiểm tra xem hồ sơ người dùng đã tồn tại hay chưa.
+     * @return True nếu đã tồn tại, False nếu chưa tồn tại.
+     */
+    public boolean isProfileExist() {
+        return localRepo.isProfileExist();
     }
 }
