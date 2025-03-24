@@ -101,19 +101,6 @@ public class LoginFailedActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginFailedActivity.this, LoginActivity.class));
                 finish();
             }
-
-            @Override
-            public void onErrorConnectToServer(String error) {
-                if (!isActivityActive) return;
-
-                Toast.makeText(
-                        LoginFailedActivity.this,
-                        "Lỗi kết nối, thử lại sau " + (RETRY_DELAY / 1000) + " giây...",
-                        Toast.LENGTH_SHORT
-                ).show();
-
-                retryHandler.postDelayed(LoginFailedActivity.this::retryGetProfile, RETRY_DELAY);
-            }
         });
     }
 
