@@ -15,23 +15,23 @@ public class Profile implements Serializable {
     private String lastName;    // Tên của người dùng
     private String username;    // Tên đăng nhập
     private String avatar;      // Ảnh đại diện
-    private String coverPhoto;  // Ảnh bìa
+    private String coverphoto;  // Ảnh bìa
     private int gender;         // Giới tính (0: Nam, 1: Nữ, 2: Khác)
     private boolean identifier; // Xác định tài khoản cá nhân hay nhóm
-    private String dateOfBirth; // Ngày sinh
+    private String birth; // Ngày sinh
 
 
     public Profile(ProfileEntity entity) {
-        this.profileId = entity.profileId;
-        this.accountId = entity.accountId;
-        this.firstName = entity.firstName;
-        this.lastName = entity.lastName;
-        this.username = entity.username;
-        this.avatar = entity.avatar;
-        this.coverPhoto = entity.coverPhoto;
-        this.gender = entity.gender;
-        this.identifier = entity.identifier;
-        this.dateOfBirth = entity.dateOfBirth;
+        this.profileId = entity.getProfileId();
+        this.accountId = entity.getAccountId();
+        this.firstName = entity.getFirstName();
+        this.lastName = entity.getLastName();
+        this.username = entity.getUsername();
+        this.avatar = entity.getAvatar();
+        this.coverphoto = entity.getCoverPhoto();
+        this.gender = entity.getGender();
+        this.identifier = entity.isIdentifier();
+        this.birth = entity.getDateOfBirth();
     }
 
     /**
@@ -39,17 +39,17 @@ public class Profile implements Serializable {
      *
      * @return Ngày sinh dưới dạng chuỗi (yyyy-MM-dd)
      */
-    public String getDateOfBirth() {
-        return dateOfBirth;
+    public String getBirth() {
+        return birth;
     }
 
     /**
      * Thiết lập ngày sinh cho người dùng.
      *
-     * @param dateOfBirth Ngày sinh (yyyy-MM-dd)
+     * @param birth Ngày sinh (yyyy-MM-dd)
      */
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public void setBirth(String birth) {
+        this.birth = birth;
     }
 
     /**
@@ -75,17 +75,17 @@ public class Profile implements Serializable {
      *
      * @return Đường dẫn hoặc URL ảnh bìa.
      */
-    public String getCoverPhoto() {
-        return coverPhoto;
+    public String getCoverphoto() {
+        return coverphoto;
     }
 
     /**
      * Cập nhật ảnh bìa của người dùng.
      *
-     * @param coverPhoto Đường dẫn hoặc URL ảnh bìa mới.
+     * @param coverphoto Đường dẫn hoặc URL ảnh bìa mới.
      */
-    public void setCoverPhoto(String coverPhoto) {
-        this.coverPhoto = coverPhoto;
+    public void setCoverphoto(String coverphoto) {
+        this.coverphoto = coverphoto;
     }
 
     /**
@@ -228,10 +228,10 @@ public class Profile implements Serializable {
                 ", lastName='" + lastName + '\'' +
                 ", username='" + username + '\'' +
                 ", avatar='" + avatar + '\'' +
-                ", coverPhoto='" + coverPhoto + '\'' +
+                ", coverPhoto='" + coverphoto + '\'' +
                 ", gender=" + gender +
                 ", identifier=" + identifier +
-                ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", dateOfBirth='" + birth + '\'' +
                 '}';
     }
 }
