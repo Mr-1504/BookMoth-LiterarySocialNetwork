@@ -25,4 +25,8 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="MaxHeightStyle">
+        <item name="android:maxHeight">150dp</item>
+    </style>
+
 </resources>
