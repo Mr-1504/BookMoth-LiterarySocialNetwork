@@ -26,10 +26,11 @@ public abstract class ProfileDatabase extends RoomDatabase {
     public static synchronized ProfileDatabase getInstance(Context context){
         if (instance == null){
             instance = Room.databaseBuilder(context.getApplicationContext(),
-                    ProfileDatabase.class, "profile_database")
+                    ProfileDatabase.class, "profile_database.db")
                     .fallbackToDestructiveMigration()
                     .build();
         }
+        int a;
         return instance;
     }
 }
