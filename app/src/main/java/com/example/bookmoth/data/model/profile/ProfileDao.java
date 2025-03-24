@@ -3,6 +3,7 @@ package com.example.bookmoth.data.model.profile;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.example.bookmoth.domain.model.profile.Profile;
@@ -17,8 +18,8 @@ public interface ProfileDao {
      * Lưu thông tin hồ sơ người dùng.
      * @param profile Đối tượng chứa thông tin hồ sơ người dùng.
      */
-    @Insert
-    void saveProfile(Profile profile);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void saveProfile(ProfileEntity profile);
 
     /**
      * Lấy thông tin hồ sơ người dùng từ bộ nhớ cục bộ.
