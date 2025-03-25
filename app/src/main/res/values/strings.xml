@@ -89,4 +89,11 @@
     <string name="movie_ticket">Vé xem phim</string>
     <string name="train_tiket">Vé tàu</string>
     <string name="suggestions_for_you">Gợi ý cho bạn</string>
+    <string name="deposit_into_bookmoth_account">Nạp tiền vào tài khoản BookMoth</string>
+    <string name="zalopay">ZaloPay</string>
+    <string name="vietinbank">Vietinbank</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="add_link">Thêm liên kết</string>
+    <string name="please_input_amount">Vui lòng nhập số tiền</string>
+    <string name="mininum_requirement_10000">Yêu cầu tối thiểu 10,000đ</string>
 </resources>
