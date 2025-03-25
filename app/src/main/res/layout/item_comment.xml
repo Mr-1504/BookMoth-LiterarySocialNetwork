@@ -57,9 +57,17 @@
             </LinearLayout>
 
             <Space
-                android:layout_width="117dp"
+                android:layout_width="48dp"
                 android:layout_height="20dp"
                 android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/btnDeleteComment"
+                android:layout_width="34dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/transfer"
+                app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
         </LinearLayout>
 
         <TextView

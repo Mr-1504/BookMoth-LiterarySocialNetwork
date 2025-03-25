@@ -92,7 +92,7 @@ public class CreatePostActivity extends AppCompatActivity {
             if (fileUri != null) {
                 uploadFileToSupabase(fileUri);
             } else {
-                Toast.makeText(this, "Vui lòng chọn tệp", Toast.LENGTH_SHORT).show();
+                savePostToDatabase(null);
             }
         });
     }
@@ -138,8 +138,8 @@ public class CreatePostActivity extends AppCompatActivity {
 
                     Glide.with(CreatePostActivity.this)
                             .load(imageUrl)
-                            .placeholder(R.drawable.placeholder_image) // Hình mặc định nếu load lâu
-                            .error(R.drawable.error_image) // Hình lỗi nếu ảnh không tồn tại
+                            .placeholder(R.drawable.placeholder_image)
+                            .error(R.drawable.error_image)
                             .into(imageView2);
                 } else {
                     Log.e("API_ERROR", "Ảnh sách không tồn tại");
@@ -153,33 +153,6 @@ public class CreatePostActivity extends AppCompatActivity {
         });
     }
 
-//    private void fetchProductImage(int workId) {
-
-//        ApiClient.getClient().getBookById(workId).enqueue(new Callback<ApiResponse<Book>>() {
-//            @Override
-//            public void onResponse(Call<ApiResponse<Book>> call, Response<ApiResponse<Book>> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//                    ApiResponse<Book> apiResponse = response.body(); // Nhận response từ API
-//                    Book book = apiResponse.getData(); // Lấy dữ liệu từ response
-//
-//                    if (book != null) {
-//                        String imageUrl = book.getCover_url();
-//                        ImageView imageView2 = findViewById(R.id.imageView2);
-//                        imageView2.setVisibility(View.VISIBLE);
-//
-//                        Glide.with(CreatePostActivity.this)
-//                                .load(imageUrl)
-//                                .into(imageView2);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ApiResponse<Book>> call, Throwable t) {
-//                Log.e("API_ERROR", "Lỗi lấy ảnh sản phẩm: " + t.getMessage());
-//            }
-//        });
-//    }
     private void uploadFileToSupabase(Uri fileUri) {
         if (fileUri == null) {
             Toast.makeText(this, "Không thể lấy URI của file", Toast.LENGTH_SHORT).show();
@@ -223,32 +196,6 @@ public class CreatePostActivity extends AppCompatActivity {
                             Toast.makeText(CreatePostActivity.this,message,Toast.LENGTH_SHORT).show();
                         }
                     });
-
-//                    .enqueue(new Callback<ResponseBody>() {
-//                @Override
-//                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                    if (response.isSuccessful()) {
-//                        String fileUrl = SUPABASE_URL + "object/public/" + bucket + "/" + filePathInStorage;
-//                        savePostToDatabase(fileUrl);
-//                    } else {
-//                        btnSubmitPost.setEnabled(true);
-//                        progressBar.setVisibility(View.GONE);
-//                        try {
-//                            String errorBody = response.errorBody() != null ? response.errorBody().string() : "Không có phản hồi";
-//                            Toast.makeText(CreatePostActivity.this, "Lỗi tải lên: " + errorBody, Toast.LENGTH_SHORT).show();
-//                            Log.e("UPLOAD_ERROR", "Response: " + errorBody);
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                    Toast.makeText(CreatePostActivity.this, "Lỗi kết nối!", Toast.LENGTH_SHORT).show();
-//                    Log.e("UPLOAD_ERROR", "Lỗi: ", t);
-//                }
-//            });
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -326,35 +273,6 @@ public class CreatePostActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
             }
         });
-//                .enqueue(new Callback<Void>() {
-//            @Override
-//            public void onResponse(Call<Void> call, Response<Void> response) {
-//                if (response.isSuccessful()) {
-//                    Toast.makeText(CreatePostActivity.this, "Đăng bài thành công!", Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(CreatePostActivity.this, HomeActivity.class);
-//                    intent.putExtra("reload", true);
-//                    startActivity(intent);
-//                    finish();
-//
-//                } else {
-//                    btnSubmitPost.setEnabled(true);
-//                    progressBar.setVisibility(View.GONE);
-//                    try {
-//                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "Không có phản hồi";
-//                        Toast.makeText(CreatePostActivity.this, "Lỗi lưu bài viết: " + errorBody, Toast.LENGTH_SHORT).show();
-//                        Log.e("SAVE_POST_ERROR", "Response: " + errorBody);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-
-//            @Override
-//            public void onFailure(Call<Void> call, Throwable t) {
-//                Toast.makeText(CreatePostActivity.this, "Lỗi kết nối!", Toast.LENGTH_SHORT).show();
-//                Log.e("SAVE_POST_ERROR", "Lỗi: ", t);
-//            }
-//        });
     }
 
 

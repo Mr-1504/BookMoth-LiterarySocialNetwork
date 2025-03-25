@@ -79,6 +79,7 @@ public interface SupabaseRepository {
 
     Call<Void> addComment(Map<String, Object> comment);
 
+    Call<ResponseBody> removeComment(String url);
 
     Call<ResponseBody> updateLikeComment(
             String comnentId,  // Dùng @Query thay vì @Path

@@ -4,6 +4,8 @@ import com.example.bookmoth.domain.model.post.Comment;
 import com.example.bookmoth.domain.model.post.Post;
 import com.example.bookmoth.domain.repository.post.SupabaseRepository;
 
+import org.checkerframework.checker.units.qual.C;
+
 import java.util.List;
 import java.util.Map;
 
@@ -102,6 +104,9 @@ public class PostUseCase {
         return supabaseRepository.addComment(comment);
     }
 
+    public Call<ResponseBody> removeComment(String url) {
+        return supabaseRepository.removeComment(url);
+    }
 
     public Call<ResponseBody> updateLikeComment(
             String comnentId,  // Dùng @Query thay vì @Path

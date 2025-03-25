@@ -94,6 +94,11 @@ public class SupabaseRepositoryImpl implements SupabaseRepository {
     }
 
     @Override
+    public Call<ResponseBody> removeComment(String url) {
+        return supabaseApiService.removeComment(url);
+    }
+
+    @Override
     public Call<ResponseBody> updateLikeComment(String comnentId, Map<String, Object> updateData) {
         return supabaseApiService.updateLikeComment(comnentId,updateData);
     }

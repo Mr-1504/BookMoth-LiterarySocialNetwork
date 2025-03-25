@@ -95,6 +95,8 @@ public interface SupabaseApiService {
 
     @POST("rest/v1/comments")
     Call<Void> addComment(@Body Map<String, Object> comment);
+    @DELETE()
+    Call<ResponseBody> removeComment(@Url String url);
 
     @PATCH("rest/v1/comments")
     Call<ResponseBody> updateLikeComment(

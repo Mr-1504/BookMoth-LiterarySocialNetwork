@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookmoth.R;
@@ -26,6 +27,9 @@ import com.example.bookmoth.domain.model.post.Profile;
 import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
+import com.example.bookmoth.ui.post.CommentActivity;
+import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
+import com.example.bookmoth.ui.viewmodel.post.SharedViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -46,11 +50,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     private final PostUseCase postUseCase = new PostUseCase(new SupabaseRepositoryImpl());
     private String profileId;
     private FlaskUseCase flaskUseCase;
+    private SharedViewModel viewModel;
 
-    public CommentAdapter(Context context,List<Comment> commentList,  FlaskUseCase flaskUseCase){
+    public CommentAdapter(Context context,List<Comment> commentList,  FlaskUseCase flaskUseCase, SharedViewModel viewModel){
         this.context = context;
         this.commentList = commentList;
         this.flaskUseCase = flaskUseCase;
+        this.viewModel = viewModel;
     }
 
     @NonNull
@@ -100,14 +106,97 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             } else {
                 addLike(comment.getId(), holder);
             }
-//            long currentTime = System.currentTimeMillis();
-//            if (currentTime - lastClickTime > CLICK_DELAY) {
-//                lastClickTime = currentTime;
-//
-//            }
+        });
+        holder.btnDeleteComment.setOnClickListener(view -> {
+
+            profileId = SecureStorage.getToken("profileId");
+            getProfile();
+            if(profileId.equals(String.valueOf(comment.getUser_id()))){
+                removeLikeComment(comment.getId());
+                removeComment(comment.getId());
+                int currentPosition = holder.getAdapterPosition();
+                if (currentPosition != RecyclerView.NO_POSITION) {
+                    commentList.remove(currentPosition);
+                    notifyItemRemoved(currentPosition);
+                    notifyItemRangeChanged(currentPosition, commentList.size());
+                }
+                viewModel.setButtonClicked();
+//                updateCountComment(comment.getPost_id());
+            }
+            else {
+                Toast.makeText(context, "Bạn không thể xóa bình luận của người khác", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
+
+    public void removeLikeComment(int idComment){
+
+        String url = "https://vhqcdiaoqrlcsnqvjpqh.supabase.co/rest/v1/likecomment?"+ "id_comment=eq."+idComment;
+
+        postUseCase.removeLikeComment(url).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("Like", "Lỗi xóa like: " + response.errorBody());
+                }
+
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Like", "Lỗi kết nối API: " + t.getMessage());
+            }
+        });
+    }
+    private void removeComment(int idComment){
+        String url = "https://vhqcdiaoqrlcsnqvjpqh.supabase.co/rest/v1/comments?"+ "id_comment=eq."+idComment;
+
+        postUseCase.removeComment(url).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (!response.isSuccessful()) {
+                    Log.e("Like", "Lỗi xóa like: " + response.errorBody());
+                }
+
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Like", "Lỗi kết nối API: " + t.getMessage());
+            }
+        });
+    }
+//    public void updateCountComment(int idPost) {
+//        postUseCase.getCommentForId("eq."+idPost).enqueue(new Callback<List<Comment>>() {
+//            @Override
+//            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
+//                if (response.isSuccessful() && response.body() != null) {
+//                    int newCount = response.body().size();
+//                    Map<String, Object> updateData = new HashMap<>();
+//                    updateData.put("count_comment", newCount);
+//                    postUseCase.updateComment("eq." + idPost, updateData).enqueue(new Callback<ResponseBody>() {
+//                        @Override
+//                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                            if (response.isSuccessful()) {
+//                                Log.d("API", "Cập nhật số lượng comment thành công!");
+//                            } else {
+//                                Log.e("API", "Lỗi cập nhật số lượng comment: " + response.errorBody());
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                            Log.e("API", "Lỗi kết nối khi cập nhật số lượng comment", t);
+//                        }
+//                    });
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Comment>> call, Throwable t) {
+//                Log.e("API", "Lỗi kết nối khi lấy số lượng comment", t);
+//            }
+//        });
+//    }
     private void getProfile() {
         LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
                 this.context, ProfileDatabase.getInstance(this.context).profileDao()
@@ -312,7 +401,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         TextView tvContent, tvTimestamp,countLike, nameProfile;
         ImageButton btnProfile;
 
-        ImageButton btnLike;
+        ImageButton btnLike, btnDeleteComment;
         boolean isLiked = false;
         public CommentViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -322,6 +411,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             btnLike = itemView.findViewById(R.id.button_like);
             btnProfile = itemView.findViewById(R.id.imageProfile);
             nameProfile = itemView.findViewById(R.id.nameProfile);
+            btnDeleteComment = itemView.findViewById(R.id.btnDeleteComment);
         }
     }
 }
