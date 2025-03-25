@@ -4,6 +4,8 @@ import com.example.bookmoth.domain.model.post.Comment;
 import com.example.bookmoth.domain.model.post.Post;
 import com.example.bookmoth.domain.repository.post.SupabaseRepository;
 
+import org.checkerframework.checker.units.qual.C;
+
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +30,8 @@ public class PostUseCase {
     }
 
 
-    public Call<List<Post>> getPostByIdUser(String author_id) {
-        return supabaseRepository.getPostByIdUser(author_id);
+    public Call<List<Post>> getPostByIdUser(String author_id, String status) {
+        return supabaseRepository.getPostByIdUser(author_id, status);
     }
 
 
@@ -45,6 +47,13 @@ public class PostUseCase {
         return supabaseRepository.createPost(post);
     }
 
+    public Call<Void> updatePost(String id, Map<String, Object> post) {
+        return supabaseRepository.updatePost(id, post);
+    }
+
+    public Call<ResponseBody> updatePostStatus(String postId, Map<String, Object> body) {
+        return supabaseRepository.updatePostStatus(postId, body);
+    }
 
     public Call<ResponseBody> updateComment(
             String postId,  // Dùng @Query thay vì @Path
@@ -95,6 +104,9 @@ public class PostUseCase {
         return supabaseRepository.addComment(comment);
     }
 
+    public Call<ResponseBody> removeComment(String url) {
+        return supabaseRepository.removeComment(url);
+    }
 
     public Call<ResponseBody> updateLikeComment(
             String comnentId,  // Dùng @Query thay vì @Path

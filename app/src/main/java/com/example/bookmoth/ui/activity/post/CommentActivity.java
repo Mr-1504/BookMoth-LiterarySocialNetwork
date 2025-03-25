@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,6 +38,7 @@ import com.example.bookmoth.ui.adapter.PostAdapter;
 import com.example.bookmoth.domain.model.post.Comment;
 import com.example.bookmoth.domain.model.post.Post;
 import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
+import com.example.bookmoth.ui.viewmodel.post.SharedViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
 import java.util.ArrayList;
@@ -56,6 +58,8 @@ public class CommentActivity extends AppCompatActivity {
 //    private final PostUseCase postUsecase = new PostUseCase(new SupabaseRepositoryImpl());
     private PostViewModel postViewModel;
 
+    private SharedViewModel viewModel;
+
     @Nullable
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,14 +75,19 @@ public class CommentActivity extends AppCompatActivity {
         editTextComment = findViewById(R.id.editTextComment);
         postViewModel = new PostViewModel(new PostUseCase(new SupabaseRepositoryImpl()));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
         postAdapter = new PostAdapter(this, postList, new PostUseCase(new SupabaseRepositoryImpl()),new FlaskUseCase(new FlaskRepositoryImpl()));
-        commentAdapter = new CommentAdapter(this,commentList,new FlaskUseCase(new FlaskRepositoryImpl()));
+        commentAdapter = new CommentAdapter(this,commentList,new FlaskUseCase(new FlaskRepositoryImpl()), viewModel);
         ConcatAdapter concatAdapter = new ConcatAdapter(postAdapter, commentAdapter);
         recyclerView.setAdapter(concatAdapter);
 
         Intent intentGetPostId = getIntent();
         int postID = intentGetPostId.getIntExtra("postID",0);
-
+        viewModel.getButtonClicked().observe(this, buttonClicked -> {
+            if (buttonClicked) {
+                updateCountComment(postID);
+            }
+        });
         ViewCompat.setOnApplyWindowInsetsListener(rootView, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -194,26 +203,7 @@ public class CommentActivity extends AppCompatActivity {
                 Toast.makeText(CommentActivity.this, "Không thể tải bài đăng!", Toast.LENGTH_SHORT).show();
             }
         });
-//        .enqueue(new Callback<List<Post>>() {
-//            @Override
-//            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-//                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-//                    postList.clear();
-//                    postList.add(response.body().get(0)); // Lấy bài đăng đầu tiên
-//                    postAdapter.notifyDataSetChanged();
-//                } else {
-//                    Log.e("Supabase", "Lỗi lấy bài đăng: " + response.errorBody()+"eq." + postID);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Post>> call, Throwable t) {
-//                Log.e("Supabase", "Lỗi kết nối API", t);
-//                Toast.makeText(CommentActivity.this, "Không thể tải bài đăng!", Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
-
 
     private void loadComments(int postID){
         postViewModel.getCommentForId("eq."+postID, new PostViewModel.OnGetComment() {
@@ -236,32 +226,6 @@ public class CommentActivity extends AppCompatActivity {
             }
         });
 
-//                .enqueue(new Callback<List<Comment>>() {
-//            @Override
-//            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
-//                if(response.isSuccessful()&& response.body()!=null){
-//                    List<Comment> comments = response.body();
-//                    Log.d("Supabase", "Số lượng bình luận: " + comments.size());
-//                    commentList.clear();
-//                    commentList.addAll(comments);
-//                    commentAdapter.notifyDataSetChanged();
-//                }
-//                else {
-//                    try {
-//                        Log.e("Supabase", "Lỗi lấy bình luận: " + response.errorBody().string());
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Comment>> call, Throwable t) {
-//                Log.e("Supabase", "Lỗi kết nối API", t);
-//                Toast.makeText(CommentActivity.this, "Không thể tải bình luận. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
-//            }
-//
-//        });
     }
     public void updateCountComment(int idPost) {
         postViewModel.getCommentForId("eq." + idPost, new PostViewModel.OnGetComment() {
@@ -270,13 +234,11 @@ public class CommentActivity extends AppCompatActivity {
                 int newCount = comments.size();
                 Map<String, Object> updateData = new HashMap<>();
                 updateData.put("count_comment", newCount);
-
                 postViewModel.updateComment("eq." + idPost, updateData, new PostViewModel.OnSupbaBaseListener() {
                     @Override
                     public void onSuccess() {
                         loadPost(idPost);
                     }
-
                     @Override
                     public void onUnSuccess(String message) {
                         Log.e("Supabase", "Lỗi cập nhật comment: " + message);
@@ -287,21 +249,6 @@ public class CommentActivity extends AppCompatActivity {
                         Log.e("Supabase", "Lỗi kết nối khi cập nhật like", new Throwable(message));
                     }
                 });
-//                            .enqueue(new Callback<ResponseBody>() {
-//                        @Override
-//                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                            if (response.isSuccessful()) {
-//                                loadPost(idPost);
-//                            } else {
-//                                Log.e("API", "Lỗi cập nhật comment: " + response.errorBody());
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                            Log.e("API", "Lỗi kết nối khi cập nhật like", t);
-//                        }
-//                    });
             }
 
             @Override
@@ -314,19 +261,6 @@ public class CommentActivity extends AppCompatActivity {
                 Toast.makeText(CommentActivity.this, "Lỗi kết nối khi lấy số lượng comment", Toast.LENGTH_SHORT).show();
             }
         });
-//                .enqueue(new Callback<List<Comment>>() {
-//            @Override
-//            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Comment>> call, Throwable t) {
-//                Log.e("API", "Lỗi kết nối khi lấy số lượng comment", t);
-//            }
-//        });
     }
     private void getProfile() {
         LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(

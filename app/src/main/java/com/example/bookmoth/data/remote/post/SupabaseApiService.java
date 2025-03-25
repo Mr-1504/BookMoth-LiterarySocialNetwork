@@ -17,6 +17,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
 
@@ -30,7 +31,9 @@ public interface SupabaseApiService {
     Call<List<Post>> getPostById(@Query("post_id") String postID);
 
     @GET("rest/v1/posts")
-    Call<List<Post>> getPostByIdUser(@Query("author_id") String author_id);
+    Call<List<Post>> getPostByIdUser(@Query("author_id") String author_id,
+                                     @Query("status") String status
+    );
 
     @PATCH("rest/v1/posts")
     Call<ResponseBody> updateLike(
@@ -43,9 +46,22 @@ public interface SupabaseApiService {
     Call<Void> createPost(@Body Map<String, Object> post);
 
     @PATCH("rest/v1/posts")
+    Call<Void> updatePost(
+            @Query("post_id") String postId,
+            @Body Map<String, Object> body
+    );
+
+
+    @PATCH("rest/v1/posts")
     Call<ResponseBody> updateComment(
             @Query("post_id") String postId,  // Dùng @Query thay vì @Path
             @Body Map<String, Object> updateData
+    );
+
+    @PATCH("rest/v1/posts")
+    Call<ResponseBody> updatePostStatus(
+            @Query("post_id") String postId,
+            @Body Map<String, Object> body
     );
 
 
@@ -79,6 +95,8 @@ public interface SupabaseApiService {
 
     @POST("rest/v1/comments")
     Call<Void> addComment(@Body Map<String, Object> comment);
+    @DELETE()
+    Call<ResponseBody> removeComment(@Url String url);
 
     @PATCH("rest/v1/comments")
     Call<ResponseBody> updateLikeComment(

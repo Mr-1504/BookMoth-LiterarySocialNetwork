@@ -28,7 +28,7 @@ public interface SupabaseRepository {
     Call<List<Post>> getPostById(String postID);
 
 
-    Call<List<Post>> getPostByIdUser(String author_id);
+    Call<List<Post>> getPostByIdUser(String author_id, String status);
 
 
     Call<ResponseBody> updateLike(
@@ -39,6 +39,9 @@ public interface SupabaseRepository {
 
     Call<Void> createPost(Map<String, Object> post);
 
+    Call<Void> updatePost(String id, Map<String, Object> post);
+
+    Call<ResponseBody> updatePostStatus(String postId, Map<String, Object> body);
 
     Call<ResponseBody> updateComment(
             String postId,  // Dùng @Query thay vì @Path
@@ -76,6 +79,7 @@ public interface SupabaseRepository {
 
     Call<Void> addComment(Map<String, Object> comment);
 
+    Call<ResponseBody> removeComment(String url);
 
     Call<ResponseBody> updateLikeComment(
             String comnentId,  // Dùng @Query thay vì @Path
