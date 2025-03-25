@@ -93,43 +93,6 @@
             android:gravity="center"
             android:padding="16dp">
 
-            <!-- Gợi ý số tiền -->
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:gravity="center">-->
-
-<!--                <Button-->
-<!--                    android:id="@+id/btn_suggest_1"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:backgroundTint="@drawable/button_background"-->
-<!--                    android:text="232.000"-->
-<!--                    android:textColor="@color/black"-->
-<!--                    android:padding="8dp"/>-->
-
-<!--                <Button-->
-<!--                    android:id="@+id/btn_suggest_2"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:background="@drawable/button_background"-->
-<!--                    android:text="1.719.000"-->
-<!--                    android:textColor="@color/black"-->
-<!--                    android:padding="8dp"/>-->
-
-<!--                <Button-->
-<!--                    android:id="@+id/btn_suggest_3"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:background="@drawable/button_background"-->
-<!--                    android:text="200.000"-->
-<!--                    android:textColor="@color/black"-->
-<!--                    android:padding="8dp"/>-->
-<!--            </LinearLayout>-->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
