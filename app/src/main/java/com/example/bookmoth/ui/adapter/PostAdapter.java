@@ -21,8 +21,6 @@ import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.local.profile.ProfileDatabase;
 import com.example.bookmoth.data.remote.post.Api;
 import com.example.bookmoth.data.remote.post.ApiResponse;
-import com.example.bookmoth.data.remote.post.SupabaseApiService;
-import com.example.bookmoth.data.remote.utils.RetrofitClient;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.post.Post;
@@ -30,7 +28,7 @@ import com.example.bookmoth.domain.model.post.Profile;
 import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
-import com.example.bookmoth.ui.post.CommentActivity;
+import com.example.bookmoth.ui.activity.post.CommentActivity;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 

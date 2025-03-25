@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> <!-- <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" /> -->
@@ -20,34 +20,37 @@
         android:roundIcon="@drawable/ic_app"
         android:supportsRtl="true"
         android:theme="@style/Theme.BookMoth"
-        tools:targetApi="31" >
+        tools:targetApi="31">
         <activity
-            android:name=".ui.wallet.WalletActivity"
+            android:name=".ui.activity.wallet.DepositActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.option.OptionActivity"
+            android:name=".ui.activity.wallet.WalletActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.option.OptionActivity"
             android:exported="false" />
 
         <service
             android:name=".core.services.MyFirebaseMessagingService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <activity
-            android:name=".ui.post.CreatePostActivity"
+            android:name=".ui.activity.post.CreatePostActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.post.PinBooksActivity"
+            android:name=".ui.activity.post.PinBooksActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.post.CommentActivity"
+            android:name=".ui.activity.post.CommentActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.home.SplashScreenActivity"
-            android:exported="true" >
+            android:name=".ui.activity.home.SplashScreenActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -55,45 +58,45 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.profile.ChooseAvatarActivity"
+            android:name=".ui.activity.profile.ChooseAvatarActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.profile.SetAvatarActivity"
+            android:name=".ui.activity.profile.SetAvatarActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.profile.ProfileActivity"
+            android:name=".ui.activity.profile.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.register.OptionActivity"
+            android:name=".ui.activity.register.OptionActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.register.RegisterResultActivity"
+            android:name=".ui.activity.register.RegisterResultActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.register.SetPasswordActivity"
+            android:name=".ui.activity.register.SetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.register.TypeOtpActivity"
+            android:name=".ui.activity.register.TypeOtpActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.register.TypeEmailActivity"
+            android:name=".ui.activity.register.TypeEmailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.register.TypeGenderActivity"
+            android:name=".ui.activity.register.TypeGenderActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.register.TypeBirthActivity"
+            android:name=".ui.activity.register.TypeBirthActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.register.TypeNameActivity"
+            android:name=".ui.activity.register.TypeNameActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.login.LoginActivity"
+            android:name=".ui.activity.login.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.wallet.PayActivity"
+            android:name=".ui.activity.wallet.PayActivity"
             android:exported="true"
-            android:launchMode="singleTask" >
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -106,7 +109,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.home.HomeActivity"
+            android:name=".ui.activity.home.HomeActivity"
             android:exported="false" />
     </application>
 

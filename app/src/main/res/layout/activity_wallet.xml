@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F7FA"
-    tools:context=".ui.wallet.WalletActivity">
+    tools:context=".ui.activity.wallet.WalletActivity">
 
     <!-- Header (Cố định) -->
     <LinearLayout
