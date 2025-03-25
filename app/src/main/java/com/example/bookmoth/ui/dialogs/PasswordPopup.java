@@ -21,6 +21,7 @@ public class PasswordPopup extends BottomSheetDialogFragment {
     private PasswordDotsView passwordDotsView;
     private StringBuilder passwordBuilder = new StringBuilder();
     private PasswordListener listener;
+    private String title;
 
     public interface PasswordListener {
         void onPasswordEntered(String password);
@@ -29,30 +30,8 @@ public class PasswordPopup extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.popup_password, container, false);
-        passwordDotsView = view.findViewById(R.id.passwordDotsView);
 
-        int[] btnNumber = new int[]{
-                R.id.btn_num_0,
-                R.id.btn_num_1,
-                R.id.btn_num_2,
-                R.id.btn_num_3,
-                R.id.btn_num_4,
-                R.id.btn_num_5,
-                R.id.btn_num_6,
-                R.id.btn_num_7,
-                R.id.btn_num_8,
-                R.id.btn_num_9,
-                R.id.btn_backspace
-        };
-
-
-        for (int i = 0; i <= 9; i++) {
-            Button button = view.findViewById(btnNumber[i]);
-            button.setOnClickListener(v -> addDigit(button.getText().toString(), view));
-        }
-
-        Button backspace = view.findViewById(btnNumber[10]);
-        backspace.setOnClickListener(v -> removeDigit());
+        init(view);
 
         passwordDotsView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -76,9 +55,37 @@ public class PasswordPopup extends BottomSheetDialogFragment {
         return view;
     }
 
-    public PasswordPopup(PasswordListener listener, String title) {
-        TextView titleView = getDialog().findViewById(R.id.txtTitle);
+    private void init(View view) {
+        passwordDotsView = view.findViewById(R.id.passwordDotsView);
+        TextView titleView = view.findViewById(R.id.txtTitle);
         titleView.setText(title);
+
+        int[] btnNumber = new int[]{
+                R.id.btn_num_0,
+                R.id.btn_num_1,
+                R.id.btn_num_2,
+                R.id.btn_num_3,
+                R.id.btn_num_4,
+                R.id.btn_num_5,
+                R.id.btn_num_6,
+                R.id.btn_num_7,
+                R.id.btn_num_8,
+                R.id.btn_num_9,
+                R.id.btn_backspace
+        };
+
+
+        for (int i = 0; i <= 9; i++) {
+            Button button = view.findViewById(btnNumber[i]);
+            button.setOnClickListener(v -> addDigit(button.getText().toString(), view));
+        }
+
+        Button backspace = view.findViewById(btnNumber[10]);
+        backspace.setOnClickListener(v -> removeDigit());
+    }
+
+    public PasswordPopup(PasswordListener listener, String title) {
+        this.title = title;
         this.listener = listener;
     }
 

@@ -1,4 +1,4 @@
-package com.example.bookmoth.ui.post;
+package com.example.bookmoth.ui.activity.post;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -33,7 +33,8 @@ import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
-import com.example.bookmoth.ui.home.HomeActivity;
+import com.example.bookmoth.ui.activity.home.HomeActivity;
+import com.example.bookmoth.ui.activity.post.PinBooksActivity;
 import com.example.bookmoth.ui.viewmodel.post.FlaskViewModel;
 import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
