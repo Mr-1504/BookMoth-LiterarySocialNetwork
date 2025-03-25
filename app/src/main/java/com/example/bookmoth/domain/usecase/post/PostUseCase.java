@@ -28,8 +28,8 @@ public class PostUseCase {
     }
 
 
-    public Call<List<Post>> getPostByIdUser(String author_id) {
-        return supabaseRepository.getPostByIdUser(author_id);
+    public Call<List<Post>> getPostByIdUser(String author_id, String status) {
+        return supabaseRepository.getPostByIdUser(author_id, status);
     }
 
 
@@ -45,6 +45,9 @@ public class PostUseCase {
         return supabaseRepository.createPost(post);
     }
 
+    public Call<ResponseBody> updatePostStatus(String postId, Map<String, Object> body) {
+        return supabaseRepository.updatePostStatus(postId, body);
+    }
 
     public Call<ResponseBody> updateComment(
             String postId,  // Dùng @Query thay vì @Path

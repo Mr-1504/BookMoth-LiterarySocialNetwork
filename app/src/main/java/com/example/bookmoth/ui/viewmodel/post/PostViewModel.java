@@ -79,7 +79,7 @@ public class PostViewModel {
     }
 
     public void getPostByIdUser(String author_id, final OnGetPost listener) {
-        postUseCase.getPostByIdUser(author_id).enqueue(new Callback<List<Post>>() {
+        postUseCase.getPostByIdUser(author_id,"eq.0").enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {

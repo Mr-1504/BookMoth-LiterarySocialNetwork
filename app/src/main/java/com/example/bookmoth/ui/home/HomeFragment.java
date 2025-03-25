@@ -73,7 +73,7 @@ public class HomeFragment extends Fragment {
         SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         viewModel.getButtonClicked().observe(getViewLifecycleOwner(), clicked -> {
             if (clicked) {
-                loadPosts();
+                loadPostProfileID();
             }
         });
 //        btnLoad = view.findViewById(R.id.btnLoad);

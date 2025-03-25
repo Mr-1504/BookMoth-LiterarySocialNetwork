@@ -105,6 +105,38 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.tabWorks.setVisibility(View.VISIBLE);
             holder.tabWorks.setText(String.valueOf(post.getTab_works()));
         }
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.btnDelete.setEnabled(false);
+                Map<String, Object> body = new HashMap<>();
+                body.put("status", 1);
+                Call<ResponseBody> call = postUseCase.updatePostStatus("eq."+String.valueOf(post.getPostId()), body);
+                call.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        holder.btnDelete.setEnabled(true);
+                        if (response.isSuccessful()) {
+                            int currentPosition = holder.getAdapterPosition();
+                            if (currentPosition != RecyclerView.NO_POSITION) {
+                                postList.remove(currentPosition);
+                                notifyItemRemoved(currentPosition);
+                                notifyItemRangeChanged(currentPosition, postList.size());
+                            }
+                            Toast.makeText(context, "Xóa bài viết thành công", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "Xóa thất bại: " + response.message(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        holder.btnDelete.setEnabled(true);
+                        Toast.makeText(context, "Lỗi kết nối API: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
         getNameProfile(post.getAuthorId(), new NameCallback() {
             @Override
             public void onSuccess(String name) {
@@ -484,7 +516,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvContent, tvTimestamp,countLike, countComment, tabWorks, nameProfile;
         ImageView imageView;
-        ImageButton btnLike, btnComment, btnProfile;
+        ImageButton btnLike, btnComment, btnProfile, btnDelete, btnEdit;
         boolean isLiked = false;
 //        VideoView videoView;
 //        Button btnPlayAudio;
@@ -503,6 +535,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             tabWorks = itemView.findViewById(R.id.tvTabWorks);
             btnProfile = itemView.findViewById(R.id.imageProfile);
             nameProfile = itemView.findViewById(R.id.nameProfile);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
+            btnEdit = itemView.findViewById(R.id.btnEdit);
 //            videoView = itemView.findViewById(R.id.videoView);
 //            btnPlayAudio = itemView.findViewById(R.id.btnPlayAudio);
 
