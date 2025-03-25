@@ -79,7 +79,7 @@ public class PostViewModel {
     }
 
     public void getPostByIdUser(String author_id, final OnGetPost listener) {
-        postUseCase.getPostByIdUser(author_id).enqueue(new Callback<List<Post>>() {
+        postUseCase.getPostByIdUser(author_id,"eq.0").enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
@@ -118,6 +118,25 @@ public class PostViewModel {
                         e.printStackTrace();
                     }
                     listener.onUnSuccess("Lỗi tạo bài viết: " + response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                listener.onFailure("Lỗi kết nối API: " + t.getMessage());
+            }
+        });
+    }
+
+    public void updatePost(String id, Map<String, Object> post, final OnSupbaBaseListener listener){
+        postUseCase.updatePost(id, post).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(response.isSuccessful()){
+                    listener.onSuccess();
+                }
+                else {
+                    listener.onUnSuccess("Lỗi update bài viết"+ response.errorBody());
                 }
             }
 

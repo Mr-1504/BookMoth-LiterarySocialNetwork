@@ -12,19 +12,23 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.local.profile.ProfileDatabase;
-import com.example.bookmoth.data.remote.post.ApiResponse;
 import com.example.bookmoth.data.repository.post.FlaskRepositoryImpl;
 import com.example.bookmoth.data.repository.post.SupabaseRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.post.Book;
+import com.example.bookmoth.domain.model.post.Post;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
@@ -37,39 +41,39 @@ import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import retrofit2.http.Url;
 
-public class CreatePostActivity extends AppCompatActivity {
+public class EditPostActivity extends AppCompatActivity {
+
     private static final int PICK_FILE_REQUEST = 1;
     private static final int PICK_BOOK_REQUEST = 100;
     private int selectedWorkId = -1;
     private static final String SUPABASE_URL = "https://vhqcdiaoqrlcsnqvjpqh.supabase.co/";
     private EditText edtTitle, edtContent;
     private Button btnChooseFile, btnSubmitPost, btnPinBooks;
-    private Uri fileUri;
+    private Uri fileUri, urlCheck = null;
     private String fileType;
     private ImageView imgView;
     private ProgressBar progressBar;
     private PostViewModel postViewModel;
     private FlaskViewModel flaskViewModel;
+    private Post post = new Post();
     private ImageButton btnBack;
     private String profileId;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_post);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_edit_post);
         edtTitle = findViewById(R.id.edtTitle);
         edtContent = findViewById(R.id.edtContent);
         btnChooseFile = findViewById(R.id.btnChooseFile);
@@ -78,25 +82,59 @@ public class CreatePostActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         progressBar = findViewById(R.id.progressBar);
         btnPinBooks.setOnClickListener(view -> {
-            Intent intent = new Intent(CreatePostActivity.this, PinBooksActivity.class);
+            Intent intent = new Intent(EditPostActivity.this, PinBooksActivity.class);
             startActivityForResult(intent, PICK_BOOK_REQUEST);
         });
-
-        btnBack.setOnClickListener(view -> finish());
         postViewModel = new PostViewModel(new PostUseCase(new SupabaseRepositoryImpl()));
         flaskViewModel = new FlaskViewModel(new FlaskUseCase(new FlaskRepositoryImpl()));
+        int postId = getIdPost();
+        loadEdit(postId);
+        btnBack.setOnClickListener(view -> finish());
         btnChooseFile.setOnClickListener(view -> openFilePicker());
         btnSubmitPost.setOnClickListener(view -> {
             btnSubmitPost.setEnabled(false);  // Vô hiệu hóa nút đăng bài
             progressBar.setVisibility(View.VISIBLE);
-            if (fileUri != null) {
-                uploadFileToSupabase(fileUri);
+            if (fileUri != null && fileUri!=urlCheck) {
+                urlCheck = null;
+                uploadFileToSupabase(fileUri, postId);
             } else {
-                savePostToDatabase(null);
+                urlCheck = null;
+                savePostToDatabase(post.getMediaUrl(), postId);
             }
         });
     }
 
+    private void loadEdit(int postId) {
+        postViewModel.getPostById("eq." + postId, new PostViewModel.OnGetPost() {
+            @Override
+            public void onGetPostSuccess(List<Post> posts) {
+                post = posts.get(0);
+                edtTitle.setText(post.getTitle());
+                edtContent.setText(post.getContent());
+                selectedWorkId = post.getTab_works();
+                fileUri = Uri.parse(post.getMediaUrl());
+                urlCheck = fileUri;
+                if (selectedWorkId != -1) {
+                    fetchProductImage(selectedWorkId);
+                }
+                imgView = findViewById(R.id.imageView1);
+                imgView.setVisibility(View.VISIBLE);
+                Glide.with(EditPostActivity.this).load(post.getMediaUrl()).into(imgView);
+            }
+
+            @Override
+            public void onGetPostFailure(String message) {
+                Log.e("Supabase", "Lỗi kết nối API");
+                Toast.makeText(EditPostActivity.this, "Không thể tải bài đăng!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private int getIdPost(){
+        Intent intentPost = getIntent();
+        int postId = intentPost.getIntExtra("postID", -1);
+        return postId;
+    }
     private void openFilePicker() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -136,10 +174,10 @@ public class CreatePostActivity extends AppCompatActivity {
                     ImageView imageView2 = findViewById(R.id.imageView2);
                     imageView2.setVisibility(View.VISIBLE);
 
-                    Glide.with(CreatePostActivity.this)
+                    Glide.with(EditPostActivity.this)
                             .load(imageUrl)
-                            .placeholder(R.drawable.placeholder_image)
-                            .error(R.drawable.error_image)
+                            .placeholder(R.drawable.placeholder_image) // Hình mặc định nếu load lâu
+                            .error(R.drawable.error_image) // Hình lỗi nếu ảnh không tồn tại
                             .into(imageView2);
                 } else {
                     Log.e("API_ERROR", "Ảnh sách không tồn tại");
@@ -153,12 +191,12 @@ public class CreatePostActivity extends AppCompatActivity {
         });
     }
 
-    private void uploadFileToSupabase(Uri fileUri) {
+
+    private void uploadFileToSupabase(Uri fileUri, int postId) {
         if (fileUri == null) {
             Toast.makeText(this, "Không thể lấy URI của file", Toast.LENGTH_SHORT).show();
             return;
         }
-
         try {
             InputStream inputStream = getContentResolver().openInputStream(fileUri);
             byte[] fileBytes = new byte[inputStream.available()];
@@ -177,25 +215,25 @@ public class CreatePostActivity extends AppCompatActivity {
 
 
             postViewModel.uploadFile(uploadUrl, requestBody, new PostViewModel.OnStorageListener() {
-                        @Override
-                        public void onStorageSuccess(String message) {
-                            String fileUrl = SUPABASE_URL + "storage/v1/object/public/" + bucket + "/" + filePathInStorage;
-                            savePostToDatabase(fileUrl);
-                        }
+                @Override
+                public void onStorageSuccess(String message) {
+                    String fileUrl = SUPABASE_URL + "storage/v1/object/public/" + bucket + "/" + filePathInStorage;
+                    savePostToDatabase(fileUrl,postId);
+                }
 
-                        @Override
-                        public void onStorageUnSuccess(String message) {
-                            btnSubmitPost.setEnabled(true);
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(CreatePostActivity.this, "Lỗi tải lên: " + message, Toast.LENGTH_SHORT).show();
+                @Override
+                public void onStorageUnSuccess(String message) {
+                    btnSubmitPost.setEnabled(true);
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(EditPostActivity.this, "Lỗi tải lên: " + message, Toast.LENGTH_SHORT).show();
 
-                        }
+                }
 
-                        @Override
-                        public void onStorageFailure(String message) {
-                            Toast.makeText(CreatePostActivity.this,message,Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                @Override
+                public void onStorageFailure(String message) {
+                    Toast.makeText(EditPostActivity.this,message,Toast.LENGTH_SHORT).show();
+                }
+            });
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -220,7 +258,7 @@ public class CreatePostActivity extends AppCompatActivity {
                 new ProfileUseCase(localRepo, new ProfileRepositoryImpl())
         );
 
-        profileViewModel.getProfile(CreatePostActivity.this, new ProfileViewModel.OnProfileListener() {
+        profileViewModel.getProfile(EditPostActivity.this, new ProfileViewModel.OnProfileListener() {
             @Override
             public void onProfileSuccess(Profile profile) {
                 SecureStorage.saveToken("profileId", profile.getProfileId());
@@ -229,33 +267,33 @@ public class CreatePostActivity extends AppCompatActivity {
 
             @Override
             public void onProfileFailure(String error) {
-                Toast.makeText(CreatePostActivity.this, error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditPostActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         });
     }
-    private void savePostToDatabase(String fileUrl) {
+    private void savePostToDatabase(String fileUrl, int postId) {
         String title = edtTitle.getText().toString().trim();
         String content = edtContent.getText().toString().trim();
 
         profileId = SecureStorage.getToken("profileId");
         getProfile();
-        int authorId = Integer.parseInt(profileId);  // Bạn có thể lấy từ user hiện tại nếu có authentication
+        int authorId = Integer.parseInt(profileId);
         String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(new Date());
 
-        Map<String, Object> newPost = new HashMap<>();
-        newPost.put("author_id", authorId);
-        newPost.put("title", title);
-        newPost.put("content", content);
-        newPost.put("media_url", fileUrl);
-        newPost.put("media_type", fileType);
-        newPost.put("timestamp", timestamp);
-        newPost.put("tab_works", selectedWorkId);
+        Map<String, Object> updatedPost = new HashMap<>();
+        updatedPost.put("author_id", authorId);
+        updatedPost.put("title", title);
+        updatedPost.put("content", content);
+        updatedPost.put("media_url", fileUrl);
+        updatedPost.put("media_type", fileType);
+        updatedPost.put("timestamp", timestamp);
+        updatedPost.put("tab_works", selectedWorkId);
 
-        postViewModel.createPost(newPost, new PostViewModel.OnSupbaBaseListener() {
+        postViewModel.updatePost("eq."+postId, updatedPost, new PostViewModel.OnSupbaBaseListener() {
             @Override
             public void onSuccess() {
-                Toast.makeText(CreatePostActivity.this, "Đăng bài thành công!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(CreatePostActivity.this, HomeActivity.class);
+                Toast.makeText(EditPostActivity.this, "Cập nhật bài viết thành công!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(EditPostActivity.this, HomeActivity.class);
                 intent.putExtra("reload", true);
                 startActivity(intent);
                 finish();
@@ -264,16 +302,18 @@ public class CreatePostActivity extends AppCompatActivity {
             public void onUnSuccess(String message) {
                 btnSubmitPost.setEnabled(true);
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(CreatePostActivity.this, "Lỗi lưu bài viết: ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditPostActivity.this, "Lỗi cập nhật bài viết: " + message, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(String message) {
                 btnSubmitPost.setEnabled(true);
                 progressBar.setVisibility(View.GONE);
+                Toast.makeText(EditPostActivity.this, "Lỗi kết nối: " + message, Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
 
     private String getFileType(Uri uri) {
