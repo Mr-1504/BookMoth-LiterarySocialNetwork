@@ -1,5 +1,6 @@
 package com.example.bookmoth.ui.activity.wallet;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,23 +48,17 @@ public class DepositActivity extends AppCompatActivity {
         btnNext.setOnClickListener(view -> {
             String amount = tvAmount.getText().toString();
             if (amount.equals("0đ")) {
+                Toast.makeText(DepositActivity.this, R.string.please_input_amount, Toast.LENGTH_SHORT).show();
                 return;
             }
-            String balance = tvBalance.getText().toString();
-            balance = balance.substring(balance.indexOf(":") + 3, balance.length() - 1);
 
-            String nomalizedBalance = Extension.normalize(balance);
             String nomalizedAmount = Extension.normalize(amount.substring(0, amount.length() - 1));
-            if (Long.parseLong(nomalizedAmount) > Long.parseLong(nomalizedBalance)) {
-                return;
+            if (Long.parseLong(nomalizedAmount) < 10000 ) {
+                Toast.makeText(DepositActivity.this, R.string.mininum_requirement_10000, Toast.LENGTH_SHORT).show();
             }
 
-            PasswordPopup passwordPopup = new PasswordPopup(password -> {
-                Toast.makeText(this, "Mật khẩu nhập vào: " + password, Toast.LENGTH_SHORT).show();
-            }, "Nhập mật khẩu để xác nhận giao dịch");
-
-            passwordPopup.show(getSupportFragmentManager(), passwordPopup.getTag());
-
+            Intent intent = new Intent(this, ConfirmActivity.class);
+            intent.putExtra("amount", amount);
         });
     }
 
