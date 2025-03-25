@@ -31,6 +31,7 @@ import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.post.CommentActivity;
+import com.example.bookmoth.ui.post.EditPostActivity;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -108,33 +110,57 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.btnDelete.setEnabled(false);
-                Map<String, Object> body = new HashMap<>();
-                body.put("status", 1);
-                Call<ResponseBody> call = postUseCase.updatePostStatus("eq."+String.valueOf(post.getPostId()), body);
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        holder.btnDelete.setEnabled(true);
-                        if (response.isSuccessful()) {
-                            int currentPosition = holder.getAdapterPosition();
-                            if (currentPosition != RecyclerView.NO_POSITION) {
-                                postList.remove(currentPosition);
-                                notifyItemRemoved(currentPosition);
-                                notifyItemRangeChanged(currentPosition, postList.size());
+                profileId = SecureStorage.getToken("profileId");
+                getProfile();
+                if(!Objects.equals(profileId, String.valueOf(post.getAuthorId()))){
+                    Toast.makeText(context, "Bạn không có quyền xóa bài viết này", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else{
+                    holder.btnDelete.setEnabled(false);
+                    Map<String, Object> body = new HashMap<>();
+                    body.put("status", 1);
+                    Call<ResponseBody> call = postUseCase.updatePostStatus("eq."+post.getPostId(), body);
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            holder.btnDelete.setEnabled(true);
+                            if (response.isSuccessful()) {
+                                int currentPosition = holder.getAdapterPosition();
+                                if (currentPosition != RecyclerView.NO_POSITION) {
+                                    postList.remove(currentPosition);
+                                    notifyItemRemoved(currentPosition);
+                                    notifyItemRangeChanged(currentPosition, postList.size());
+                                }
+                                Toast.makeText(context, "Xóa bài viết thành công", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Xóa thất bại: " + response.message(), Toast.LENGTH_SHORT).show();
                             }
-                            Toast.makeText(context, "Xóa bài viết thành công", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(context, "Xóa thất bại: " + response.message(), Toast.LENGTH_SHORT).show();
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        holder.btnDelete.setEnabled(true);
-                        Toast.makeText(context, "Lỗi kết nối API: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            holder.btnDelete.setEnabled(true);
+                            Toast.makeText(context, "Lỗi kết nối API: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+        holder.btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                profileId = SecureStorage.getToken("profileId");
+                getProfile();
+                if(!Objects.equals(profileId, String.valueOf(post.getAuthorId()))){
+                    Toast.makeText(context, "Bạn không có quyền sửa bài viết này", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else{
+                    Intent intent = new Intent(context, EditPostActivity.class);
+                    intent.putExtra("postID", post.getPostId());
+                    context.startActivity(intent);
+                }
             }
         });
         getNameProfile(post.getAuthorId(), new NameCallback() {

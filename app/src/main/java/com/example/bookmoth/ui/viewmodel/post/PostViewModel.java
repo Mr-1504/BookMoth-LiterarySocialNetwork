@@ -128,6 +128,25 @@ public class PostViewModel {
         });
     }
 
+    public void updatePost(String id, Map<String, Object> post, final OnSupbaBaseListener listener){
+        postUseCase.updatePost(id, post).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if(response.isSuccessful()){
+                    listener.onSuccess();
+                }
+                else {
+                    listener.onUnSuccess("Lỗi update bài viết"+ response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                listener.onFailure("Lỗi kết nối API: " + t.getMessage());
+            }
+        });
+    }
+
     public void addComment(Map<String, Object> comment, final OnSupbaBaseListener listener){
         postUseCase.addComment(comment).enqueue(new Callback<Void>() {
             @Override

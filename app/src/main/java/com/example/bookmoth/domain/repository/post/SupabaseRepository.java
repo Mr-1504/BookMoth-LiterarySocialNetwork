@@ -39,6 +39,8 @@ public interface SupabaseRepository {
 
     Call<Void> createPost(Map<String, Object> post);
 
+    Call<Void> updatePost(String id, Map<String, Object> post);
+
     Call<ResponseBody> updatePostStatus(String postId, Map<String, Object> body);
 
     Call<ResponseBody> updateComment(

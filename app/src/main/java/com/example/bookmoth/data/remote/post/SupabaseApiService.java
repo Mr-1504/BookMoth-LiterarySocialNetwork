@@ -46,6 +46,13 @@ public interface SupabaseApiService {
     Call<Void> createPost(@Body Map<String, Object> post);
 
     @PATCH("rest/v1/posts")
+    Call<Void> updatePost(
+            @Query("post_id") String postId,
+            @Body Map<String, Object> body
+    );
+
+
+    @PATCH("rest/v1/posts")
     Call<ResponseBody> updateComment(
             @Query("post_id") String postId,  // Dùng @Query thay vì @Path
             @Body Map<String, Object> updateData

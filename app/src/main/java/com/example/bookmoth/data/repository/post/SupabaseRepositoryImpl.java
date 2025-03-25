@@ -45,6 +45,11 @@ public class SupabaseRepositoryImpl implements SupabaseRepository {
     }
 
     @Override
+    public Call<Void> updatePost(String id, Map<String, Object> post) {
+        return supabaseApiService.updatePost(id,post);
+    }
+
+    @Override
     public Call<ResponseBody> updatePostStatus(String postId, Map<String, Object> body) {
         return supabaseApiService.updatePostStatus(postId,body);
     }

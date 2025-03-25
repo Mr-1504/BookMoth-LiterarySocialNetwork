@@ -45,6 +45,10 @@ public class PostUseCase {
         return supabaseRepository.createPost(post);
     }
 
+    public Call<Void> updatePost(String id, Map<String, Object> post) {
+        return supabaseRepository.updatePost(id, post);
+    }
+
     public Call<ResponseBody> updatePostStatus(String postId, Map<String, Object> body) {
         return supabaseRepository.updatePostStatus(postId, body);
     }
