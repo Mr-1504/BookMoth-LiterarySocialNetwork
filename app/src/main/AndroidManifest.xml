@@ -22,6 +22,9 @@
         android:theme="@style/Theme.BookMoth"
         tools:targetApi="31">
         <activity
+            android:name=".ui.activity.wallet.ConfirmActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.post.EditPostActivity"
             android:exported="false" />
         <activity
