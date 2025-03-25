@@ -18,9 +18,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.local.profile.ProfileDatabase;
 import com.example.bookmoth.data.remote.post.ApiResponse;
 import com.example.bookmoth.data.repository.post.FlaskRepositoryImpl;
 import com.example.bookmoth.data.repository.post.SupabaseRepositoryImpl;
+import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.post.Book;
 import com.example.bookmoth.domain.model.profile.Profile;
@@ -264,8 +266,11 @@ public class CreatePostActivity extends AppCompatActivity {
     }
 
     private void getProfile() {
+        LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
+                this, ProfileDatabase.getInstance(this).profileDao()
+        );
         ProfileViewModel profileViewModel = new ProfileViewModel(
-                new ProfileUseCase(new ProfileRepositoryImpl())
+                new ProfileUseCase(localRepo, new ProfileRepositoryImpl())
         );
 
         profileViewModel.getProfile(CreatePostActivity.this, new ProfileViewModel.OnProfileListener() {
@@ -277,11 +282,6 @@ public class CreatePostActivity extends AppCompatActivity {
 
             @Override
             public void onProfileFailure(String error) {
-                Toast.makeText(CreatePostActivity.this, error, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onErrorConnectToServer(String error) {
                 Toast.makeText(CreatePostActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         });

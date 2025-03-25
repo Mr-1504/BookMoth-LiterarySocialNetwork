@@ -80,7 +80,7 @@
                         android:id="@+id/txtName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Trương Văn Minh"
+                        android:text="Trương Văn M"
                         android:textSize="20sp"
                         android:textStyle="bold"/>
 

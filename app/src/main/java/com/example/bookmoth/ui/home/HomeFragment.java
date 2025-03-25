@@ -19,8 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.local.profile.ProfileDatabase;
 import com.example.bookmoth.data.repository.post.FlaskRepositoryImpl;
 import com.example.bookmoth.data.repository.post.SupabaseRepositoryImpl;
+import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
 import com.example.bookmoth.ui.adapter.PostAdapter;
@@ -95,24 +97,23 @@ public class HomeFragment extends Fragment {
     }
 
     private void getProfile() {
+        LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
+                getContext(), ProfileDatabase.getInstance(getContext()).profileDao()
+        );
         ProfileViewModel profileViewModel = new ProfileViewModel(
-                new ProfileUseCase(new ProfileRepositoryImpl())
+                new ProfileUseCase(localRepo, new ProfileRepositoryImpl())
         );
 
         profileViewModel.getProfile(getContext(), new ProfileViewModel.OnProfileListener() {
             @Override
             public void onProfileSuccess(Profile profile) {
+                profileViewModel.saveProfile(profile);
                 SecureStorage.saveToken("profileId", profile.getProfileId());
                 profileId = profile.getProfileId();
             }
 
             @Override
             public void onProfileFailure(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onErrorConnectToServer(String error) {
                 Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
             }
         });

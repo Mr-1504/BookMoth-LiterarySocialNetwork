@@ -19,10 +19,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.data.model.profile.ProfileDao;
+import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
-import com.example.bookmoth.ui.error.LoginFailedActivity;
 import com.example.bookmoth.ui.login.LoginActivity;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
@@ -32,6 +34,7 @@ import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 public class SplashScreenActivity extends AppCompatActivity {
 
     private static final int SPLASH_TIME_OUT = 1500;
+    private ProfileViewModel profileViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,13 @@ public class SplashScreenActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        ProfileDatabase profileDatabase = ProfileDatabase.getInstance(this);
+        ProfileDao profileDao = profileDatabase.profileDao();
+
+        LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(this, profileDao);
+        profileViewModel = new ProfileViewModel(new ProfileUseCase(
+                localRepo, new ProfileRepositoryImpl()));
 
         new Handler().postDelayed(() -> {
             String token = SecureStorage.getToken("refresh_token");
@@ -61,31 +71,35 @@ public class SplashScreenActivity extends AppCompatActivity {
      * Nếu thất bại, chuyển đến màn hình đăng nhập hoặc hiển thị thông báo lỗi.
      */
     private void getProfile() {
-        ProfileViewModel profileViewModel = new ProfileViewModel(new ProfileUseCase(new ProfileRepositoryImpl()));
 
-        profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
-            @Override
-            public void onProfileSuccess(Profile profile) {
-                Intent intent = new Intent(SplashScreenActivity.this, HomeActivity.class);
-                SecureStorage.saveToken("profileId", profile.getProfileId());
-                startActivity(intent);
-                getPermission();
-                finish();
-            }
 
-            @Override
-            public void onProfileFailure(String error) {
-                navigateToLogin();
-            }
 
-            @Override
-            public void onErrorConnectToServer(String error) {
-                Intent intent = new Intent(SplashScreenActivity.this, LoginFailedActivity.class);
-                startActivity(intent);
-                getPermission();
-                finish();
+        profileViewModel.isProfileExist(exist ->{
+            if (exist) {
+                redirectToHome();
+            }else {
+                profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
+                    @Override
+                    public void onProfileSuccess(Profile profile) {
+                        profileViewModel.saveProfile(profile);
+                        redirectToHome();
+                    }
+
+                    @Override
+                    public void onProfileFailure(String error) {
+                        navigateToLogin();
+                    }
+                });
             }
         });
+
+    }
+
+    private void redirectToHome() {
+        Intent intent = new Intent(SplashScreenActivity.this, HomeActivity.class);
+        startActivity(intent);
+        getPermission();
+        finish();
     }
 
     /**
@@ -94,7 +108,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void navigateToLogin() {
         Toast.makeText(
                 SplashScreenActivity.this,
-                getString(R.string.your_session_has_expired),
+                "a",
                 Toast.LENGTH_SHORT
         ).show();
         startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
