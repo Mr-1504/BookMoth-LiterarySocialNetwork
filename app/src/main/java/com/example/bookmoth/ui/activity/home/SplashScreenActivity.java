@@ -71,13 +71,10 @@ public class SplashScreenActivity extends AppCompatActivity {
      * Nếu thất bại, chuyển đến màn hình đăng nhập hoặc hiển thị thông báo lỗi.
      */
     private void getProfile() {
-
-
-
-        profileViewModel.isProfileExist(exist ->{
+        profileViewModel.isProfileExist(exist -> {
             if (exist) {
                 redirectToHome();
-            }else {
+            } else {
                 profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
                     @Override
                     public void onProfileSuccess(Profile profile) {
@@ -114,7 +111,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     /**
      * Yêu cầu quyền gửi thông báo cho thiết bị nếu chạy Android 13 trở lên.
      */
-    private void getPermission(){
+    private void getPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -128,9 +125,9 @@ public class SplashScreenActivity extends AppCompatActivity {
     /**
      * Xử lý kết quả khi người dùng cấp quyền hoặc từ chối quyền thông báo.
      *
-     * @param requestCode   Mã yêu cầu quyền.
-     * @param permissions   Danh sách quyền được yêu cầu.
-     * @param grantResults  Kết quả cấp quyền.
+     * @param requestCode  Mã yêu cầu quyền.
+     * @param permissions  Danh sách quyền được yêu cầu.
+     * @param grantResults Kết quả cấp quyền.
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
