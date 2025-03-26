@@ -104,12 +104,12 @@ public class WalletActivity extends AppCompatActivity {
     private void getBalance(Profile profile) {
         walletViewModel.getBalance(this, new WalletViewModel.OnWalletListener() {
             @Override
-            public void onGetBalanceSuccess(BalanceResponse balanceResponse) {
+            public void onSuccess(BalanceResponse balanceResponse) {
                 setWallet(profile, balanceResponse);
             }
 
             @Override
-            public void onGetBalanceFailed(String error) {
+            public void onFailed(String error) {
                 Toast.makeText(WalletActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         });
