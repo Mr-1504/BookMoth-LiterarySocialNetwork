@@ -78,7 +78,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             @Override
             public void onProfileFailure(String error) {
-                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
             }
         });
     }
