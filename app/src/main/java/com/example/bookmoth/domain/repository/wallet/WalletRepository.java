@@ -13,4 +13,22 @@ public interface WalletRepository {
      * @return số dư của ví
      */
     Call<BalanceResponse> getBalance();
+
+    /**
+     * Tạo ví mới
+     * @return kết quả tạo ví
+     */
+    Call<Void> createWallet(String pin);
+
+    /**
+     * Xác nhận mã pin
+     * @return kết quả xác nhận
+     */
+    Call<Void> confirmPin(String pin);
+
+    /**
+     * Kiểm tra ví đã tồn tại chưa
+     * @return kết quả kiểm tra
+     */
+    Call<Void> checkWalletExist();
 }

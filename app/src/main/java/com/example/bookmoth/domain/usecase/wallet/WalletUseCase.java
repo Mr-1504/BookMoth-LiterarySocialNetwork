@@ -26,4 +26,28 @@ public class WalletUseCase {
     public Call<BalanceResponse> getBalance(){
         return walletRepository.getBalance();
     }
+
+    /**
+     * Tạo ví mới
+     * @return kết quả tạo ví
+     */
+    public Call<Void> createWallet(String pin) {
+        return walletRepository.createWallet(pin);
+    }
+
+    /**
+     * Xác nhận mã pin
+     * @return kết quả xác nhận
+     */
+    public Call<Void> confirmPin(String pin) {
+        return walletRepository.confirmPin(pin);
+    }
+
+    /**
+     * Kiểm tra ví đã tồn tại chưa
+     * @return kết quả kiểm tra
+     */
+    public Call<Void> checkWalletExist() {
+        return walletRepository.checkWalletExist();
+    }
 }
