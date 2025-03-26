@@ -43,7 +43,6 @@ public class PasswordPopup extends BottomSheetDialogFragment {
                 passwordDotsView.invalidate();
                 if (s.length() == 6) {
                     listener.onPasswordEntered(s.toString());
-                    dismiss();
                 }
             }
 
@@ -101,6 +100,24 @@ public class PasswordPopup extends BottomSheetDialogFragment {
             passwordBuilder.deleteCharAt(passwordBuilder.length() - 1);
             passwordDotsView.setText(passwordBuilder.toString());
         }
+    }
+
+    public void setErrorMessage(String message) {
+        if (getView() != null) {
+            passwordBuilder = new StringBuilder();
+            passwordDotsView.setText("");
+            TextView error = getView().findViewById(R.id.txtError);
+            error.setText(message);
+            error.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void clear(){
+        passwordBuilder = new StringBuilder();
+        passwordDotsView.setText("");
+        TextView error = getView().findViewById(R.id.txtError);
+        error.setText("");
+        dismiss();
     }
 
     @Override
