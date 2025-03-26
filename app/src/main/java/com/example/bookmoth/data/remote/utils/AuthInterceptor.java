@@ -33,4 +33,3 @@ public class AuthInterceptor implements Interceptor {
         return chain.proceed(request);
     }
 }
-
