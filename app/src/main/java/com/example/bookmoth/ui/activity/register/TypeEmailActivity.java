@@ -20,6 +20,7 @@ import com.example.bookmoth.R;
 import com.example.bookmoth.data.repository.register.RegisterRepositoryImpl;
 import com.example.bookmoth.domain.usecase.register.RegisterUseCase;
 import com.example.bookmoth.ui.activity.login.LoginActivity;
+import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.viewmodel.register.RegisterViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -117,10 +118,7 @@ public class TypeEmailActivity extends AppCompatActivity {
      * @param email Địa chỉ email cần kiểm tra.
      */
     private void checkEmail(String email) {
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getString(R.string.loading));
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+        LoadingUtils.showLoading(getSupportFragmentManager());
 
         registerViewModel.setEmail(email);
         registerViewModel.checkEmailExists(
@@ -129,7 +127,7 @@ public class TypeEmailActivity extends AppCompatActivity {
                 new RegisterViewModel.OnCheckEmailExistsListener() {
                     @Override
                     public void onSuccess() {
-                        progressDialog.dismiss();
+                        LoadingUtils.hideLoading();
                         warningEmail.setVisibility(View.GONE);
                         Intent intent = new Intent(TypeEmailActivity.this, SetPasswordActivity.class);
                         intent.putExtra("registerViewModel", registerViewModel);
@@ -138,9 +136,8 @@ public class TypeEmailActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String error) {
-                        progressDialog.dismiss();
-                        warningEmail.setText(error);
-                        warningEmail.setVisibility(View.VISIBLE);
+                        LoadingUtils.hideLoading();
+                        showErrorDialog(error);
                     }
                 }
         );
@@ -154,7 +151,7 @@ public class TypeEmailActivity extends AppCompatActivity {
     private void showErrorDialog(String message) {
         warningEmail.setVisibility(View.GONE);
         new AlertDialog.Builder(this)
-                .setTitle("Lỗi kết nối")
+                .setTitle("Lỗi")
                 .setMessage(message)
                 .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                 .setCancelable(false)
