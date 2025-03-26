@@ -20,8 +20,8 @@ import retrofit2.Response;
  */
 public class LoginViewModel extends ViewModel {
 
-    private LoginUseCase loginUseCase;
-    private MyFirebaseMessagingService service;
+    private final LoginUseCase loginUseCase;
+    private final MyFirebaseMessagingService service;
 
     /**
      * Khởi tạo LoginViewModel với LoginUseCase.
