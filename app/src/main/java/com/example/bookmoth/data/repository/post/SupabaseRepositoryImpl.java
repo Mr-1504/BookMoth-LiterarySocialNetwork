@@ -30,8 +30,8 @@ public class SupabaseRepositoryImpl implements SupabaseRepository {
     }
 
     @Override
-    public Call<List<Post>> getPostByIdUser(String author_id) {
-        return supabaseApiService.getPostByIdUser(author_id);
+    public Call<List<Post>> getPostByIdUser(String author_id, String status) {
+        return supabaseApiService.getPostByIdUser(author_id,status);
     }
 
     @Override
@@ -44,6 +44,15 @@ public class SupabaseRepositoryImpl implements SupabaseRepository {
         return supabaseApiService.createPost(post);
     }
 
+    @Override
+    public Call<Void> updatePost(String id, Map<String, Object> post) {
+        return supabaseApiService.updatePost(id,post);
+    }
+
+    @Override
+    public Call<ResponseBody> updatePostStatus(String postId, Map<String, Object> body) {
+        return supabaseApiService.updatePostStatus(postId,body);
+    }
     @Override
     public Call<ResponseBody> updateComment(String postId, Map<String, Object> updateData) {
         return supabaseApiService.updateComment(postId,updateData);
@@ -82,6 +91,11 @@ public class SupabaseRepositoryImpl implements SupabaseRepository {
     @Override
     public Call<Void> addComment(Map<String, Object> comment) {
         return supabaseApiService.addComment(comment);
+    }
+
+    @Override
+    public Call<ResponseBody> removeComment(String url) {
+        return supabaseApiService.removeComment(url);
     }
 
     @Override

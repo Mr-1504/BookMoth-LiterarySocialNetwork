@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.profile.ProfileActivity">
+    tools:context=".ui.activity.profile.ProfileActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -80,7 +80,7 @@
                         android:id="@+id/txtName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Trương Văn Minh"
+                        android:text="Trương Văn M"
                         android:textSize="20sp"
                         android:textStyle="bold"/>
 

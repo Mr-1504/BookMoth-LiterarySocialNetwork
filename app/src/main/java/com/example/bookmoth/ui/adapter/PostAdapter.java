@@ -18,17 +18,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.local.profile.ProfileDatabase;
 import com.example.bookmoth.data.remote.post.Api;
 import com.example.bookmoth.data.remote.post.ApiResponse;
-import com.example.bookmoth.data.remote.post.SupabaseApiService;
-import com.example.bookmoth.data.remote.utils.RetrofitClient;
+import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.post.Post;
 import com.example.bookmoth.domain.model.post.Profile;
 import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
-import com.example.bookmoth.ui.post.CommentActivity;
+import com.example.bookmoth.ui.activity.post.CommentActivity;
+import com.example.bookmoth.ui.activity.post.EditPostActivity;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -49,7 +51,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private long lastClickTime = 0;
     private PostUseCase postUseCase;
     private FlaskUseCase flaskUseCase;
-    private static final long CLICK_DELAY = 500;
+    private static final long CLICK_DELAY = 0;
     private String profileId;
     public PostAdapter(Context context, List<Post> postList, PostUseCase postUseCase, FlaskUseCase flaskUseCase) {
         this.context = context;
@@ -60,8 +62,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     private void getProfile() {
+        LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
+                this.context, ProfileDatabase.getInstance(this.context).profileDao()
+        );
         ProfileViewModel profileViewModel = new ProfileViewModel(
-                new ProfileUseCase(new ProfileRepositoryImpl())
+                new ProfileUseCase(localRepo, new ProfileRepositoryImpl())
         );
 
         profileViewModel.getProfile(context, new ProfileViewModel.OnProfileListener() {
@@ -73,12 +78,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             @Override
             public void onProfileFailure(String error) {
-                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onErrorConnectToServer(String error) {
-                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -105,6 +104,62 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             holder.tabWorks.setVisibility(View.VISIBLE);
             holder.tabWorks.setText(String.valueOf(post.getTab_works()));
         }
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                profileId = SecureStorage.getToken("profileId");
+                getProfile();
+                if(!Objects.equals(profileId, String.valueOf(post.getAuthorId()))){
+                    Toast.makeText(context, "Bạn không có quyền xóa bài viết này", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else{
+                    holder.btnDelete.setEnabled(false);
+                    Map<String, Object> body = new HashMap<>();
+                    body.put("status", 1);
+                    Call<ResponseBody> call = postUseCase.updatePostStatus("eq."+post.getPostId(), body);
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            holder.btnDelete.setEnabled(true);
+                            if (response.isSuccessful()) {
+                                int currentPosition = holder.getAdapterPosition();
+                                if (currentPosition != RecyclerView.NO_POSITION) {
+                                    postList.remove(currentPosition);
+                                    notifyItemRemoved(currentPosition);
+                                    notifyItemRangeChanged(currentPosition, postList.size());
+                                }
+                                Toast.makeText(context, "Xóa bài viết thành công", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Xóa thất bại: " + response.message(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            holder.btnDelete.setEnabled(true);
+                            Toast.makeText(context, "Lỗi kết nối API: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+        holder.btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                profileId = SecureStorage.getToken("profileId");
+                getProfile();
+                if(!Objects.equals(profileId, String.valueOf(post.getAuthorId()))){
+                    Toast.makeText(context, "Bạn không có quyền sửa bài viết này", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else{
+                    Intent intent = new Intent(context, EditPostActivity.class);
+                    intent.putExtra("postID", post.getPostId());
+                    context.startActivity(intent);
+                }
+            }
+        });
         getNameProfile(post.getAuthorId(), new NameCallback() {
             @Override
             public void onSuccess(String name) {
@@ -134,15 +189,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         checkLikeStatus(post.getPostId(), holder);
         holder.btnLike.setOnClickListener(v -> {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastClickTime > CLICK_DELAY) {
-                lastClickTime = currentTime;
-                if (holder.isLiked) {
-                    removeLike(post.getPostId(), holder);
-                } else {
-                    addLike(post.getPostId(), holder);
-                }
+            if (holder.isLiked) {
+                removeLike(post.getPostId(), holder);
+            } else {
+                addLike(post.getPostId(), holder);
             }
+//            long currentTime = System.currentTimeMillis();
+//            if (currentTime - lastClickTime > CLICK_DELAY) {
+//                lastClickTime = currentTime;
+//
+//            }
         });
         holder.btnComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,90 +314,76 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 });
     }
 
+    private void toggleLike(int postId, PostViewHolder holder, boolean isAddingLike) {
+        String profileId = SecureStorage.getToken("profileId");
+        getProfile();
 
-    private void addLike(int postId, PostViewHolder holder) {
         getCurrentLikeCount(postId, new LikeCountCallback() {
             @Override
             public void onLikeCountReceived(int currentLikeCount) {
-                // Tăng số lượng like
-                int newLikeCount = currentLikeCount + 1;
-                holder.isLiked = true;
-                holder.btnLike.setImageResource(R.drawable.button_liked);
+                int likeChange = isAddingLike ? 1 : -1;
+                int updatedLikeCount = Math.max(0, currentLikeCount + likeChange);
+                holder.countLike.setText(String.valueOf(updatedLikeCount));
+                holder.isLiked = isAddingLike;
+                holder.btnLike.setImageResource(isAddingLike ? R.drawable.button_liked : R.drawable.button_like);
 
-                // Cập nhật UI tạm thời
-                holder.countLike.setText(String.valueOf(newLikeCount));
-
-                // Chuẩn bị dữ liệu gửi API
-                Map<String, Object> body = new HashMap<>();
-                body.put("post_id", postId);
-                profileId = SecureStorage.getToken("profileId");
-                getProfile();
-                body.put("user_id", profileId); // Thay bằng getCurrentUserId() nếu có
-
-                // Gửi request đến API để thêm like
-                postUseCase.addLike(body).enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (!response.isSuccessful()) {
-                            Log.e("Like", "Lỗi thêm like: " + response.errorBody());
-                            rollbackLikeUI(holder, currentLikeCount, false);
-                        } else {
-                            updateLikeCount(postId, newLikeCount);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.e("Like", "Lỗi kết nối khi thêm like", t);
-                        rollbackLikeUI(holder, currentLikeCount, false);
-                    }
-                });
+                if (isAddingLike) {
+                    Map<String, Object> body = new HashMap<>();
+                    body.put("post_id", postId);
+                    body.put("user_id", profileId);
+                    postUseCase.addLike(body).enqueue(new LikeCallback(holder, postId, currentLikeCount, isAddingLike));
+                } else {
+                    String url = "https://vhqcdiaoqrlcsnqvjpqh.supabase.co/rest/v1/likes?post_id=eq." + postId + "&user_id=eq." + profileId;
+                    postUseCase.removeLike(url).enqueue(new LikeCallback(holder, postId, currentLikeCount, isAddingLike));
+                }
             }
         });
     }
 
+    private class LikeCallback implements Callback<ResponseBody> {
+        private final PostViewHolder holder;
+        private final int postId;
+        private final int previousLikeCount;
+        private final boolean isAddingLike;
 
-    private void removeLike(int postId, PostViewHolder holder) {
-        profileId = SecureStorage.getToken("profileId");
-        getProfile();
-        String userId = profileId; // Cần lấy userId thực tế từ session hoặc database
-        String url = "https://vhqcdiaoqrlcsnqvjpqh.supabase.co/rest/v1/likes?" + "post_id=eq." + postId + "&user_id=eq." + userId;
+        public LikeCallback(PostViewHolder holder, int postId, int previousLikeCount, boolean isAddingLike) {
+            this.holder = holder;
+            this.postId = postId;
+            this.previousLikeCount = previousLikeCount;
+            this.isAddingLike = isAddingLike;
+        }
 
-        // Cập nhật UI ngay lập tức
-        holder.isLiked = false;
-        String likeText = holder.countLike.getText().toString().trim();
-        int currentLikeCount = likeText.isEmpty() ? 0 : Integer.parseInt(likeText);
-        int newLikeCount = currentLikeCount - 1;
-        holder.btnLike.setImageResource(R.drawable.button_like);
-        // Gửi request đến API
-        postUseCase.removeLike(url).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (!response.isSuccessful()) {
-                    Log.e("Like", "Lỗi xóa like: " + response.errorBody());
-                    rollbackLikeUI(holder, currentLikeCount, true);
-                }
-                else {
-                    updateLikeCount(postId, newLikeCount);
-                    holder.countLike.setText(String.valueOf(newLikeCount));
-                }
+        @Override
+        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            if (!response.isSuccessful()) {
+                Log.e("Like", "Lỗi khi cập nhật like: " + response.errorBody());
+                rollbackLikeUI();
+            } else {
+                updateLikeCount(postId, Math.max(0, previousLikeCount + (isAddingLike ? 1 : -1)));
             }
+        }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("Like", "Lỗi kết nối API: " + t.getMessage());
-                holder.isLiked = true;
-                holder.countLike.setText(String.valueOf(currentLikeCount));
-                holder.btnLike.setImageResource(R.drawable.button_liked);
-            }
-        });
+        @Override
+        public void onFailure(Call<ResponseBody> call, Throwable t) {
+            Log.e("Like", "Lỗi kết nối API: " + t.getMessage());
+            rollbackLikeUI();
+        }
+
+        private void rollbackLikeUI() {
+            holder.isLiked = !isAddingLike;
+            holder.btnLike.setImageResource(isAddingLike ? R.drawable.button_like : R.drawable.button_liked);
+            holder.countLike.setText(String.valueOf(Math.max(0, previousLikeCount)));
+        }
     }
-    // Hàm rollback UI khi request thất bại
-    private void rollbackLikeUI(PostViewHolder holder, int likeCount, boolean isLiked) {
-        holder.isLiked = isLiked;
-        holder.countLike.setText(String.valueOf(likeCount));
-        holder.btnLike.setImageResource(isLiked ? R.drawable.button_liked : R.drawable.button_like);
+
+    public void addLike(int postId, PostViewHolder holder) {
+        toggleLike(postId, holder, true);
     }
+
+    public void removeLike(int postId, PostViewHolder holder) {
+        toggleLike(postId, holder, false);
+    }
+
     private void getCurrentLikeCount(int postID, LikeCountCallback callback) {
         postUseCase.getLikeForId("eq." + postID).enqueue(new Callback<Integer>() {
             @Override
@@ -410,7 +452,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvContent, tvTimestamp,countLike, countComment, tabWorks, nameProfile;
         ImageView imageView;
-        ImageButton btnLike, btnComment, btnProfile;
+        ImageButton btnLike, btnComment, btnProfile, btnDelete, btnEdit;
         boolean isLiked = false;
 //        VideoView videoView;
 //        Button btnPlayAudio;
@@ -429,6 +471,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             tabWorks = itemView.findViewById(R.id.tvTabWorks);
             btnProfile = itemView.findViewById(R.id.imageProfile);
             nameProfile = itemView.findViewById(R.id.nameProfile);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
+            btnEdit = itemView.findViewById(R.id.btnEdit);
 //            videoView = itemView.findViewById(R.id.videoView);
 //            btnPlayAudio = itemView.findViewById(R.id.btnPlayAudio);
 

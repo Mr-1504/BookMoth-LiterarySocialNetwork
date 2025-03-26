@@ -6,18 +6,26 @@ import com.google.gson.annotations.SerializedName;
  * Lớp đại diện cho phản hồi từ ZaloPay khi lấy token thanh toán.
  */
 public class ZaloPayTokenResponse {
-    @SerializedName("success")
-    private boolean success;
 
-    @SerializedName("data")
-    private String data;
+    @SerializedName("zaloToken")
+    private String zaloToken;
 
-    /**
-     * Lấy token ZaloPay.
-     *
-     * @return Token thanh toán.
-     */
-    public String getToken() {
-        return data;
+    @SerializedName("transId")
+    private String transId;
+
+    public String getTransId() {
+        return transId;
+    }
+
+    public void setTransId(String transId) {
+        this.transId = transId;
+    }
+
+    public String getZaloToken() {
+        return zaloToken;
+    }
+
+    public void setZaloToken(String zaloToken) {
+        this.zaloToken = zaloToken;
     }
 }

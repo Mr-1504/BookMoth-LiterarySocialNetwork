@@ -15,4 +15,12 @@ public interface ProfileRepository {
      * @return Đối tượng Call chứa thông tin hồ sơ của người dùng.
      */
     Call<Profile> getProfile();
+
+    /**
+     * Lấy thông tin hồ sơ của người dùng theo id.
+     *
+     * @param profileId id của hồ sơ người dùng.
+     * @return Đối tượng Call chứa thông tin hồ sơ của người dùng.
+     */
+    Call<Profile> getProfileById(String profileId);
 }
