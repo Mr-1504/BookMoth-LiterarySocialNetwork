@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 public class DepositActivity extends AppCompatActivity {
 
     private int[] btnNumber;
-    private Button btnBackspace, btnNext;
+    private Button btnBackspace, btnNext, btnBack;
     private TextView tvAmount, tvBalance;
 
     @Override
@@ -38,19 +38,31 @@ public class DepositActivity extends AppCompatActivity {
         clickNumber();
         clickBackspace();
         clickNext();
+        clickBack();
+    }
+
+    private void clickBack() {
+        btnBack.setOnClickListener(view -> {
+            finish();
+        });
     }
 
     private void clickNext() {
         btnNext.setOnClickListener(view -> {
             String amount = tvAmount.getText().toString();
             if (amount.equals("0đ")) {
-                Toast.makeText(DepositActivity.this, R.string.please_input_amount, Toast.LENGTH_SHORT).show();
+                Toast
+                    .makeText(DepositActivity.this, R.string.please_input_amount, Toast.LENGTH_SHORT)
+                    .show();
                 return;
             }
 
             String nomalizedAmount = Extension.normalize(amount.substring(0, amount.length() - 1));
             if (Long.parseLong(nomalizedAmount) < 10000 ) {
-                Toast.makeText(DepositActivity.this, R.string.mininum_requirement_10000, Toast.LENGTH_SHORT).show();
+                Toast
+                    .makeText(DepositActivity.this, R.string.mininum_requirement_10000, Toast.LENGTH_SHORT)
+                    .show();
+                return;
             }
 
             Intent intent = new Intent(this, ConfirmActivity.class);
@@ -81,6 +93,7 @@ public class DepositActivity extends AppCompatActivity {
                 R.id.btn_num_9, R.id.btn_num_000
         };
 
+        btnBack = findViewById(R.id.return_button);
         btnNext = findViewById(R.id.btn_continue);
         btnBackspace = findViewById(R.id.btn_backspace);
         tvAmount = findViewById(R.id.tv_amount);
