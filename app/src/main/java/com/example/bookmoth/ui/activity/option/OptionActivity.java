@@ -19,13 +19,18 @@ import com.example.bookmoth.data.local.utils.ImageCache;
 import com.example.bookmoth.data.repository.login.LoginRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
+import com.example.bookmoth.data.repository.wallet.WalletRepositoryImpl;
+import com.example.bookmoth.domain.model.wallet.BalanceResponse;
 import com.example.bookmoth.domain.usecase.login.LoginUseCase;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
+import com.example.bookmoth.domain.usecase.wallet.WalletUseCase;
 import com.example.bookmoth.ui.activity.login.LoginActivity;
 import com.example.bookmoth.ui.activity.profile.ProfileActivity;
+import com.example.bookmoth.ui.activity.wallet.CreatePinActivity;
 import com.example.bookmoth.ui.viewmodel.login.LoginViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.example.bookmoth.ui.activity.wallet.WalletActivity;
+import com.example.bookmoth.ui.viewmodel.wallet.WalletViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -36,6 +41,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 public class OptionActivity extends AppCompatActivity {
 
     private Button btnProfile, btnWallet, btnLogout;
+    private WalletViewModel walletViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +57,14 @@ public class OptionActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
         btnProfile = findViewById(R.id.btnViewProfile);
         btnWallet = findViewById(R.id.btnWallet);
+        walletViewModel = new WalletViewModel(new WalletUseCase(new WalletRepositoryImpl()));
 
         clickLogout();
         clickWallet();
         clickProfile();
     }
 
-    /**
-     *
-     */
+
     private void clickProfile() {
         btnProfile.setOnClickListener(v -> {
             Intent intent = new Intent(this, ProfileActivity.class);
@@ -69,8 +74,25 @@ public class OptionActivity extends AppCompatActivity {
 
     private void clickWallet() {
         btnWallet.setOnClickListener(v -> {
-            Intent intent = new Intent(this, WalletActivity.class);
-            startActivity(intent);
+            walletViewModel.checkWalletExist(this, new WalletViewModel.OnWalletListener() {
+                @Override
+                public void onSuccess(BalanceResponse balanceResponse) {
+                    Intent intent = new Intent(OptionActivity.this, WalletActivity.class);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onFailed(String error) {
+                    if(error.equals(getString(R.string.wallet_does_not_exist))){
+                        Intent intent = new Intent(OptionActivity.this, CreatePinActivity.class);
+                        startActivity(intent);
+                    }
+                    else {
+                        Toast.makeText(OptionActivity.this, error, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
         });
     }
 
