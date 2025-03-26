@@ -11,7 +11,7 @@
     <string name="LoginFailedMessage">Đăng nhập thất bại. Thử lại sau!</string>
     <string name="error_signin_cancelled">Quá trình đăng nhập không thể hoàn thành!</string>
     <string name="error_network">Lỗi kết nối Internet!</string>
-    <string name="error_invalid_account">Tài khoản Google không hợp lệ!</string>
+    <string name="error_invalid_account">Tài khoản không hợp lệ!</string>
     <string name="error_unknown">Lỗi không xác định!</string>
     <string name="firebase_auth_failed">Đăng nhập thất bại!</string>
     <string name="api_not_connected">API not connected</string>
@@ -109,4 +109,7 @@
     <string name="transaction_result">Kết quả giao dịch</string>
     <string name="transaction_failed">Giao dịch thất bại</string>
     <string name="transaction_canceled">Đã hủy giao dịch</string>
+    <string name="transaction_fee">Phí giao dịch:</string>
+    <string name="free">Miễn phí</string>
+    <string name="error_register_cancelled">Đã hủy đăng ký</string>
 </resources>

@@ -27,6 +27,7 @@ import com.example.bookmoth.domain.usecase.wallet.WalletUseCase;
 import com.example.bookmoth.ui.activity.login.LoginActivity;
 import com.example.bookmoth.ui.activity.profile.ProfileActivity;
 import com.example.bookmoth.ui.activity.wallet.CreatePinActivity;
+import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.viewmodel.login.LoginViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.example.bookmoth.ui.activity.wallet.WalletActivity;
@@ -74,15 +75,18 @@ public class OptionActivity extends AppCompatActivity {
 
     private void clickWallet() {
         btnWallet.setOnClickListener(v -> {
+            LoadingUtils.showLoading(getSupportFragmentManager());
             walletViewModel.checkWalletExist(this, new WalletViewModel.OnWalletListener() {
                 @Override
                 public void onSuccess(BalanceResponse balanceResponse) {
+                    LoadingUtils.hideLoading();
                     Intent intent = new Intent(OptionActivity.this, WalletActivity.class);
                     startActivity(intent);
                 }
 
                 @Override
                 public void onFailed(String error) {
+                    LoadingUtils.hideLoading();
                     if(error.equals(getString(R.string.wallet_does_not_exist))){
                         Intent intent = new Intent(OptionActivity.this, CreatePinActivity.class);
                         startActivity(intent);
@@ -99,6 +103,7 @@ public class OptionActivity extends AppCompatActivity {
     private void clickLogout() {
         btnLogout.setOnClickListener(v -> {
             if (InternetHelper.isNetworkAvailable(this)){
+                LoadingUtils.showLoading(getSupportFragmentManager());
                 logout();
                 return;
             }
@@ -129,6 +134,7 @@ public class OptionActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        LoadingUtils.hideLoading();
         startActivity(intent);
     }
 }

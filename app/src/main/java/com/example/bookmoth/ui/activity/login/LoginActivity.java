@@ -26,6 +26,7 @@ import com.example.bookmoth.domain.usecase.login.LoginUseCase;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.activity.home.HomeActivity;
 import com.example.bookmoth.ui.activity.register.OptionActivity;
+import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.viewmodel.login.LoginViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -115,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void clickLoginWithEmail() {
         loginWithEmail.setOnClickListener(v -> {
+            LoadingUtils.showLoading(getSupportFragmentManager());
             String mail = email.getText().toString();
             String pass = password.getText().toString();
 
@@ -124,11 +126,13 @@ public class LoginActivity extends AppCompatActivity {
                     saveProfile();
                     Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                     startActivity(intent);
+                    LoadingUtils.hideLoading();
                     finish();
                 }
 
                 @Override
                 public void onError(String error) {
+                    LoadingUtils.hideLoading();
                     Toast.makeText(LoginActivity.this, error, Toast.LENGTH_LONG).show();
                 }
             });
@@ -141,16 +145,14 @@ public class LoginActivity extends AppCompatActivity {
      * Nếu không có Internet, hiển thị thông báo lỗi.
      */
     private void clickLoginWithGoogle() {
-        loginWithGoogle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (InternetHelper.isNetworkAvailable(LoginActivity.this)) {
-                    Log.d("LoginActivity", "Network is available. Proceeding with Google sign-in.");
-                    loginWithGoogle();
-                } else {
-                    Log.w("LoginActivity", "No Internet connection detected.");
-                    Toast.makeText(LoginActivity.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
-                }
+        loginWithGoogle.setOnClickListener(view -> {
+            if (InternetHelper.isNetworkAvailable(LoginActivity.this)) {
+                LoadingUtils.showLoading(getSupportFragmentManager());
+                Log.d("LoginActivity", "Network is available. Proceeding with Google sign-in.");
+                loginWithGoogle();
+            } else {
+                Log.w("LoginActivity", "No Internet connection detected.");
+                Toast.makeText(LoginActivity.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -163,6 +165,7 @@ public class LoginActivity extends AppCompatActivity {
     private void loginWithGoogle() {
         Intent loginWithGoogleIntent = client.getSignInIntent();
         startActivityForResult(loginWithGoogleIntent, RC_LOGIN);
+        LoadingUtils.hideLoading();
     }
 
     /**
@@ -177,6 +180,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_LOGIN) {
+            LoadingUtils.showLoading(getSupportFragmentManager());
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
@@ -186,6 +190,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onSuccess() {
                         saveProfile();
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                        LoadingUtils.hideLoading();
                         startActivity(intent);
                         finish();
                     }
@@ -193,16 +198,21 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onError(String error) {
                         Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                        LoadingUtils.hideLoading();
                         client.signOut();
                     }
                 });
             } catch (ApiException e) {
                 Log.e("LoginActivity", "Google sign-in failed. Code: " + e.getStatusCode(), e);
+                LoadingUtils.hideLoading();
                 handleGoogleSignInError(e);
             }
         }
     }
 
+    /**
+     * Lưu thông tin người dùng vào cơ sở dữ liệu.
+     */
     private void saveProfile() {
         LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
                 this, ProfileDatabase.getInstance(this).profileDao()
@@ -213,12 +223,12 @@ public class LoginActivity extends AppCompatActivity {
         profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
             @Override
             public void onProfileSuccess(Profile profile) {
-                if (profile == null) return; // Kiểm tra null để tránh crash
+                if (profile == null) return;
                 profileViewModel.saveProfile(profile);
             }
+
             @Override
             public void onProfileFailure(String error) {
-                // Xử lý lỗi (Có thể thêm Toast hoặc Log để debug)
             }
         });
     }

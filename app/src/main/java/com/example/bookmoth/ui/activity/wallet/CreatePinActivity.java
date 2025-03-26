@@ -25,6 +25,7 @@ import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.model.wallet.BalanceResponse;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.domain.usecase.wallet.WalletUseCase;
+import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.dialogs.PasswordPopup;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.example.bookmoth.ui.viewmodel.wallet.WalletViewModel;
@@ -83,6 +84,7 @@ public class CreatePinActivity extends AppCompatActivity {
     private void confirmPin(String inputed_password) {
         passwordPopup = new PasswordPopup(password -> {
             if (inputed_password.equals(password)) {
+                LoadingUtils.showLoading(getSupportFragmentManager());
                 walletViewModel.createWallet(CreatePinActivity.this, password, new WalletViewModel.OnWalletListener() {
                     @Override
                     public void onSuccess(BalanceResponse balanceResponse) {
@@ -93,6 +95,7 @@ public class CreatePinActivity extends AppCompatActivity {
                         ).show();
 
                         passwordPopup.dismiss();
+                        LoadingUtils.hideLoading();
                         Intent intent = new Intent(CreatePinActivity.this, WalletActivity.class);
                         startActivity(intent);
                         finish();
@@ -100,6 +103,7 @@ public class CreatePinActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailed(String error) {
+                        LoadingUtils.hideLoading();
                         passwordPopup.setErrorMessage(error);
                     }
                 });

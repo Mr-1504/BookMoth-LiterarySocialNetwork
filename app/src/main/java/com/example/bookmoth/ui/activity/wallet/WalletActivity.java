@@ -46,7 +46,6 @@ public class WalletActivity extends AppCompatActivity {
 
     private void clickReturn() {
         txtBack.setOnClickListener(v -> {
-            Toast.makeText(WalletActivity.this, "Back", Toast.LENGTH_SHORT).show();
             finish();
         });
     }
@@ -127,7 +126,6 @@ public class WalletActivity extends AppCompatActivity {
 
     private void clickDeposit() {
         btnDeposit.setOnClickListener(v -> {
-            Toast.makeText(WalletActivity.this, "Deposit", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, DepositActivity.class);
             String balance = userBalance.getText().toString();
             intent.putExtra("balance", balance.substring(0, balance.length() - 4));

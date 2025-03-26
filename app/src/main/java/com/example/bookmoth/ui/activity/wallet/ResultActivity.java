@@ -1,5 +1,6 @@
 package com.example.bookmoth.ui.activity.wallet;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.Button;
@@ -32,7 +33,7 @@ public class ResultActivity extends AppCompatActivity {
         });
 
         init();
-        finish();
+        clickBack();
     }
 
     private void init(){
@@ -66,6 +67,9 @@ public class ResultActivity extends AppCompatActivity {
             }
 
             public void onFinish() {
+                Intent intent = new Intent(ResultActivity.this, WalletActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
             }
         }.start();
@@ -73,6 +77,9 @@ public class ResultActivity extends AppCompatActivity {
 
     private void clickBack(){
         back.setOnClickListener(view -> {
+            Intent intent = new Intent(ResultActivity.this, WalletActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
             finish();
         });
     }

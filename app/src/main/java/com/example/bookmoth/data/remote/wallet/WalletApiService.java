@@ -35,7 +35,7 @@ public interface WalletApiService {
      * @param request mã pin cần xác nhận
      * @return kết quả xác nhận
      */
-    @POST("api/wallet/confirm")
+    @POST("api/wallet/confirm-pin")
     Call<Void> confirmPin(@Body ConfirmPinRequest request);
 
     /**

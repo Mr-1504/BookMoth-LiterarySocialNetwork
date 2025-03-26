@@ -26,6 +26,7 @@ import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.model.wallet.BalanceResponse;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.domain.usecase.wallet.WalletUseCase;
+import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.dialogs.PasswordPopup;
 import com.example.bookmoth.ui.viewmodel.payment.PaymentViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
@@ -131,42 +132,49 @@ public class ConfirmActivity extends AppCompatActivity {
      * @param password Mật khẩu người dùng nhập vào.
      */
     private void confirmPin(String password) {
+        LoadingUtils.showLoading(getSupportFragmentManager());
         walletViewModel.confirmPin(this, password, new WalletViewModel.OnWalletListener() {
             @Override
             public void onSuccess(BalanceResponse balanceResponse) {
                 passwordPopup.dismiss();
-
-                String stringAmount = txtAmount.getText().toString();
-                long amount = Long.parseLong(Extension.normalize(
-                        stringAmount.substring(0, stringAmount.length() - 1)));
-                String fullname = Normalizer.normalize(
-                        _profile.getLastName() + " " + _profile.getFirstName(), Normalizer.Form.NFD);
-                String description = String.format(
-                        "%s %s", fullname, txtDescription.getText().toString());
-                paymentViewModel.createOrder(
-                        ConfirmActivity.this,
-                        amount, description,
-                        TransactionType.DEPOSIT,
-                        new PaymentViewModel.OnCreateOrderListener() {
-                    @Override
-                    public void onCreateOrderSuccess(ZaloPayTokenResponse token) {
-                        startZaloPayPayment(token);
-                    }
-
-                    @Override
-                    public void onCreateOrderFailure(String message) {
-                        Toast.makeText(ConfirmActivity.this, message, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                createOrder();
             }
 
             @Override
             public void onFailed(String error) {
+                LoadingUtils.hideLoading();
                 passwordPopup.setErrorMessage(error);
             }
         });
     }
 
+
+    private void createOrder(){
+        String stringAmount = txtAmount.getText().toString();
+        long amount = Long.parseLong(Extension.normalize(
+                stringAmount.substring(0, stringAmount.length() - 1)));
+        String fullname = Normalizer.normalize(
+                _profile.getLastName() + " " + _profile.getFirstName(), Normalizer.Form.NFD);
+        String description = String.format(
+                "%s %s", fullname, txtDescription.getText().toString());
+        paymentViewModel.createOrder(
+                ConfirmActivity.this,
+                amount, description,
+                TransactionType.DEPOSIT,
+                new PaymentViewModel.OnCreateOrderListener() {
+                    @Override
+                    public void onCreateOrderSuccess(ZaloPayTokenResponse token) {
+                        LoadingUtils.hideLoading();
+                        startZaloPayPayment(token);
+                    }
+
+                    @Override
+                    public void onCreateOrderFailure(String message) {
+                        LoadingUtils.hideLoading();
+                        Toast.makeText(ConfirmActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
     private void startZaloPayPayment(ZaloPayTokenResponse token) {
         String stringAmount = txtAmount.getText().toString();
@@ -174,7 +182,7 @@ public class ConfirmActivity extends AppCompatActivity {
             @Override
             public void onPaymentSucceeded(String s, String s1, String s2) {
                 Log.i("PaymentCallback", "Payment succeeded with transaction: " + s);
-                Intent intent = new Intent(ConfirmActivity.this, ResultActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ResultActivity.class);
                 intent.putExtra("status", 1);
                 intent.putExtra("amount", stringAmount);
                 intent.putExtra("transId", token.getTransId());

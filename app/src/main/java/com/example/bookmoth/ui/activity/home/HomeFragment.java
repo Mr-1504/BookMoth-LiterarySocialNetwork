@@ -32,6 +32,7 @@ import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.activity.post.CreatePostActivity;
 import com.example.bookmoth.ui.activity.profile.ProfileActivity;
+import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
 import com.example.bookmoth.ui.viewmodel.post.SharedViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
@@ -114,7 +115,6 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onProfileFailure(String error) {
-                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
             }
         });
     }

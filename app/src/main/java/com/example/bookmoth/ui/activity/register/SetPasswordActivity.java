@@ -18,6 +18,7 @@ import com.example.bookmoth.R;
 import com.example.bookmoth.data.repository.register.RegisterRepositoryImpl;
 import com.example.bookmoth.domain.usecase.register.RegisterUseCase;
 import com.example.bookmoth.ui.activity.login.LoginActivity;
+import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.viewmodel.register.RegisterViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -27,7 +28,6 @@ public class SetPasswordActivity extends AppCompatActivity {
     private TextInputEditText passwordEditText, confirmPasswordEditText;
     private TextView warningText;
     private RegisterViewModel registerViewModel;
-    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +60,6 @@ public class SetPasswordActivity extends AppCompatActivity {
         registerViewModel = getIntent().getSerializableExtra("registerViewModel") == null ?
                 new RegisterViewModel() :
                 (RegisterViewModel) getIntent().getSerializableExtra("registerViewModel");
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getString(R.string.loading));
-        progressDialog.setCancelable(false);
     }
 
     private void clickReturn() {
@@ -118,16 +114,16 @@ public class SetPasswordActivity extends AppCompatActivity {
 
     private void getOtp() {
         registerViewModel.setPassword(passwordEditText.getText().toString());
-        progressDialog.show();
+        LoadingUtils.showLoading(getSupportFragmentManager());
         registerViewModel.getOtp(
                 this,
                 new RegisterUseCase(new RegisterRepositoryImpl()),
                 new RegisterViewModel.OnGetOtpListener() {
                     @Override
                     public void onSuccess() {
-                        progressDialog.dismiss();
                         Intent intent = new Intent(SetPasswordActivity.this, TypeOtpActivity.class);
                         intent.putExtra("registerViewModel", registerViewModel);
+                        LoadingUtils.hideLoading();
                         startActivity(intent);
                     }
 
@@ -143,7 +139,7 @@ public class SetPasswordActivity extends AppCompatActivity {
         return password.matches(pattern);
     }
     private void showErrorDialog(String message) {
-        progressDialog.dismiss();
+        LoadingUtils.hideLoading();
         new AlertDialog.Builder(this)
                 .setTitle("Lỗi kết nối")
                 .setMessage(message)
