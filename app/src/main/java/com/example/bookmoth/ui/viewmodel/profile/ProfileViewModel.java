@@ -5,15 +5,11 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.data.model.profile.ProfileDao;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
-import com.example.bookmoth.ui.option.OptionActivity;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import retrofit2.Call;

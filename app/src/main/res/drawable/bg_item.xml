@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="#1748AF"/>
-    <corners android:radius="13dp"/>
+
+    <!-- Gradient màu đẹp hơn -->
+    <gradient
+        android:angle="45"
+        android:startColor="#3D57B6"
+        android:endColor="#3854BA"
+        android:centerColor="#2F2995"
+        android:type="linear"/>
+
+    <!-- Bo góc mềm mại hơn -->
+    <corners android:radius="16dp"/>
+
+    <!-- Đổ bóng nhẹ -->
+    <padding android:left="4dp" android:top="4dp" android:right="4dp" android:bottom="4dp"/>
+
+    <!-- Viền nổi bật -->
+    <stroke android:width="1dp" android:color="#8175AD"/>
 </shape>

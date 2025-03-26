@@ -2,13 +2,11 @@ package com.example.bookmoth.ui.viewmodel.post;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.domain.model.post.Comment;
 import com.example.bookmoth.domain.model.post.Post;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
-import com.example.bookmoth.ui.post.CommentActivity;
 
 import java.io.IOException;
 import java.util.List;
