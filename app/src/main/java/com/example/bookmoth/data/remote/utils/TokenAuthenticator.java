@@ -55,6 +55,8 @@ public class TokenAuthenticator implements Authenticator {
         if (tokenResponse.isSuccessful() && tokenResponse.body() != null) {
             Token token = tokenResponse.body().getData();
 
+            SecureStorage.clearToken();
+
             SecureStorage.saveToken("jwt_token", token.getJwtToken());
             SecureStorage.saveToken("refresh_token", token.getRefreshToken());
 
