@@ -19,6 +19,7 @@ import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.InternetHelper;
 import com.example.bookmoth.data.repository.register.RegisterRepositoryImpl;
 import com.example.bookmoth.domain.usecase.register.RegisterUseCase;
+import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.viewmodel.register.RegisterViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -132,6 +133,7 @@ public class OptionActivity extends AppCompatActivity {
      * Khởi động quá trình đăng nhập với Google.
      */
     private void registerWithGoogle() {
+        LoadingUtils.showLoading(getSupportFragmentManager());
         Intent loginWithGoogleIntent = client.getSignInIntent();
         startActivityForResult(loginWithGoogleIntent, RC_REGISTER_WITH_GOOGLE);
     }
@@ -162,6 +164,7 @@ public class OptionActivity extends AppCompatActivity {
                                 Intent intent = new Intent(OptionActivity.this, RegisterResultActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 intent.putExtra("registerViewModel", registerViewModel);
+                                LoadingUtils.hideLoading();
                                 startActivity(intent);
                                 finish();
                             }
@@ -169,15 +172,18 @@ public class OptionActivity extends AppCompatActivity {
                             @Override
                             public void onError(String error) {
                                 Toast.makeText(OptionActivity.this, error, Toast.LENGTH_SHORT).show();
+                                LoadingUtils.hideLoading();
                                 client.signOut();
                             }
                         }
                 );
             } catch (ApiException e) {
                 Log.e("LoginActivity", "Google sign-in failed. Code: " + e.getStatusCode(), e);
+                LoadingUtils.hideLoading();
                 handleGoogleSignInError(e);
             }
         }
+        LoadingUtils.hideLoading();
     }
 
     /**
@@ -190,7 +196,7 @@ public class OptionActivity extends AppCompatActivity {
         String errorMessage;
         switch (errorCode) {
             case GoogleSignInStatusCodes.SIGN_IN_CANCELLED:
-                errorMessage = getString(R.string.error_signin_cancelled);
+                errorMessage = getString(R.string.error_register_cancelled);
                 break;
             case GoogleSignInStatusCodes.NETWORK_ERROR:
                 errorMessage = getString(R.string.error_network);

@@ -277,7 +277,6 @@ public class CommentActivity extends AppCompatActivity {
 
             @Override
             public void onProfileFailure(String error) {
-                Toast.makeText(CommentActivity.this, error, Toast.LENGTH_SHORT).show();
             }
         });
     }
