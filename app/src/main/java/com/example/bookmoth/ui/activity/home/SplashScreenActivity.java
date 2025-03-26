@@ -106,11 +106,6 @@ public class SplashScreenActivity extends AppCompatActivity {
      * Chuyển hướng người dùng đến màn hình đăng nhập nếu không có token hoặc token hết hạn.
      */
     private void navigateToLogin() {
-        Toast.makeText(
-                SplashScreenActivity.this,
-                "a",
-                Toast.LENGTH_SHORT
-        ).show();
         startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
         getPermission();
         finish();
