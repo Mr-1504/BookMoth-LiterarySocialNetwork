@@ -2,8 +2,6 @@ package com.example.bookmoth.ui.activity.wallet;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,8 +14,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.Extension;
-import com.example.bookmoth.ui.dialogs.PasswordPopup;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.math.BigDecimal;
 
@@ -59,6 +55,7 @@ public class DepositActivity extends AppCompatActivity {
 
             Intent intent = new Intent(this, ConfirmActivity.class);
             intent.putExtra("amount", amount);
+            startActivity(intent);
         });
     }
 
