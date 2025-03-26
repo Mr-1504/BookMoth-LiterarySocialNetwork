@@ -25,6 +25,7 @@ import com.example.bookmoth.R;
 import com.example.bookmoth.data.repository.register.RegisterRepositoryImpl;
 import com.example.bookmoth.domain.usecase.register.RegisterUseCase;
 import com.example.bookmoth.ui.activity.login.LoginActivity;
+import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.viewmodel.register.RegisterViewModel;
 
 public class TypeOtpActivity extends AppCompatActivity {
@@ -74,15 +75,12 @@ public class TypeOtpActivity extends AppCompatActivity {
 
     private void clickResend() {
         tvResendOtp.setOnClickListener(v -> {
+            LoadingUtils.showLoading(getSupportFragmentManager());
             if (secondResend < 0) {
-                ProgressDialog progressDialog = new ProgressDialog(this);
-                progressDialog.setMessage(getString(R.string.loading));
-                progressDialog.setCancelable(false);
-                progressDialog.show();
                 registerViewModel.getOtp(this, new RegisterUseCase(new RegisterRepositoryImpl()), new RegisterViewModel.OnGetOtpListener() {
                     @Override
                     public void onSuccess() {
-                        progressDialog.dismiss();
+                        LoadingUtils.hideLoading();
                         secondResend = 30;
                         setCountdownResendOtp();
                         tvWarning.setVisibility(View.GONE);
@@ -94,7 +92,7 @@ public class TypeOtpActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String error) {
-                        progressDialog.dismiss();
+                        LoadingUtils.hideLoading();
                         showErrorDialog(error);
                         tvWarning.setVisibility(View.GONE);
                     }
@@ -153,10 +151,7 @@ public class TypeOtpActivity extends AppCompatActivity {
     }
 
     private void verifyOtp(String otp) {
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getString(R.string.loading));
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+        LoadingUtils.showLoading(getSupportFragmentManager());
         registerViewModel.setOtp(otp);
         registerViewModel.verifyOtp(
                 this,
@@ -164,7 +159,7 @@ public class TypeOtpActivity extends AppCompatActivity {
                 new RegisterViewModel.OnVerifyOtpListener() {
                     @Override
                     public void onSuccess() {
-                        progressDialog.dismiss();
+                        LoadingUtils.hideLoading();
                         tvWarning.setVisibility(View.GONE);
 
                         register();
@@ -172,7 +167,7 @@ public class TypeOtpActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String error) {
-                        progressDialog.dismiss();
+                        LoadingUtils.hideLoading();
                         tvWarning.setText(error);
                         tvWarning.setVisibility(View.VISIBLE);
                     }
@@ -181,17 +176,14 @@ public class TypeOtpActivity extends AppCompatActivity {
     }
 
     private void register() {
-        ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getString(R.string.loading));
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+        LoadingUtils.showLoading(getSupportFragmentManager());
         registerViewModel.register(
                 this,
                 new RegisterUseCase(new RegisterRepositoryImpl()),
                 new RegisterViewModel.OnRegisterListener() {
                     @Override
                     public void onSuccess() {
-                        progressDialog.dismiss();
+                        LoadingUtils.hideLoading();
                         tvWarning.setVisibility(View.GONE);
                         Intent intent = new Intent(TypeOtpActivity.this, RegisterResultActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -200,7 +192,7 @@ public class TypeOtpActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(String error) {
-                        progressDialog.dismiss();
+                        LoadingUtils.hideLoading();
                         showErrorDialog(error);
                         Intent intent = new Intent(TypeOtpActivity.this, LoginActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
