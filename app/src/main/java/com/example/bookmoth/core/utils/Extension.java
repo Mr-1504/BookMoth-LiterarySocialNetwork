@@ -10,7 +10,7 @@ public class Extension {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
         symbols.setGroupingSeparator('.');
 
-        DecimalFormat formatter = new DecimalFormat("#.###", symbols);
+        DecimalFormat formatter = new DecimalFormat("#,###", symbols);
         return formatter.format(decimal);
     }
 
@@ -18,7 +18,7 @@ public class Extension {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
         symbols.setGroupingSeparator('.');
 
-        DecimalFormat formatter = new DecimalFormat("#.###", symbols);
+        DecimalFormat formatter = new DecimalFormat("#,###", symbols);
         return formatter.format(BigDecimal.valueOf(Long.parseLong(amount)));
     }
 
