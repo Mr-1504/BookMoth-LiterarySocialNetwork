@@ -3,6 +3,7 @@ package com.example.bookmoth.data.repository.profile;
 import com.example.bookmoth.data.remote.profile.ProfileApiService;
 import com.example.bookmoth.data.remote.utils.RetrofitClient;
 import com.example.bookmoth.domain.model.profile.Profile;
+import com.example.bookmoth.domain.model.profile.UsernameResponse;
 import com.example.bookmoth.domain.repository.profile.ProfileRepository;
 
 import retrofit2.Call;
@@ -39,5 +40,16 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     @Override
     public Call<Profile> getProfileById(String profileId) {
         return profileApiService.getProfileById(profileId);
+    }
+
+    /**
+     * Kiểm tra xem username đã tồn tại hay chưa.
+     *
+     * @param username username cần kiểm tra.
+     * @return {@code Call<UsernameResponse>} phản hồi chứa thông tin về việc username đã tồn tại hay chưa.
+     */
+    @Override
+    public Call<UsernameResponse> checkUsername(String username) {
+        return profileApiService.checkUsername(username);
     }
 }

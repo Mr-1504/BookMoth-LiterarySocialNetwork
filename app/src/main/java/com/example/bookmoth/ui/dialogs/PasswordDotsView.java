@@ -1,4 +1,4 @@
-package com.example.bookmoth.ui.activity.wallet;
+package com.example.bookmoth.ui.dialogs;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,6 +10,9 @@ import android.util.AttributeSet;
 
 import androidx.appcompat.widget.AppCompatEditText;
 
+/**
+ * View để hiển thị mật khẩu dưới dạng chấm
+ */
 public class PasswordDotsView extends AppCompatEditText {
     private static final int MAX_LENGTH = 6; // 6 ký tự mật khẩu
     private Paint fillPaint, strokePaint;
@@ -21,6 +24,9 @@ public class PasswordDotsView extends AppCompatEditText {
         init();
     }
 
+    /**
+     * Khởi tạo các thuộc tính
+     */
     private void init() {
         setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_LENGTH)});
@@ -39,6 +45,9 @@ public class PasswordDotsView extends AppCompatEditText {
 
     }
 
+    /**
+     * Vẽ các chấm tròn
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         int width = getWidth();

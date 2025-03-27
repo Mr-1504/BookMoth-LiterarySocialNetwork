@@ -14,19 +14,31 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.ui.activity.wallet.PasswordDotsView;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+/**
+ * Popup nhập mật khẩu
+ */
 public class PasswordPopup extends BottomSheetDialogFragment {
     private PasswordDotsView passwordDotsView;
     private StringBuilder passwordBuilder = new StringBuilder();
     private PasswordListener listener;
     private String title;
 
+    /**
+     * Interface lắng nghe sự kiện nhập mật khẩu
+     */
     public interface PasswordListener {
         void onPasswordEntered(String password);
     }
 
+    /**
+     * Khởi tạo dialog
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return dialog
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.popup_password, container, false);
@@ -54,6 +66,10 @@ public class PasswordPopup extends BottomSheetDialogFragment {
         return view;
     }
 
+    /**
+     * Khởi tạo view
+     * @param view
+     */
     private void init(View view) {
         passwordDotsView = view.findViewById(R.id.passwordDotsView);
         TextView titleView = view.findViewById(R.id.txtTitle);
@@ -83,11 +99,21 @@ public class PasswordPopup extends BottomSheetDialogFragment {
         backspace.setOnClickListener(v -> removeDigit());
     }
 
+    /**
+     * Khởi tạo dialog
+     * @param listener
+     * @param title
+     */
     public PasswordPopup(PasswordListener listener, String title) {
         this.title = title;
         this.listener = listener;
     }
 
+    /**
+     * Thêm số vào mật khẩu
+     * @param digit
+     * @param view
+     */
     private void addDigit(String digit, View view) {
         if (passwordBuilder.length() < 6) {
             passwordBuilder.append(digit);
@@ -95,6 +121,9 @@ public class PasswordPopup extends BottomSheetDialogFragment {
         }
     }
 
+    /**
+     * Xóa số khỏi mật khẩu
+     */
     private void removeDigit() {
         if (passwordBuilder.length() > 0) {
             passwordBuilder.deleteCharAt(passwordBuilder.length() - 1);
@@ -102,6 +131,10 @@ public class PasswordPopup extends BottomSheetDialogFragment {
         }
     }
 
+    /**
+     * Hiển thị thông báo lỗi
+     * @param message
+     */
     public void setErrorMessage(String message) {
         if (getView() != null) {
             passwordBuilder = new StringBuilder();
@@ -112,6 +145,9 @@ public class PasswordPopup extends BottomSheetDialogFragment {
         }
     }
 
+    /**
+     * Xóa mật khẩu
+     */
     public void clear(){
         passwordBuilder = new StringBuilder();
         passwordDotsView.setText("");
@@ -120,6 +156,9 @@ public class PasswordPopup extends BottomSheetDialogFragment {
         dismiss();
     }
 
+    /**
+     * Khởi tạo dialog
+     */
     @Override
     public void onStart() {
         super.onStart();
