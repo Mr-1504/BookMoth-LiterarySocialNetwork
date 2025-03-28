@@ -34,7 +34,6 @@ import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.viewmodel.post.FlaskViewModel;
 import com.example.bookmoth.ui.activity.post.CreatePostActivity;
 import com.example.bookmoth.ui.activity.profile.ProfileActivity;
-import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
 import com.example.bookmoth.ui.viewmodel.post.SharedViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;

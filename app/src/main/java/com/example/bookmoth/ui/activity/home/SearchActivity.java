@@ -1,4 +1,4 @@
-package com.example.bookmoth.ui.home;
+package com.example.bookmoth.ui.activity.home;
 
 import static java.security.AccessController.getContext;
 

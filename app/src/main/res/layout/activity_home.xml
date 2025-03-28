@@ -21,24 +21,31 @@
             android:orientation="horizontal"
             app:layout_scrollFlags="scroll|enterAlways">
 
-            <ImageButton
-                android:id="@+id/button_reload"
-                android:layout_width="51dp"
+            <TextView
+                android:id="@+id/tvBookmoth2"
+                android:layout_width="87dp"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/ic_app" />
+                android:layout_weight="1"
+                android:fontFamily="sans-serif"
+                android:text="@string/app_name"
+                android:textAlignment="center"
+                android:textColor="#3F51B5"
+                android:textSize="30sp"
+                android:textStyle="bold">
+
+            </TextView>
 
             <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="63dp"
+                android:layout_height="21dp"
                 android:layout_weight="1" />
 
             <ImageButton
                 android:id="@+id/button_search"
-                android:layout_width="60dp"
+                android:layout_width="57dp"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
+                android:padding="5dp"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/baseline_search_24" />
         </LinearLayout>

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,8 +23,9 @@ import com.example.bookmoth.ui.viewmodel.post.SharedViewModel;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private ImageButton buttonHome, buttonBook, buttonStore, buttonNotification, buttonSetting, buttonReload, buttonSearch;
+    private ImageButton buttonHome, buttonBook, buttonStore, buttonNotification, buttonSetting, buttonSearch;
     private SharedViewModel viewModel;
+    private TextView tvBookmoth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +46,8 @@ public class HomeActivity extends AppCompatActivity {
         buttonStore = findViewById(R.id.button_store);
         buttonNotification = findViewById(R.id.button_notification);
         buttonSetting = findViewById(R.id.button_setting);
-        buttonReload = findViewById(R.id.button_reload);
         buttonSearch = findViewById(R.id.button_search);
+        tvBookmoth = findViewById(R.id.tvBookmoth2);
 
         viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
 
@@ -109,7 +111,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // Xử lý sự kiện reload
-        buttonReload.setOnClickListener(v -> {
+        tvBookmoth.setOnClickListener(v -> {
             viewModel.setButtonClicked();
         });
         buttonSearch.setOnClickListener(v -> {

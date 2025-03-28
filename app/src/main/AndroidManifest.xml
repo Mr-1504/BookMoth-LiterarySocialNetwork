@@ -22,11 +22,12 @@
         android:theme="@style/Theme.BookMoth"
         tools:targetApi="31">
         <activity
-            android:name=".ui.home.SearchActivity"
+            android:name=".ui.activity.home.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.post.EditPostActivity"
-
+            android:name=".ui.activity.post.EditPostActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.wallet.ResultActivity"
             android:exported="false" />
         <activity
@@ -48,9 +49,6 @@
                     android:scheme="pay_order" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.activity.post.EditPostActivity"
-            android:exported="false" />
         <activity
             android:name=".ui.activity.wallet.DepositActivity"
             android:exported="false" />
