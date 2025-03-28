@@ -10,8 +10,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,8 +35,6 @@ import com.example.bookmoth.databinding.ActivityEditProfileBinding;
 import com.example.bookmoth.domain.model.profile.Gender;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
-import com.example.bookmoth.ui.activity.register.TypeBirthActivity;
-import com.example.bookmoth.ui.activity.register.TypeGenderActivity;
 import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
