@@ -5,6 +5,10 @@ import com.example.bookmoth.domain.model.profile.UsernameResponse;
 import com.example.bookmoth.domain.repository.profile.LocalProfileRepository;
 import com.example.bookmoth.domain.repository.profile.ProfileRepository;
 
+import java.util.Map;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 
 /**
@@ -36,6 +40,7 @@ public class ProfileUseCase {
 
     /**
      * Lưu thông tin hồ sơ người dùng.
+     *
      * @param profile Đối tượng chứa thông tin hồ sơ người dùng.
      */
     public void saveProfile(Profile profile) {
@@ -44,6 +49,7 @@ public class ProfileUseCase {
 
     /**
      * Lấy thông tin hồ sơ người dùng từ bộ nhớ cục bộ.
+     *
      * @return Đối tượng chứa thông tin hồ sơ người dùng.
      */
     public Profile getProfileLocal() {
@@ -59,6 +65,7 @@ public class ProfileUseCase {
 
     /**
      * Kiểm tra xem hồ sơ người dùng đã tồn tại hay chưa.
+     *
      * @return True nếu đã tồn tại, False nếu chưa tồn tại.
      */
     public boolean isProfileExist() {
@@ -83,5 +90,15 @@ public class ProfileUseCase {
      */
     public Call<UsernameResponse> checkUsername(String username) {
         return remoteRepo.checkUsername(username);
+    }
+
+    public Call<Void> editProfile(
+            Map<String, RequestBody> params,
+            MultipartBody.Part avatar,
+            MultipartBody.Part cover
+    ) {
+        return remoteRepo.editProfile(
+                params, avatar, cover
+        );
     }
 }
