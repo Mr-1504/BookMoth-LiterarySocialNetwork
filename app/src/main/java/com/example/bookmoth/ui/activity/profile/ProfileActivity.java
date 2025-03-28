@@ -137,22 +137,40 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onProfileSuccess(Profile profile) {
                 runOnUiThread(() -> {
-                    setProfile(profile, false);
-                    String myProfileId = SecureStorage.getToken("profileId");
-                    if (myProfileId.equals(profile.getProfileId())){
-                        profileViewModel.saveProfile(profile);
-                    }
+                    setProfile(profile);
                 });
             }
 
             @Override
             public void onProfileFailure(String error) {
-                Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_SHORT).show();
+                String myProfileId = SecureStorage.getToken("profileId");
+                if(profileId.equals(myProfileId)){
+                    profileViewModel.isProfileExist(exist -> {
+                        if (exist) {
+                            profileViewModel.getProfileLocal(new ProfileViewModel.OnProfileListener() {
+                                @Override
+                                public void onProfileSuccess(Profile profile) {
+                                    runOnUiThread(() -> {
+                                        setProfile(profile);
+                                    });
+                                }
+
+                                @Override
+                                public void onProfileFailure(String error) {
+                                    Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        } else {
+                            Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
     }
 
-    private void setProfile(Profile profile, boolean isExist) {
+    private void setProfile(Profile profile) {
         // Set text
         txtName.setText(String.format("%s %s",
                 profile.getLastName(), profile.getFirstName()));
