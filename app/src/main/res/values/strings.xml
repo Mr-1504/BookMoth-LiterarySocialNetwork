@@ -52,7 +52,7 @@
     <string name="gender_female">Nữ</string>
     <string name="gender_other">Khác</string>
     <string name="undefined_error">"Lỗi không xác định - "</string>
-    <string name="error_connecting_to_server">Lỗi kết nối server</string>
+    <string name="error_connecting_to_server">Máy chủ chưa thể phản hồi!</string>
     <string name="account_does_not_exist">Tài khoản không tồn tại</string>
     <string name="incorrect_email_or_password">Sai email hoặc mật khẩu</string>
     <string name="email_already_exists">Email đã tồn tại</string>
@@ -123,4 +123,8 @@
     <string name="Fullname">Họ tên</string>
     <string name="birth">Sinh nhật</string>
     <string name="gender">Giới tính</string>
+    <string name="try_again">Lỗi, thử lại sau</string>
+    <string name="error_auth">Lỗi xác minh</string>
+    <string name="error_account">Lỗi tài khoản</string>
+    <string name="do_you_want_to_save_change">Bạn có muốn lưu thay đổi?</string>
 </resources>
