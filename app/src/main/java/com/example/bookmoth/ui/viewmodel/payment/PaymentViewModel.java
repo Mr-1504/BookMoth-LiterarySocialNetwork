@@ -3,8 +3,10 @@ package com.example.bookmoth.ui.viewmodel.payment;
 import android.content.Context;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.TransactionUtils;
 import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
 import com.example.bookmoth.data.repository.payment.PaymentRepositoryImpl;
+import com.example.bookmoth.domain.model.payment.TransactionType;
 import com.example.bookmoth.domain.model.payment.ZaloPayTransToken;
 import com.example.bookmoth.domain.usecase.payment.PaymentUseCase;
 
@@ -22,14 +24,15 @@ public class PaymentViewModel {
     public void createOrder(
             Context context,
             long amount, String description,
-            boolean transactionType,
+            TransactionType transactionType,
             final OnCreateOrderListener listener) {
-        paymentUseCase.createOrder(amount, description, transactionType)
+        boolean type = TransactionUtils.getTransactionType(transactionType);
+        paymentUseCase.createOrder(amount, description, type)
                 .enqueue(new Callback<ZaloPayTokenResponse>() {
                     @Override
                     public void onResponse(Call<ZaloPayTokenResponse> call, Response<ZaloPayTokenResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            listener.onCreateOrderSuccess(response.body().getToken());
+                            listener.onCreateOrderSuccess(response.body());
                         } else {
                             listener.onCreateOrderFailure(context.getString(R.string.undefined_error));
                         }
@@ -43,7 +46,7 @@ public class PaymentViewModel {
     }
 
     public interface OnCreateOrderListener {
-        void onCreateOrderSuccess(String zaloPayTransToken);
+        void onCreateOrderSuccess(ZaloPayTokenResponse token);
         void onCreateOrderFailure(String message);
     }
 }

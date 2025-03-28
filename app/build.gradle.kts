@@ -1,8 +1,13 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
 }
+
+val properties = Properties()
+properties.load(File(rootProject.rootDir, "local.properties").inputStream())
 
 android {
     namespace = "com.example.bookmoth"
@@ -15,15 +20,20 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        buildConfigField("String", "STORE_PASSWORD", "\"${properties["storePassword"]}\"")
+        buildConfigField("String", "KEY_ALIAS", "\"${properties["keyAlias"]}\"")
+        buildConfigField("String", "KEY_PASSWORD", "\"${properties["keyPassword"]}\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
 
     signingConfigs {
         create("release") {
             storeFile = file("BookMoth.jks")
-            storePassword = "123456"
-            keyAlias = "bookmoth"
-            keyPassword = "123456"
+            storePassword = properties["storePassword"] as String
+            keyAlias = properties["keyAlias"] as String
+            keyPassword = properties["keyPassword"] as String
         }
     }
 
@@ -48,6 +58,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 
     // xử lý xung đột file META-INF
@@ -124,4 +135,7 @@ dependencies {
 
     //processLifecycle
     implementation("androidx.lifecycle:lifecycle-process:2.8.7")
+
+    //cardview
+    implementation(libs.cardview)
 }
