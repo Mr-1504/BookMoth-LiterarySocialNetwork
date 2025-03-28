@@ -14,4 +14,5 @@ public interface FlaskRepository {
     Call<ApiResponse<Book>> getBookById(int id);
     Call<ApiResponse<Profile>> getProfile(int id);
     Call<Api> getProfileAvata(int id);
+    Call<Api> getFollowers(int id);
 }

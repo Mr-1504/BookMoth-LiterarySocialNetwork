@@ -35,6 +35,11 @@ public class SupabaseRepositoryImpl implements SupabaseRepository {
     }
 
     @Override
+    public Call<List<Post>> searchPosts(String titleQuery, String contentQuery, String status) {
+        return supabaseApiService.searchPosts(titleQuery,contentQuery,status);
+    }
+
+    @Override
     public Call<ResponseBody> updateLike(String postId, Map<String, Object> updateData) {
         return supabaseApiService.updateLike(postId,updateData);
     }

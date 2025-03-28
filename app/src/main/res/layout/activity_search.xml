@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.SearchActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnBackSearch"
+                android:layout_width="53dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/round_chevron_left_24" />
+
+            <EditText
+                android:id="@+id/editTextSearch"
+                android:layout_width="279dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Nhập từ tim kiếm"
+                android:inputType="text" />
+
+            <ImageButton
+                android:id="@+id/btnSearch"
+                android:layout_width="39dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/transfer"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/baseline_search_24" />
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:fillViewport="true"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <!-- Item 1 -->
+                <FrameLayout
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bài đăng"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:layout_gravity="center" />
+
+                    <ImageButton
+                        android:id="@+id/btnPostSearch"
+                        android:layout_width="100dp"
+                        android:layout_height="50dp"
+                        android:background="@android:color/transparent"
+                        android:layout_gravity="center"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/search2" />
+
+                </FrameLayout>
+
+                <!-- Item 2 -->
+                <FrameLayout
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Trang cá nhân"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:layout_gravity="center" />
+
+                    <ImageButton
+                        android:id="@+id/btnProfileSearch"
+                        android:layout_width="120dp"
+                        android:layout_height="50dp"
+                        android:background="@android:color/transparent"
+                        android:layout_gravity="center"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/search1" />
+
+                </FrameLayout>
+
+                <!-- Item 3 -->
+                <FrameLayout
+                    android:layout_width="110dp"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cửa hàng sách"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:layout_gravity="center" />
+
+                    <ImageButton
+                        android:id="@+id/btnBookSearch"
+                        android:layout_width="110dp"
+                        android:layout_height="50dp"
+                        android:background="@android:color/transparent"
+                        android:layout_gravity="center"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/search1" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tác phẩm"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:layout_gravity="center" />
+
+                    <ImageButton
+                        android:id="@+id/btnWorkSearch"
+                        android:layout_width="100dp"
+                        android:layout_height="50dp"
+                        android:background="@android:color/transparent"
+                        android:layout_gravity="center"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/search1" />
+
+                </FrameLayout>
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
