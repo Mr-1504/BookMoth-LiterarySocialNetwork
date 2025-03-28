@@ -71,4 +71,15 @@ public class GenderUtils {
                 return OTHER;
         }
     }
+
+    public static int getGenderIntFromString(String gender) {
+        switch (gender) {
+            case "Nam":
+                return 0;
+            case "Nữ":
+                return 1;
+            default:
+                return 2;
+        }
+    }
 }

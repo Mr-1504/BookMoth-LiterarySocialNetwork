@@ -112,6 +112,7 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation(libs.converter.scalars)
     implementation(libs.logging.interceptor)
 
     //navigation
@@ -124,14 +125,14 @@ dependencies {
     implementation("com.jsibbold:zoomage:1.3.1")
 
     //recyclerview
-    implementation (libs.recyclerview)
+    implementation(libs.recyclerview)
 
     //room database
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler)
 
     //picasso
-    implementation ("com.squareup.picasso:picasso:2.8")
+    implementation("com.squareup.picasso:picasso:2.8")
 
     //processLifecycle
     implementation("androidx.lifecycle:lifecycle-process:2.8.7")

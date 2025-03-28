@@ -19,6 +19,8 @@ public class Profile implements Serializable {
     private int gender;         // Giới tính (0: Nam, 1: Nữ, 2: Khác)
     private boolean identifier; // Xác định tài khoản cá nhân hay nhóm
     private String birth; // Ngày sinh
+    private int follower; // Số người theo dõi
+    private int following; // Số người đang theo dõi
 
 
     public Profile(ProfileEntity entity) {
@@ -215,23 +217,38 @@ public class Profile implements Serializable {
     }
 
     /**
-     * Trả về chuỗi mô tả đối tượng Profile.
+     * Lấy số người theo dõi của người dùng.
      *
-     * @return Chuỗi chứa thông tin hồ sơ người dùng.
+     * @return Số người theo dõi.
      */
-    @Override
-    public String toString() {
-        return "Profile{" +
-                "profileId='" + profileId + '\'' +
-                ", accountId='" + accountId + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", username='" + username + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", coverPhoto='" + coverphoto + '\'' +
-                ", gender=" + gender +
-                ", identifier=" + identifier +
-                ", dateOfBirth='" + birth + '\'' +
-                '}';
+    public int getFollower() {
+        return follower;
+    }
+
+    /**
+     * Cập nhật số người theo dõi của người dùng.
+     *
+     * @param follower Số người theo dõi mới.
+     */
+    public void setFollower(int follower) {
+        this.follower = follower;
+    }
+
+    /**
+     * Lấy số người đang theo dõi của người dùng.
+     *
+     * @return Số người đang theo dõi.
+     */
+    public int getFollowing() {
+        return following;
+    }
+
+    /**
+     * Cập nhật số người đang theo dõi của người dùng.
+     *
+     * @param following Số người đang theo dõi mới.
+     */
+    public void setFollowing(int following) {
+        this.following = following;
     }
 }

@@ -1,9 +1,14 @@
 package com.example.bookmoth.domain.usecase.profile;
 
 import com.example.bookmoth.domain.model.profile.Profile;
+import com.example.bookmoth.domain.model.profile.UsernameResponse;
 import com.example.bookmoth.domain.repository.profile.LocalProfileRepository;
 import com.example.bookmoth.domain.repository.profile.ProfileRepository;
 
+import java.util.Map;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 
 /**
@@ -35,6 +40,7 @@ public class ProfileUseCase {
 
     /**
      * Lưu thông tin hồ sơ người dùng.
+     *
      * @param profile Đối tượng chứa thông tin hồ sơ người dùng.
      */
     public void saveProfile(Profile profile) {
@@ -43,6 +49,7 @@ public class ProfileUseCase {
 
     /**
      * Lấy thông tin hồ sơ người dùng từ bộ nhớ cục bộ.
+     *
      * @return Đối tượng chứa thông tin hồ sơ người dùng.
      */
     public Profile getProfileLocal() {
@@ -58,13 +65,40 @@ public class ProfileUseCase {
 
     /**
      * Kiểm tra xem hồ sơ người dùng đã tồn tại hay chưa.
+     *
      * @return True nếu đã tồn tại, False nếu chưa tồn tại.
      */
     public boolean isProfileExist() {
         return localRepo.isProfileExist();
     }
 
+    /**
+     * Lấy thông tin hồ sơ của người dùng theo id.
+     *
+     * @param profileId id của hồ sơ người dùng.
+     * @return Đối tượng Call chứa thông tin hồ sơ của người dùng.
+     */
     public Call<Profile> getProfileById(String profileId) {
         return remoteRepo.getProfileById(profileId);
+    }
+
+    /**
+     * Kiểm tra xem username đã tồn tại hay chưa.
+     *
+     * @param username username cần kiểm tra.
+     * @return Đối tượng Call chứa thông tin về việc username đã tồn tại hay chưa.
+     */
+    public Call<UsernameResponse> checkUsername(String username) {
+        return remoteRepo.checkUsername(username);
+    }
+
+    public Call<Void> editProfile(
+            Map<String, RequestBody> params,
+            MultipartBody.Part avatar,
+            MultipartBody.Part cover
+    ) {
+        return remoteRepo.editProfile(
+                params, avatar, cover
+        );
     }
 }

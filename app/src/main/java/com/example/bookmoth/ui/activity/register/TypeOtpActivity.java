@@ -28,6 +28,9 @@ import com.example.bookmoth.ui.activity.login.LoginActivity;
 import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.viewmodel.register.RegisterViewModel;
 
+/**
+ *
+ */
 public class TypeOtpActivity extends AppCompatActivity {
 
     private final EditText[] otpFields = new EditText[6];
@@ -143,6 +146,7 @@ public class TypeOtpActivity extends AppCompatActivity {
             if (otp.length() == 6) {
                 verifyOtp(otp);
             } else {
+                reset();
                 tvWarning.setText(getString(R.string.isEmptyOtp));
                 tvWarning.setVisibility(View.VISIBLE);
             }
@@ -161,7 +165,6 @@ public class TypeOtpActivity extends AppCompatActivity {
                     public void onSuccess() {
                         LoadingUtils.hideLoading();
                         tvWarning.setVisibility(View.GONE);
-
                         register();
                     }
 
@@ -233,6 +236,13 @@ public class TypeOtpActivity extends AppCompatActivity {
                 return false;
             });
         }
+    }
+
+    private void reset(){
+        for(int i = 0; i < otpFields.length; i++){
+            otpFields[i].setText("");
+        }
+        otpFields[0].requestFocus();
     }
 
     private String getOtpCode() {

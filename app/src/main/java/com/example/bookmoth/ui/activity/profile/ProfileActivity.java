@@ -1,8 +1,11 @@
 package com.example.bookmoth.ui.activity.profile;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,8 +45,9 @@ import java.util.List;
  */
 public class ProfileActivity extends AppCompatActivity {
 
+    private Button editProfile, follow, message;
     private ProfileViewModel profileViewModel;
-    private TextView txtFollower, txtName, txtUsername, txtBack;
+    private TextView txtFollower, txtFollowing, txtName, txtUsername, txtBack;
     private ImageView avatar, coverPhoto;
     private PostViewModel postViewModel;
     private PostAdapter postAdapter;
@@ -66,6 +70,13 @@ public class ProfileActivity extends AppCompatActivity {
         initViews();
         loadPostProfileID();
         clickReturn();
+        clickEditProfile();
+    }
+
+    private void clickEditProfile() {
+        editProfile.setOnClickListener(view -> {
+            startActivity(new Intent(this, EditProfileActivity.class));
+        });
     }
 
     private void clickReturn() {
@@ -86,6 +97,7 @@ public class ProfileActivity extends AppCompatActivity {
         );
         profileViewModel = new ProfileViewModel(new ProfileUseCase(localRepo, new ProfileRepositoryImpl()));
         txtFollower = findViewById(R.id.txtFollower);
+        txtFollowing = findViewById(R.id.txtFollowing);
         txtName = findViewById(R.id.txtName);
         avatar = findViewById(R.id.imageViewAvatar);
         coverPhoto = findViewById(R.id.imageViewCover);
@@ -93,13 +105,30 @@ public class ProfileActivity extends AppCompatActivity {
         content = findViewById(R.id.contentRecyclerView);
         content.setLayoutManager(new LinearLayoutManager(this));
         content.setAdapter(postAdapter);
+        editProfile = findViewById(R.id.btnEditProfile);
+        follow = findViewById(R.id.btnFollow);
+        message = findViewById(R.id.btnMessage);
 
         profileId = getIntent().getStringExtra("profileId");
         if (profileId != null) {
+            String myProfileId = SecureStorage.getToken("profileId");
+            if (profileId.equals(myProfileId)) {
+                editProfile.setVisibility(View.VISIBLE);
+                follow.setVisibility(View.GONE);
+                message.setVisibility(View.GONE);
+            } else {
+
+                editProfile.setVisibility(View.GONE);
+                follow.setVisibility(View.VISIBLE);
+                message.setVisibility(View.VISIBLE);
+            }
             getProfileById(profileId);
         } else {
             profileId = SecureStorage.getToken("profileId");
-            getMe();
+            editProfile.setVisibility(View.VISIBLE);
+            follow.setVisibility(View.GONE);
+            message.setVisibility(View.GONE);
+            getProfileById(profileId);
         }
     }
 
@@ -109,6 +138,10 @@ public class ProfileActivity extends AppCompatActivity {
             public void onProfileSuccess(Profile profile) {
                 runOnUiThread(() -> {
                     setProfile(profile, false);
+                    String myProfileId = SecureStorage.getToken("profileId");
+                    if (myProfileId.equals(profile.getProfileId())){
+                        profileViewModel.saveProfile(profile);
+                    }
                 });
             }
 
@@ -119,60 +152,16 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void getMe() {
-        profileViewModel.isProfileExist(exist -> {
-            if (exist) {
-                profileViewModel.getProfileLocal(new ProfileViewModel.OnProfileListener() {
-                    @Override
-                    public void onProfileSuccess(Profile profile) {
-                        setProfile(profile, true);
-                    }
-
-                    @Override
-                    public void onProfileFailure(String error) {
-                        Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } else {
-                profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
-                    @Override
-                    public void onProfileSuccess(Profile profile) {
-                        if (profile == null) return;
-                        runOnUiThread(() -> {
-                            profileViewModel.saveProfile(profile);
-                            setProfile(profile, false);
-                        });
-                    }
-
-                    @Override
-                    public void onProfileFailure(String error) {
-                        Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
-    }
-
     private void setProfile(Profile profile, boolean isExist) {
         // Set text
         txtName.setText(String.format("%s %s",
                 profile.getLastName(), profile.getFirstName()));
 
-        txtFollower.setText(String.format("%s %s", 0, getString(R.string.follower)));
+        txtFollower.setText(String.format("%s %s", profile.getFollower(), getString(R.string.follower)));
+        txtFollowing.setText(String.format("%s %s", getString(R.string.following), profile.getFollowing()));
 
         txtUsername.setText(String.format("(%s)", profile.getUsername()));
 
-        if (isExist) {
-            if (ImageCache.isBitmapExists(this, "avatar.png")) {
-                Bitmap avatarBitmap = ImageCache.loadBitmap(this, "avatar.png");
-                avatar.setImageBitmap(avatarBitmap);
-            }
-            if (ImageCache.isBitmapExists(this, "cover.png")) {
-                Bitmap coverBitmap = ImageCache.loadBitmap(this, "cover.png");
-                coverPhoto.setImageBitmap(coverBitmap);
-            }
-            return;
-        }
         // Load Avatar
         Glide.with(ProfileActivity.this)
                 .load(profile.getAvatar())

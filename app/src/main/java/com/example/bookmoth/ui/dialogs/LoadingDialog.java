@@ -13,11 +13,23 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.bookmoth.R;
 
+/**
+ * Dialog hiện animation Loading
+ */
 public class LoadingDialog extends DialogFragment {
+
+    /**
+     * Tạo mới dialog
+     * @return dialog
+     */
     public static LoadingDialog newInstance() {
         return new LoadingDialog();
     }
 
+    /**
+     * Khởi tạo dialog
+     * @param savedInstanceState
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -25,6 +37,9 @@ public class LoadingDialog extends DialogFragment {
         return view;
     }
 
+    /**
+     * Hiển thị dialog
+     */
     @Override
     public void onStart() {
         super.onStart();
