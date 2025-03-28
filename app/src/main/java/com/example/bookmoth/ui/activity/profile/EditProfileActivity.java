@@ -150,10 +150,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
                     profileViewModel.editProfile(this, params, avatar, cover, new ProfileViewModel.OnEditProfile() {
                                 @Override
-                                public void onSuccess() {
+                                public void onSuccess(Profile profile) {
                                     LoadingUtils.hideLoading();
                                     dialog.dismiss();
-
+                                    profileViewModel.saveProfile(profile);
                                     Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
