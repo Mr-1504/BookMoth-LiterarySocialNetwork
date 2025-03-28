@@ -92,7 +92,7 @@ public class ProfileUseCase {
         return remoteRepo.checkUsername(username);
     }
 
-    public Call<Void> editProfile(
+    public Call<Profile> editProfile(
             Map<String, RequestBody> params,
             MultipartBody.Part avatar,
             MultipartBody.Part cover
