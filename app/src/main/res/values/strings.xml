@@ -112,4 +112,15 @@
     <string name="transaction_fee">Phí giao dịch:</string>
     <string name="free">Miễn phí</string>
     <string name="error_register_cancelled">Đã hủy đăng ký</string>
+    <string name="message">Nhắn tin</string>
+    <string name="follow">Theo dõi</string>
+    <string name="following">Đang theo dõi</string>
+    <string name="avatar">Ảnh đại diện</string>
+    <string name="edit_avatar">Chỉnh sửa</string>
+    <string name="cover">Ảnh bìa</string>
+    <string name="username">Username</string>
+    <string name="fullname">Họ tên</string>
+    <string name="Fullname">Họ tên</string>
+    <string name="birth">Sinh nhật</string>
+    <string name="gender">Giới tính</string>
 </resources>

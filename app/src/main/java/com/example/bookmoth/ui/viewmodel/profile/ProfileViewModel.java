@@ -6,6 +6,7 @@ import android.os.Looper;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.domain.model.profile.Profile;
+import com.example.bookmoth.domain.model.profile.UsernameResponse;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 
 import java.util.concurrent.ExecutorService;
@@ -88,6 +89,33 @@ public class ProfileViewModel {
         });
     }
 
+
+    /**
+     * Kiểm tra xem username đã tồn tại hay chưa.
+     *
+     * @param context  Context của ứng dụng, dùng để lấy string resource.
+     * @param username username cần kiểm tra.
+     * @param listener Lắng nghe kết quả của quá trình kiểm tra.
+     */
+    public void checkUsername(Context context, String username, final OnCheckUsernameListener listener){
+        profileUseCase.checkUsername(username).enqueue(new Callback<UsernameResponse>() {
+            @Override
+            public void onResponse(Call<UsernameResponse> call, Response<UsernameResponse> response) {
+                if(response.isSuccessful() && response.body() != null){
+                    listener.onProfileSuccess(response.body().isExists());
+                } else {
+                    listener.onProfileFailure(context.getString(R.string.undefined_error));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsernameResponse> call, Throwable t) {
+                listener.onProfileFailure(context.getString(R.string.error_connecting_to_server));
+            }
+        });
+    }
+
+
     /**
      * Xóa thông tin hồ sơ người dùng khỏi bộ nhớ cục bộ.
      */
@@ -145,6 +173,23 @@ public class ProfileViewModel {
 
         /**
          * Gọi khi lấy hồ sơ thất bại do lỗi cụ thể từ server.
+         *
+         * @param error Chuỗi lỗi thông báo cho người dùng.
+         */
+        void onProfileFailure(String error);
+    }
+
+    /**
+     * Interface dùng để lắng nghe kết quả khi kiểm tra username.
+     */
+    public interface OnCheckUsernameListener {
+        /**
+         * Gọi khi kiểm tra username thành công.
+         */
+        void onProfileSuccess(boolean exists);
+
+        /**
+         * Gọi khi kiểm tra username thất bại do lỗi cụ thể từ server.
          *
          * @param error Chuỗi lỗi thông báo cho người dùng.
          */

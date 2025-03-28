@@ -1,6 +1,7 @@
 package com.example.bookmoth.domain.usecase.profile;
 
 import com.example.bookmoth.domain.model.profile.Profile;
+import com.example.bookmoth.domain.model.profile.UsernameResponse;
 import com.example.bookmoth.domain.repository.profile.LocalProfileRepository;
 import com.example.bookmoth.domain.repository.profile.ProfileRepository;
 
@@ -64,7 +65,23 @@ public class ProfileUseCase {
         return localRepo.isProfileExist();
     }
 
+    /**
+     * Lấy thông tin hồ sơ của người dùng theo id.
+     *
+     * @param profileId id của hồ sơ người dùng.
+     * @return Đối tượng Call chứa thông tin hồ sơ của người dùng.
+     */
     public Call<Profile> getProfileById(String profileId) {
         return remoteRepo.getProfileById(profileId);
+    }
+
+    /**
+     * Kiểm tra xem username đã tồn tại hay chưa.
+     *
+     * @param username username cần kiểm tra.
+     * @return Đối tượng Call chứa thông tin về việc username đã tồn tại hay chưa.
+     */
+    public Call<UsernameResponse> checkUsername(String username) {
+        return remoteRepo.checkUsername(username);
     }
 }

@@ -20,8 +20,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingBottom="40dp"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:contentScrim="?attr/colorPrimary">
+                app:contentScrim="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <TextView
                     android:id="@+id/txtBack"
@@ -29,14 +29,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:padding="8dp"
-                    android:text="@string/return_button"
-                    android:textSize="20sp"
-                    android:textColor="@android:color/white"
                     android:background="@android:color/transparent"
+                    android:elevation="4dp"
                     android:fontFamily="sans-serif-medium"
+                    android:padding="8dp"
                     android:rotationY="180"
-                    android:elevation="4dp"/>
+                    android:text="@string/return_button"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp" />
                 <!-- Ảnh bìa -->
                 <ImageView
                     android:id="@+id/imageViewCover"
@@ -50,8 +50,8 @@
                     android:id="@+id/imageViewAvatar"
                     android:layout_width="124dp"
                     android:layout_height="122dp"
-                    android:layout_marginBottom="-30dp"
                     android:layout_gravity="bottom|center_horizontal"
+                    android:layout_marginBottom="-30dp"
                     android:background="@drawable/circle_background"
                     android:clipToOutline="true"
                     android:scaleType="centerCrop"
@@ -76,13 +76,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
                         android:id="@+id/txtName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Trương Văn M"
                         android:textSize="20sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/txUsername"
@@ -90,26 +91,76 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:text="(Trương Văn Minh)"
-                        android:textSize="16sp"/>
+                        android:textSize="16sp" />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txtFollower"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/follower"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/darker_gray"/>
 
-                <!-- Nút chỉnh sửa -->
-                <Button
-                    android:id="@+id/btnEditProfile"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="#0445ae"
-                    android:text="Chỉnh sửa trang cá nhân"
-                    android:textColor="@android:color/white"/>
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtFollower"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:text="@string/follower"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/txtFollowing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/following"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <!-- Nút chỉnh sửa -->
+                    <Button
+                        android:id="@+id/btnEditProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:backgroundTint="#0445ae"
+                        android:text="Chỉnh sửa trang cá nhân"
+                        android:textColor="@android:color/white" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btnFollow"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#0445ae"
+                            android:text="@string/follow"
+                            android:textColor="@android:color/white" />
+
+                        <Button
+                            android:id="@+id/btnMessage"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#0445ae"
+                            android:text="@string/message"
+                            android:textColor="@android:color/white" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
 
                 <!-- RecyclerView -->
                 <androidx.recyclerview.widget.RecyclerView
