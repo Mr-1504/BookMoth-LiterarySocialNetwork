@@ -30,6 +30,7 @@ import com.example.bookmoth.domain.usecase.post.PostUseCase;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.activity.post.CommentActivity;
 import com.example.bookmoth.ui.activity.post.EditPostActivity;
+import com.example.bookmoth.ui.activity.profile.ProfileActivity;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -174,18 +175,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
 
 
-        getImageProfile(post.getAuthorId(), new ImageCallback() {
-            @Override
-            public void onSuccess(String imageUrl) {
-                Picasso.get().load(imageUrl).into(holder.btnProfile);
-                Log.e("Profile Image", "Ảnh đại diện: " + imageUrl);
-            }
+        String imageUrl = "http://127.0.0.1:7100/images/avatars/"+ post.getAuthorId()+".pnj";
+        Picasso.get().load(imageUrl).error(R.drawable.avatar).into(holder.btnProfile);
 
+        holder.btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onError(String error) {
-                Log.e("Profile API", error);
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ProfileActivity.class);
+                intent.putExtra("profileId", post.getAuthorId());
+                context.startActivity(intent);
             }
         });
+//        getImageProfile(post.getAuthorId(), new ImageCallback() {
+//            @Override
+//            public void onSuccess(String imageUrl) {
+//                Picasso.get().load(imageUrl).into(holder.btnProfile);
+//                Log.e("Profile Image", "Ảnh đại diện: " + imageUrl);
+//            }
+//
+//            @Override
+//            public void onError(String error) {
+//                Log.e("Profile API", error);
+//            }
+//        });
 
         checkLikeStatus(post.getPostId(), holder);
         holder.btnLike.setOnClickListener(v -> {
@@ -222,37 +234,26 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                         .error(R.drawable.error_image) // Hiển thị ảnh lỗi nếu tải thất bại
                         .into(holder.imageView);
             }
-//            else if (mediaUrl.endsWith(".mp4") || mediaUrl.endsWith(".avi") || mediaUrl.endsWith(".mkv")) {
-//                holder.videoView.setVisibility(View.VISIBLE);
-//                holder.videoView.setVideoURI(Uri.parse(mediaUrl));
-//                holder.videoView.setOnPreparedListener(mp -> {
-//                    mp.setLooping(true);
-//                    mp.start();
-//                });
-//            } else if (mediaUrl.endsWith(".mp3") || mediaUrl.endsWith(".wav")) {
-//                holder.btnPlayAudio.setVisibility(View.VISIBLE);
-//                holder.btnPlayAudio.setOnClickListener(v -> playAudio(mediaUrl));
-//            }
         }
     }
-    private void getImageProfile(int authorId, ImageCallback callback) {
-        flaskUseCase.getProfileAvata(authorId).enqueue(new Callback<Api>() {
-            @Override
-            public void onResponse(Call<Api> call, Response<Api> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    String imageUrl = response.body().getData();
-                    callback.onSuccess(imageUrl);
-                } else {
-                    callback.onError("Lỗi lấy ảnh profile: " + response.errorBody());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Api> call, Throwable t) {
-                callback.onError("Lỗi kết nối API: " + t.getMessage());
-            }
-        });
-    }
+//    private void getImageProfile(int authorId, ImageCallback callback) {
+//        flaskUseCase.getProfileAvata(authorId).enqueue(new Callback<Api>() {
+//            @Override
+//            public void onResponse(Call<Api> call, Response<Api> response) {
+//                if (response.isSuccessful() && response.body() != null) {
+//                    String imageUrl = response.body().getData();
+//                    callback.onSuccess(imageUrl);
+//                } else {
+//                    callback.onError("Lỗi lấy ảnh profile: " + response.errorBody());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Api> call, Throwable t) {
+//                callback.onError("Lỗi kết nối API: " + t.getMessage());
+//            }
+//        });
+//    }
 
 
     // Interface callback cho ảnh đại diện

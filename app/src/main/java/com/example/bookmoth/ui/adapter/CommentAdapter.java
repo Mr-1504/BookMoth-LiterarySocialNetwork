@@ -1,6 +1,7 @@
 package com.example.bookmoth.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.activity.post.CommentActivity;
+import com.example.bookmoth.ui.activity.profile.ProfileActivity;
 import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
 import com.example.bookmoth.ui.viewmodel.post.SharedViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
@@ -88,18 +90,29 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         });
 
 
-        getImageProfile(comment.getUser_id(), new PostAdapter.ImageCallback() {
-            @Override
-            public void onSuccess(String imageUrl) {
-                Picasso.get().load(imageUrl).into(holder.btnProfile);
-                Log.e("Profile Image", "Ảnh đại diện: " + imageUrl);
-            }
+        String imageUrl = "http://127.0.0.1:7100/images/avatars/"+ comment.getUser_id()+".pnj";
+        Picasso.get().load(imageUrl).error(R.drawable.avatar).into(holder.btnProfile);
 
+        holder.btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onError(String error) {
-                Log.e("Profile API", error);
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ProfileActivity.class);
+                intent.putExtra("profileId", comment.getUser_id());
+                context.startActivity(intent);
             }
         });
+//        getImageProfile(comment.getUser_id(), new PostAdapter.ImageCallback() {
+//            @Override
+//            public void onSuccess(String imageUrl) {
+//                Picasso.get().load(imageUrl).into(holder.btnProfile);
+//                Log.e("Profile Image", "Ảnh đại diện: " + imageUrl);
+//            }
+//
+//            @Override
+//            public void onError(String error) {
+//                Log.e("Profile API", error);
+//            }
+//        });
         holder.btnLike.setOnClickListener(view -> {
             if (holder.isLiked) {
                 removeLike(comment.getId(), holder);

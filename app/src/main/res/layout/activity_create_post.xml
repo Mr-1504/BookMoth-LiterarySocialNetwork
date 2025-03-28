@@ -24,9 +24,8 @@
 
             <ImageButton
                 android:id="@+id/btnBack"
-                android:layout_width="45dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:scaleType="fitXY"
                 app:srcCompat="@drawable/round_chevron_left_24" />

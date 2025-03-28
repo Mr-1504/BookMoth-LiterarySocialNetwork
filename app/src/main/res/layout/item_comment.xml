@@ -26,11 +26,12 @@
             <ImageButton
                 android:id="@+id/imageProfile"
                 android:layout_width="46dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:scaleType="fitXY"
-                tools:srcCompat="@drawable/button_liked" />
+                android:layout_height="46dp"
+
+                android:background="@drawable/circle_background"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/avatar" />
 
             <LinearLayout
                 android:layout_width="193dp"
@@ -111,6 +112,12 @@
             </FrameLayout>
 
         </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:background="#E6E6E6"
+            android:layout_height="2dp">
+        </FrameLayout>
 
 
         <!--        <VideoView-->

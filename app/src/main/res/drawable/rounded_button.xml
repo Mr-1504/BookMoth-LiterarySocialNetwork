@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <shape xmlns:android="http://schemas.android.com/apk/res/android">
+        <corners android:radius="10dp"/> <!-- Điều chỉnh bán kính để thay đổi độ tròn -->
+        <solid android:color="@android:color/transparent"/> <!-- Màu nền, có thể thay đổi -->
+    </shape>
+</selector>
