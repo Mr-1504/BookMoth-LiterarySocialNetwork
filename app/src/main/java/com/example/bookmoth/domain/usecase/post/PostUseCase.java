@@ -34,6 +34,13 @@ public class PostUseCase {
         return supabaseRepository.getPostByIdUser(author_id, status);
     }
 
+    public Call<List<Post>> searchPosts(
+            String titleQuery,
+            String contentQuery,
+            String status
+    ) {
+        return supabaseRepository.searchPosts(titleQuery, contentQuery, status);
+    }
 
     public Call<ResponseBody> updateLike(
             String postId,  // Dùng @Query thay vì @Path

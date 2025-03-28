@@ -32,5 +32,9 @@ public class FlaskUseCase {
         return flaskRepository.getProfileAvata(id);
     }
 
+    public Call<Api> getFollowers(int id) {
+        return flaskRepository.getFollowers(id);
+    }
+
 
 }

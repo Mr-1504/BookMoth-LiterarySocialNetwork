@@ -225,6 +225,30 @@ public class PostViewModel {
         });
     }
 
+    public void searchPosts(String keyword, final OnGetPost listener){
+//        String titleQuery = searchInTitle ? "ilike.*" + keyword + "*" : null;   // Nếu không tìm trong title, để null
+//        String contentQuery = searchInContent ? "ilike.*" + keyword + "*" : null; // Nếu không tìm trong content, để null
+//        String statusQuery = "eq." + status;
+        String query = "ilike.*" + keyword + "*";
+        postUseCase.searchPosts(query, query, "eq.0").enqueue(new Callback<List<Post>>() {
+            @Override
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                if(response.isSuccessful()){
+                    List<Post> posts = response.body();
+                    listener.onGetPostSuccess(posts);
+                }
+                else {
+                    listener.onGetPostFailure("Lỗi tìm kiếm bài viết"+ response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Post>> call, Throwable t) {
+                listener.onGetPostFailure("Lỗi kết nối API: " + t.getMessage());
+            }
+        });
+    }
+
     public interface OnGetPost {
         public void onGetPostSuccess(List<Post> posts);
 

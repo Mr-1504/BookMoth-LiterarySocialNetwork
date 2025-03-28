@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CommentActivity">
+    tools:context=".ui.activity.post.CommentActivity">
 
     <!-- Nội dung chính -->
 
@@ -13,8 +13,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="51dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/commentBar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -31,14 +32,14 @@
                 android:layout_weight="0"
                 android:background="@android:color/transparent"
                 android:scaleType="fitXY"
-                app:srcCompat="@android:drawable/ic_menu_revert" />
+                app:srcCompat="@drawable/round_chevron_left_24" />
 
             <ImageView
                 android:id="@+id/imageView4"
-                android:layout_width="109dp"
+                android:layout_width="53dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                app:srcCompat="@drawable/facebook" />
+                app:srcCompat="@drawable/ic_app" />
 
             <Space
                 android:layout_width="wrap_content"
@@ -64,7 +65,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@android:color/white"
-        android:padding="8dp"
+        android:padding="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -83,6 +84,7 @@
             android:layout_height="45dp"
             android:background="@android:color/transparent"
             android:scaleType="fitXY"
+            android:padding="3dp"
             app:srcCompat="@drawable/send_comment"/>
     </LinearLayout>
 

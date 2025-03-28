@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,15 +31,16 @@ import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.post.Post;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
+import com.example.bookmoth.ui.viewmodel.post.FlaskViewModel;
 import com.example.bookmoth.ui.activity.post.CreatePostActivity;
 import com.example.bookmoth.ui.activity.profile.ProfileActivity;
-import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
 import com.example.bookmoth.ui.viewmodel.post.SharedViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
@@ -47,19 +49,29 @@ public class HomeFragment extends Fragment {
     private Button btnLoad;
     private ImageButton btnCreatePost, btnAcc;
     private PostViewModel postViewModel;
+    private FlaskViewModel flaskViewModel;
 
     private String profileId;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        recyclerView = view.findViewById(R.id.recyclerViewComments);
+        recyclerView = view.findViewById(R.id.recyclerViewPosts);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         postAdapter = new PostAdapter(getContext(), postList, new PostUseCase(new SupabaseRepositoryImpl()), new FlaskUseCase(new FlaskRepositoryImpl()));
         recyclerView.setAdapter(postAdapter);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                // Xử lý thêm nếu cần
+            }
+        });
 
         btnCreatePost = view.findViewById(R.id.btnCreatePost);
         btnCreatePost.setOnClickListener(v -> {
@@ -72,11 +84,13 @@ public class HomeFragment extends Fragment {
         profileId = SecureStorage.getToken("profileId");
         getProfile();
         postViewModel = new PostViewModel(new PostUseCase(new SupabaseRepositoryImpl()));
+        flaskViewModel = new FlaskViewModel(new FlaskUseCase(new FlaskRepositoryImpl()));
+
         // lấy sự kiện click ở button reload homeactivity
         SharedViewModel viewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         viewModel.getButtonClicked().observe(getViewLifecycleOwner(), clicked -> {
             if (clicked) {
-                loadPostProfileID();
+                loadPosts();
             }
         });
 //        btnLoad = view.findViewById(R.id.btnLoad);
@@ -85,7 +99,7 @@ public class HomeFragment extends Fragment {
 //        });
 
         Log.d("Supabase", "HomeFragment onCreateView - Gọi loadPosts()");
-        loadPostProfileID();
+        loadPosts();
         clickViewProfile();
         return view;
     }
@@ -121,16 +135,40 @@ public class HomeFragment extends Fragment {
 
 
     private void loadPosts() {
-        postViewModel.getPosts(getContext(), new PostViewModel.OnGetPost() {
+        List<Integer> profile_ids = new ArrayList<>();
+        profileId = SecureStorage.getToken("profileId");
+        getProfile();
+        Log.d("loadPosts", "profileId = " + profileId);
+        if (profileId == null || profileId.isEmpty()) {
+            Log.e("loadPosts", "profileId is null or empty");
+            return;
+        }
+        int profileIdInt = Integer.parseInt(profileId);
+        profile_ids.add(profileIdInt);
+        flaskViewModel.getFollowers(Integer.parseInt(profileId), new FlaskViewModel.OnGetFollowers() {
             @Override
-            public void onGetPostSuccess(List<Post> posts) {
-                postList.clear();
-                postList.addAll(posts);
-                postAdapter.notifyDataSetChanged();
+            public void onGetSuccess(List<Integer> followers) {
+                profile_ids.addAll(followers);
+                String profileIdsString = profile_ids.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(","));
+                postViewModel.getPostByIdUser("in.(" + profileIdsString + ")", new PostViewModel.OnGetPost() {
+                    @Override
+                    public void onGetPostSuccess(List<Post> posts) {
+                        postList.clear();
+                        postList.addAll(posts);
+                        postAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onGetPostFailure(String message) {
+                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
-            public void onGetPostFailure(String message) {
+            public void onGetFailure(String message) {
                 Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
             }
         });

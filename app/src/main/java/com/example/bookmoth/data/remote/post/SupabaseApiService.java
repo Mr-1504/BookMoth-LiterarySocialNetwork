@@ -35,6 +35,13 @@ public interface SupabaseApiService {
                                      @Query("status") String status
     );
 
+    @GET("rest/v1/posts")
+    Call<List<Post>> searchPosts(
+            @Query("title") String titleQuery,
+            @Query("content") String contentQuery,
+            @Query("status") String status
+    );
+
     @PATCH("rest/v1/posts")
     Call<ResponseBody> updateLike(
             @Query("post_id") String postId,  // Dùng @Query thay vì @Path
