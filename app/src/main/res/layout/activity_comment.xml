@@ -31,14 +31,14 @@
                 android:layout_weight="0"
                 android:background="@android:color/transparent"
                 android:scaleType="fitXY"
-                app:srcCompat="@android:drawable/ic_menu_revert" />
+                app:srcCompat="@drawable/round_chevron_left_24" />
 
             <ImageView
                 android:id="@+id/imageView4"
-                android:layout_width="109dp"
+                android:layout_width="53dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                app:srcCompat="@drawable/facebook" />
+                app:srcCompat="@drawable/ic_app" />
 
             <Space
                 android:layout_width="wrap_content"

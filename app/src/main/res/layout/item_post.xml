@@ -66,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/transfer"
-                app:srcCompat="@android:drawable/ic_menu_info_details" />
+                app:srcCompat="@drawable/baseline_create_24" />
 
             <ImageButton
                 android:id="@+id/btnDelete"
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/transfer"
-                app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+                app:srcCompat="@drawable/outline_delete_24" />
 
         </LinearLayout>
 

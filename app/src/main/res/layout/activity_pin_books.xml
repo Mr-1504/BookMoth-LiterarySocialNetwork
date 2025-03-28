@@ -27,16 +27,12 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                app:srcCompat="@android:drawable/ic_menu_revert" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="19dp"
-                android:layout_weight="1" />
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/round_chevron_left_24" />
 
             <EditText
                 android:id="@+id/textSearch"
-                android:layout_width="wrap_content"
+                android:layout_width="258dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
@@ -45,12 +41,12 @@
 
             <ImageButton
                 android:id="@+id/btnSearch"
-                android:layout_width="10dp"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/thit_k_cha_c__t_n__30_" />
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/baseline_search_24" />
 
         </LinearLayout>
 

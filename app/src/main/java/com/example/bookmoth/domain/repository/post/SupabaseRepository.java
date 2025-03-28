@@ -30,6 +30,11 @@ public interface SupabaseRepository {
 
     Call<List<Post>> getPostByIdUser(String author_id, String status);
 
+    Call<List<Post>> searchPosts(
+            String titleQuery,
+            String contentQuery,
+            String status
+    );
 
     Call<ResponseBody> updateLike(
             String postId,  // Dùng @Query thay vì @Path
