@@ -3,8 +3,16 @@ package com.example.bookmoth.data.remote.profile;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.model.profile.UsernameResponse;
 
+import java.util.Map;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
+import retrofit2.http.PATCH;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 
 /**
@@ -39,4 +47,12 @@ public interface ProfileApiService {
     Call<UsernameResponse> checkUsername(@Path("username") String username);
 
 
+
+    @Multipart
+    @PATCH("api/profile/edit")
+    Call<Void> editProfile(
+            @PartMap Map<String, RequestBody> params,
+            @Part MultipartBody.Part avatar,
+            @Part MultipartBody.Part cover
+    );
 }

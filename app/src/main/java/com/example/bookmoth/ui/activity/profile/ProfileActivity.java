@@ -138,6 +138,10 @@ public class ProfileActivity extends AppCompatActivity {
             public void onProfileSuccess(Profile profile) {
                 runOnUiThread(() -> {
                     setProfile(profile, false);
+                    String myProfileId = SecureStorage.getToken("profileId");
+                    if (myProfileId.equals(profile.getProfileId())){
+                        profileViewModel.saveProfile(profile);
+                    }
                 });
             }
 

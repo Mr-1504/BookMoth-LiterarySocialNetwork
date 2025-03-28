@@ -6,6 +6,10 @@ import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.model.profile.UsernameResponse;
 import com.example.bookmoth.domain.repository.profile.ProfileRepository;
 
+import java.util.Map;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 
 /**
@@ -51,5 +55,11 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     @Override
     public Call<UsernameResponse> checkUsername(String username) {
         return profileApiService.checkUsername(username);
+    }
+
+
+    @Override
+    public Call<Void> editProfile(Map<String, RequestBody> params,  MultipartBody.Part avatar, MultipartBody.Part cover) {
+        return profileApiService.editProfile(params, avatar, cover);
     }
 }

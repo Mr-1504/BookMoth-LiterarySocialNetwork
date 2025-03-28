@@ -26,6 +26,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.Extension;
 import com.example.bookmoth.core.utils.GenderUtils;
 import com.example.bookmoth.data.local.profile.ProfileDatabase;
 import com.example.bookmoth.data.local.utils.ImageCache;
@@ -42,7 +43,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -50,10 +57,11 @@ public class EditProfileActivity extends AppCompatActivity {
     private ProfileViewModel profileViewModel;
     private TextView editAvatar, editCover, editUsername;
     private TextView editFullname, editGender, editBirthday;
-    private ImageView avatar, cover;
+    private ImageView avatar, cover, back;
     private TextView fullName, usename, gender, birth;
     private ActivityEditProfileBinding binding;
     private int requestCode;
+    private boolean isChangeAvatar, isChangeCover, identifier;
     private static final int PICK_AVATAR_IMAGE_REQUEST = 1;
     private static final int PICK_COVER_IMAGE_REQUEST = 2;
     private static final int REQUEST_STORAGE_PERMISSION = 100;
@@ -73,6 +81,95 @@ public class EditProfileActivity extends AppCompatActivity {
         clickEditFullname();
         clickEditBirth();
         clickEditGender();
+        clickBack();
+    }
+
+    private void clickBack() {
+        back.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.confirm));
+            builder.setMessage(getString(R.string.do_you_want_to_save_change));
+            builder.setPositiveButton("Lưu", null);
+            builder.setNegativeButton("Hủy", (dialog, which) -> {
+                dialog.dismiss();
+                finish();
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.setOnShowListener(dialogInterface -> {
+                Button saveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                saveButton.setOnClickListener(v -> {
+                    LoadingUtils.showLoading(getSupportFragmentManager());
+                    String fullname = fullName.getText().toString();
+                    String[] splitedName = fullname.split(" ");
+
+                    StringBuilder lastname = new StringBuilder();
+                    for (int i = 0; i < splitedName.length - 1; i++) {
+                        lastname.append(splitedName[i]);
+                        if (i < splitedName.length - 2) {
+                            lastname.append(" ");
+                        }
+                    }
+
+                    String firstname = splitedName[splitedName.length - 1];
+                    String birth = this.birth.getText().toString();
+                    String username = this.usename.getText().toString();
+
+
+                    MultipartBody.Part avatar = null;
+                    if (isChangeAvatar)
+                        avatar =
+                                Extension.prepareFilePartFromImageView(this.avatar, "avatar", this);
+
+                    MultipartBody.Part cover = null;
+                    if (isChangeCover)
+                        cover =
+                                Extension.prepareFilePartFromImageView(this.cover, "cover", this);
+
+                    int gender = GenderUtils.getGenderIntFromString(this.gender.getText().toString());
+
+                    profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
+                        @Override
+                        public void onProfileSuccess(Profile profile) {
+                            identifier = profile.isIdentifier();
+                        }
+
+                        @Override
+                        public void onProfileFailure(String error) {
+
+                        }
+                    });
+
+                    Map<String, RequestBody> params = new HashMap<>();
+                    params.put("firstName", RequestBody.create(firstname, MediaType.parse("text/plain")));
+                    params.put("lastName", RequestBody.create(lastname.toString(), MediaType.parse("text/plain")));
+                    params.put("username", RequestBody.create(username, MediaType.parse("text/plain")));
+                    params.put("gender", RequestBody.create(String.valueOf(gender), MediaType.parse("text/plain")));
+                    params.put("identifier", RequestBody.create(String.valueOf(identifier), MediaType.parse("text/plain")));
+                    params.put("birth", RequestBody.create(birth, MediaType.parse("text/plain")));
+
+                    profileViewModel.editProfile(this, params, avatar, cover, new ProfileViewModel.OnEditProfile() {
+                                @Override
+                                public void onSuccess() {
+                                    LoadingUtils.hideLoading();
+                                    dialog.dismiss();
+
+                                    Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
+                                }
+
+                                @Override
+                                public void onError(String error) {
+                                    LoadingUtils.hideLoading();
+                                    dialog.dismiss();
+                                    showErrorDialog(error);
+                                }
+                    });
+                });
+            });
+            dialog.show();
+        });
     }
 
     private void clickEditGender() {
@@ -129,7 +226,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         // Tạo EditText để nhập ngày
         EditText input = new EditText(this);
-        input.setHint("DD/MM/YYYY");
+        input.setHint(this.birth.getText().toString() == "" ? "DD/MM/YYYY" : this.birth.getText().toString());
         input.setFocusable(false); // Không cho nhập tay, chỉ chọn từ DatePicker
         input.setInputType(InputType.TYPE_NULL);
 
@@ -155,7 +252,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     int _month = Integer.parseInt(parts[2].replace(",", ""));
                     int _year = Integer.parseInt(parts[3]);
                     String strDay = dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth);
-                    String strMonth = _month < 9 ? "0" + (_month + 1) : String.valueOf(_month + 1);
+                    String strMonth = _month < 9 ? "0" + _month : String.valueOf(_month);
 
                     ngaySinh = String.format("%s/%s/%s", strDay, strMonth, _year);
                 }
@@ -382,8 +479,10 @@ public class EditProfileActivity extends AppCompatActivity {
         if (requestCode == this.requestCode && resultCode == RESULT_OK) {
             if (data != null) {
                 if (requestCode == PICK_AVATAR_IMAGE_REQUEST) {
+                    isChangeAvatar = true;
                     avatar.setImageURI(data.getData());
                 } else if (requestCode == PICK_COVER_IMAGE_REQUEST) {
+                    isChangeCover = true;
                     cover.setImageURI(data.getData());
                 }
             }
@@ -391,6 +490,9 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void init() {
+        identifier = false;
+        isChangeAvatar = false;
+        isChangeCover = false;
         LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
                 this, ProfileDatabase.getInstance(this).profileDao()
         );
@@ -403,6 +505,7 @@ public class EditProfileActivity extends AppCompatActivity {
         editBirthday = binding.editBirth;
         avatar = binding.imgAvatar;
         cover = binding.imgCover;
+        back = binding.btnBack;
         fullName = binding.txtFullname;
         usename = binding.txtUsername;
         gender = binding.txtGender;
@@ -441,7 +544,7 @@ public class EditProfileActivity extends AppCompatActivity {
         profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
             @Override
             public void onProfileSuccess(Profile profile) {
-               setInformation(profile);
+                setInformation(profile);
             }
 
             @Override
@@ -483,5 +586,14 @@ public class EditProfileActivity extends AppCompatActivity {
                 Toast.makeText(this, "Bạn cần cấp quyền để chọn ảnh!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void showErrorDialog(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle("Lỗi")
+                .setMessage(message)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
     }
 }
