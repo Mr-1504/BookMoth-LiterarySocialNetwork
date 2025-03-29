@@ -127,4 +127,6 @@
     <string name="error_auth">Lỗi xác minh</string>
     <string name="error_account">Lỗi tài khoản</string>
     <string name="do_you_want_to_save_change">Bạn có muốn lưu thay đổi?</string>
+    <string name="incorrect_pin">Mã PIN không chính xác</string>
+    <string name="please_login_again">Lỗi tài khoản, vui lòng đăng nhập lại!</string>
 </resources>
