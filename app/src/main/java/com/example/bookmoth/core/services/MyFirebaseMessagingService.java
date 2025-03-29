@@ -1,7 +1,9 @@
 package com.example.bookmoth.core.services;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
@@ -15,6 +17,7 @@ import com.example.bookmoth.R;
 import com.example.bookmoth.data.model.notification.FcmTokenRequest;
 import com.example.bookmoth.data.remote.notification.NotificationApiService;
 import com.example.bookmoth.data.remote.utils.RetrofitClient;
+import com.example.bookmoth.ui.activity.wallet.WalletActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -125,12 +128,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 return;
             }
         }
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "FCM_CHANNEL")
                 .setSmallIcon(R.drawable.ic_app)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                .bigText(message));
 
         NotificationManagerCompat manager = NotificationManagerCompat.from(this);
         manager.notify(1, builder.build());
