@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.TransactionUtils;
+import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
+import com.example.bookmoth.domain.model.payment.TransactionType;
 import com.example.bookmoth.domain.model.wallet.BalanceResponse;
 import com.example.bookmoth.domain.usecase.wallet.WalletUseCase;
 import com.example.bookmoth.ui.activity.login.LoginActivity;
@@ -130,6 +133,32 @@ public class WalletViewModel {
         });
     }
 
+    public void createOrder(
+            Context context,
+            long amount, String description,
+            TransactionType transactionType,
+            final OnCreateOrderListener listener) {
+        int type = TransactionUtils.getTransactionType(transactionType);
+        walletUseCase.createOrder(amount, description, type)
+                .enqueue(new Callback<ZaloPayTokenResponse>() {
+                    @Override
+                    public void onResponse(Call<ZaloPayTokenResponse> call, Response<ZaloPayTokenResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            listener.onCreateOrderSuccess(response.body());
+                        } else {
+                            listener.onCreateOrderFailure(context.getString(R.string.undefined_error));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ZaloPayTokenResponse> call, Throwable t) {
+                        listener.onCreateOrderFailure(context.getString(R.string.error_connecting_to_server));
+                    }
+                });
+    }
+
+
+
     /**
      * Kiểm tra ví đã tồn tại chưa
      *
@@ -166,5 +195,11 @@ public class WalletViewModel {
         void onFailed(String error);
     }
 
-
+    /**
+     * Interface lắng nghe kết quả tạo đơn hàng
+     */
+    public interface OnCreateOrderListener {
+        void onCreateOrderSuccess(ZaloPayTokenResponse token);
+        void onCreateOrderFailure(String message);
+    }
 }
