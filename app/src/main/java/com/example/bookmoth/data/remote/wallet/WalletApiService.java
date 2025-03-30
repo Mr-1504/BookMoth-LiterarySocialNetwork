@@ -1,6 +1,8 @@
 package com.example.bookmoth.data.remote.wallet;
 
 
+import com.example.bookmoth.data.model.payment.CreateOrderRequest;
+import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
 import com.example.bookmoth.data.model.wallet.ConfirmPinRequest;
 import com.example.bookmoth.data.model.wallet.CreateWalletRequest;
 import com.example.bookmoth.domain.model.wallet.BalanceResponse;
@@ -44,4 +46,14 @@ public interface WalletApiService {
      */
     @GET("api/wallet/exist")
     Call<Void> checkWalletExist();
+
+
+    /**
+     * Tạo đơn hàng để nạp tiền qua ZaloPay.
+     *
+     * @param createOrderRequest Đối tượng {@link CreateOrderRequest} chứa thông tin giao dịch.
+     * @return {@link Call} chứa {@link ZaloPayTokenResponse}, phản hồi từ ZaloPay.
+     */
+    @POST("api/wallet/deposit")
+    Call<ZaloPayTokenResponse> createOrder(@Body CreateOrderRequest createOrderRequest);
 }
