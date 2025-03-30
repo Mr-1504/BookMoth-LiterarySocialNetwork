@@ -1,5 +1,6 @@
 package com.example.bookmoth.domain.repository.wallet;
 
+import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
 import com.example.bookmoth.domain.model.wallet.BalanceResponse;
 
 import retrofit2.Call;
@@ -31,4 +32,14 @@ public interface WalletRepository {
      * @return kết quả kiểm tra
      */
     Call<Void> checkWalletExist();
+
+    /**
+     * Tạo đơn hàng để nạp tiền qua ZaloPay.
+     *
+     * @param amount          Số tiền cần thanh toán (đơn vị: VND).
+     * @param description     Mô tả giao dịch.
+     * @param transactionType Loại giao dịch (1: nạp, 2: rút, 3: chuyển tiền, 4: thanh toán).
+     * @return Đối tượng Call chứa phản hồi từ ZaloPay, bao gồm mã token giao dịch.
+     */
+    Call<ZaloPayTokenResponse> createOrder(long amount, String description, int transactionType);
 }
