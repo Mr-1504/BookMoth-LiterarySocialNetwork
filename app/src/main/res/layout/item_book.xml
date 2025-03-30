@@ -5,8 +5,8 @@
     android:layout_height="248dp">
 
     <LinearLayout
-        android:layout_width="200dp"
-        android:layout_height="248dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -15,7 +15,7 @@
 
         <ImageView
             android:id="@+id/imageBooks"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="223dp"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/book" />
@@ -24,6 +24,7 @@
             android:id="@+id/textTitleSach"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="2dp"
             android:text="Tên Sách"
             android:textSize="16sp"
             android:textStyle="bold" />
