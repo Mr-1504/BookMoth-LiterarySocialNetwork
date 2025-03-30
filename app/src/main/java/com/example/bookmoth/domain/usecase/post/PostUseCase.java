@@ -34,6 +34,13 @@ public class PostUseCase {
         return supabaseRepository.getPostByIdUser(author_id, status);
     }
 
+    public Call<List<Post>> getPostsByUserIds(
+            String userIdFilter, // Ví dụ: "in.(1,2,3)"
+            String order,        // Ví dụ: "timestamp.desc"
+            String range         // Ví dụ: "0-9"
+    ) {
+        return supabaseRepository.getPostsByUserIds(userIdFilter, order, range);
+    }
     public Call<List<Post>> searchPosts(
             String titleQuery,
             String contentQuery,

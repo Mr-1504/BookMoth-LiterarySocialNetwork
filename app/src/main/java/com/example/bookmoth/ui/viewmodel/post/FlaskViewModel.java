@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.bookmoth.data.remote.post.Api;
 import com.example.bookmoth.data.remote.post.ApiResponse;
 import com.example.bookmoth.domain.model.post.Book;
+import com.example.bookmoth.domain.model.post.Profile;
 import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
 
@@ -97,6 +98,28 @@ public class FlaskViewModel {
         });
     }
 
+    public void getProfile(int authorId, OnGetProfile listener) {
+        flaskUseCase.getProfile(authorId).enqueue(new Callback<ApiResponse<Profile>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Profile>> call, Response<ApiResponse<Profile>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listener.onGetSuccess(response.body().getData());
+                } else {
+                    listener.onGetFailure("Failed to get profile");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Profile>> call, Throwable t) {
+                listener.onGetFailure(t.getMessage());
+            }
+        });
+    }
+
+    public interface OnGetProfile {
+        void onGetSuccess(Profile profile);
+        void onGetFailure(String message);
+    }
     public interface OnGetBook {
         void onGetBookSuccess(List<Book> books);
         void onGetBookFailure(String message);

@@ -93,7 +93,7 @@ public class HomeActivity extends AppCompatActivity {
         buttonNotification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                loadFragment(new NotificationFragment());
+                loadFragment(new NotificationFragment());
                 buttonNotification.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search2));
                 buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
                 buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));

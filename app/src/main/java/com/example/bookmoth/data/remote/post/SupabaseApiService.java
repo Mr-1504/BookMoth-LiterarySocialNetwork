@@ -12,6 +12,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.HeaderMap;
 import retrofit2.http.Headers;
 import retrofit2.http.PATCH;
@@ -33,6 +34,13 @@ public interface SupabaseApiService {
     @GET("rest/v1/posts")
     Call<List<Post>> getPostByIdUser(@Query("author_id") String author_id,
                                      @Query("status") String status
+    );
+
+    @GET("rest/v1/posts")
+    Call<List<Post>> getPostsByUserIds(
+            @Query("author_id") String userIdFilter, // Ví dụ: "in.(1,2,3)"
+            @Query("order") String order,            // Ví dụ: "timestamp.desc"
+            @Header("Range") String range            // Ví dụ: "0-9"
     );
 
     @GET("rest/v1/posts")

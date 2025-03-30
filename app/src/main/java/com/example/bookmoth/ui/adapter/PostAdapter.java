@@ -3,6 +3,8 @@ package com.example.bookmoth.ui.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
+import com.example.bookmoth.data.local.post.PostSQLiteHelper;
 import com.example.bookmoth.data.local.profile.ProfileDatabase;
 import com.example.bookmoth.data.remote.post.Api;
 import com.example.bookmoth.data.remote.post.ApiResponse;
@@ -34,6 +37,7 @@ import com.example.bookmoth.ui.activity.profile.ProfileActivity;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +52,7 @@ import retrofit2.Response;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private final Context context;
     private final List<Post> postList;
-    private MediaPlayer mediaPlayer; // Giữ một MediaPlayer để tránh lỗi khi phát nhiều lần
+    private MediaPlayer mediaPlayer;
     private long lastClickTime = 0;
     private PostUseCase postUseCase;
     private FlaskUseCase flaskUseCase;
@@ -98,6 +102,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.tvTimestamp.setText(post.getTimestamp());
         holder.countLike.setText(String.valueOf(post.getCount_like()));
         holder.countComment.setText(String.valueOf(post.getCount_comment()));
+
         if(post.getTab_works() == -1){
             holder.tabWorks.setVisibility(View.GONE);
         }
@@ -161,22 +166,62 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 }
             }
         });
-        getNameProfile(post.getAuthorId(), new NameCallback() {
-            @Override
-            public void onSuccess(String name) {
-                Log.d("Profile Name", "Tên người dùng: " + name);
-                holder.nameProfile.setText(name);
-            }
-
-            @Override
-            public void onError(String error) {
-                Log.e("Profile API", error);
-            }
-        });
 
 
-        String imageUrl = "http://127.0.0.1:7100/images/avatars/"+ post.getAuthorId()+".pnj";
-        Picasso.get().load(imageUrl).error(R.drawable.avatar).into(holder.btnProfile);
+        PostSQLiteHelper dbHelper = new PostSQLiteHelper(context);
+
+        // Tên đại diện
+        if (isNetworkAvailable()) {
+            getNameProfile(post.getAuthorId(), new NameCallback() {
+                @Override
+                public void onSuccess(String name) {
+                    holder.nameProfile.setText(name);
+                    post.setAuthor_name(name); // Cập nhật để lưu vào SQLite sau này
+                }
+
+                @Override
+                public void onError(String error) {
+                    // Khi API lỗi, lấy từ SQLite
+                    String localName = dbHelper.getAuthorNameById(post.getAuthorId());
+                    holder.nameProfile.setText(localName != null ? localName : "Unknown");
+                    post.setAuthor_name(localName); // Cập nhật post nếu cần
+                }
+            });
+        } else {
+            // Khi không có mạng, lấy trực tiếp từ SQLite
+            String localName = dbHelper.getAuthorNameById(post.getAuthorId());
+            holder.nameProfile.setText(localName != null ? localName : "Unknown");
+            post.setAuthor_name(localName); // Cập nhật post nếu cần
+        }
+        // Ảnh đại diện (dùng đường dẫn file từ SQLite)
+        String avatarPath = post.getAuthor_avatar_url();
+        if (avatarPath != null && !avatarPath.isEmpty() && new File(avatarPath).exists()) {
+            Picasso.get()
+                    .load(new File(avatarPath))
+                    .placeholder(R.drawable.avatar)
+                    .error(R.drawable.avatar)
+                    .into(holder.btnProfile);
+        } else {
+            Picasso.get()
+                    .load(R.drawable.avatar)
+                    .into(holder.btnProfile);
+        }
+
+//        getNameProfile(post.getAuthorId(), new NameCallback() {
+//            @Override
+//            public void onSuccess(String name) {
+//                Log.d("Profile Name", "Tên người dùng: " + name);
+//                holder.nameProfile.setText(name);
+//            }
+//
+//            @Override
+//            public void onError(String error) {
+//                Log.e("Profile API", error);
+//            }
+//        });
+
+//        String imageUrl = "http://127.0.0.1:7100/images/avatars/"+ post.getAuthorId()+".pnj";
+//        Picasso.get().load(imageUrl).error(R.drawable.avatar).into(holder.btnProfile);
 
         holder.btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,16 +270,31 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String mediaUrl = post.getMediaUrl();
         holder.resetMediaViews(); // Ẩn tất cả trước khi hiển thị nội dung phù hợp
 
-        if (mediaUrl != null && !mediaUrl.isEmpty()) {
-            if (mediaUrl.endsWith(".jpg") || mediaUrl.endsWith(".png") || mediaUrl.endsWith(".jpeg")) {
-                holder.imageView.setVisibility(View.VISIBLE);
-                Glide.with(context)
-                        .load(mediaUrl)
-                        .placeholder(R.drawable.placeholder_image) // Hiển thị ảnh mặc định khi tải
-                        .error(R.drawable.error_image) // Hiển thị ảnh lỗi nếu tải thất bại
-                        .into(holder.imageView);
+        if(isNetworkAvailable()){
+            if (mediaUrl != null && !mediaUrl.isEmpty()) {
+                if (mediaUrl.endsWith(".jpg") || mediaUrl.endsWith(".png") || mediaUrl.endsWith(".jpeg")) {
+                    holder.imageView.setVisibility(View.VISIBLE);
+                    Glide.with(context)
+                            .load(mediaUrl)
+                            .placeholder(R.drawable.placeholder_image) // Hiển thị ảnh mặc định khi tải
+                            .error(R.drawable.error_image) // Hiển thị ảnh lỗi nếu tải thất bại
+                            .into(holder.imageView);
+                }
             }
         }
+        else{
+            if (mediaUrl != null && !mediaUrl.isEmpty()) {
+                if (mediaUrl.endsWith(".jpg") || mediaUrl.endsWith(".png") || mediaUrl.endsWith(".jpeg")) {
+                    holder.imageView.setVisibility(View.VISIBLE);
+                    Glide.with(context)
+                            .load(new File(mediaUrl))
+                            .placeholder(R.drawable.placeholder_image) // Hiển thị ảnh mặc định khi tải
+                            .error(R.drawable.error_image) // Hiển thị ảnh lỗi nếu tải thất bại
+                            .into(holder.imageView);
+                }
+            }
+        }
+
     }
 //    private void getImageProfile(int authorId, ImageCallback callback) {
 //        flaskUseCase.getProfileAvata(authorId).enqueue(new Callback<Api>() {
@@ -443,6 +503,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         } catch (IOException e) {
             Log.e("Adapter", "Error playing audio", e);
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
     }
 
     @Override
