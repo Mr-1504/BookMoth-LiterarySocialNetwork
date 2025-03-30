@@ -1,5 +1,6 @@
 package com.example.bookmoth.domain.usecase.wallet;
 
+import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
 import com.example.bookmoth.domain.model.wallet.BalanceResponse;
 import com.example.bookmoth.domain.repository.wallet.WalletRepository;
 
@@ -49,5 +50,17 @@ public class WalletUseCase {
      */
     public Call<Void> checkWalletExist() {
         return walletRepository.checkWalletExist();
+    }
+
+    /**
+     * Tạo đơn hàng thanh toán qua ZaloPay.
+     *
+     * @param amount          Số tiền cần thanh toán.
+     * @param description     Mô tả giao dịch.
+     * @param transactionType Loại giao dịch (true: giao dịch ngay, false: giao dịch tạm giữ).
+     * @return Đối tượng Call chứa phản hồi từ ZaloPay.
+     */
+    public Call<ZaloPayTokenResponse> createOrder(long amount, String description, int transactionType) {
+        return walletRepository.createOrder(amount, description, transactionType);
     }
 }
