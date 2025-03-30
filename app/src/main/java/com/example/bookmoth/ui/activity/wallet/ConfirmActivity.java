@@ -28,7 +28,6 @@ import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.domain.usecase.wallet.WalletUseCase;
 import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.dialogs.PasswordPopup;
-import com.example.bookmoth.ui.viewmodel.payment.PaymentViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.example.bookmoth.ui.viewmodel.wallet.WalletViewModel;
 
@@ -45,7 +44,6 @@ public class ConfirmActivity extends AppCompatActivity {
     private Button confirmButton;
     private PasswordPopup passwordPopup;
     private WalletViewModel walletViewModel;
-    private PaymentViewModel paymentViewModel;
     private ProfileViewModel profileViewModel;
     private Profile _profile;
 
@@ -99,7 +97,6 @@ public class ConfirmActivity extends AppCompatActivity {
      */
     private void init(String amount) {
         walletViewModel = new WalletViewModel(new WalletUseCase(new WalletRepositoryImpl()));
-        paymentViewModel = new PaymentViewModel();
         LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
                 this, ProfileDatabase.getInstance(this).profileDao()
         );
@@ -157,11 +154,11 @@ public class ConfirmActivity extends AppCompatActivity {
                 _profile.getLastName() + " " + _profile.getFirstName(), Normalizer.Form.NFD);
         String description = String.format(
                 "%s %s", fullname, txtDescription.getText().toString());
-        paymentViewModel.createOrder(
+        walletViewModel.createOrder(
                 ConfirmActivity.this,
                 amount, description,
                 TransactionType.DEPOSIT,
-                new PaymentViewModel.OnCreateOrderListener() {
+                new WalletViewModel.OnCreateOrderListener() {
                     @Override
                     public void onCreateOrderSuccess(ZaloPayTokenResponse token) {
                         LoadingUtils.hideLoading();
