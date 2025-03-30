@@ -16,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.domain.model.profile.Gender;
+import com.example.bookmoth.core.enums.Gender;
 import com.example.bookmoth.ui.activity.login.LoginActivity;
 import com.example.bookmoth.ui.viewmodel.register.RegisterViewModel;
 
