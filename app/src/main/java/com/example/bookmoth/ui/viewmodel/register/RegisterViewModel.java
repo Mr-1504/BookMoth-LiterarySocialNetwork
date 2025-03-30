@@ -9,7 +9,7 @@ import com.example.bookmoth.core.services.MyFirebaseMessagingService;
 import com.example.bookmoth.core.utils.GenderUtils;
 import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.model.register.TokenResponse;
-import com.example.bookmoth.domain.model.profile.Gender;
+import com.example.bookmoth.core.enums.Gender;
 import com.example.bookmoth.domain.model.login.Token;
 import com.example.bookmoth.domain.model.register.Otp;
 import com.example.bookmoth.domain.usecase.register.RegisterUseCase;
