@@ -30,6 +30,12 @@ public interface SupabaseRepository {
 
     Call<List<Post>> getPostByIdUser(String author_id, String status);
 
+    Call<List<Post>> getPostsByUserIds(
+            String userIdFilter, // Ví dụ: "in.(1,2,3)"
+            String order,        // Ví dụ: "timestamp.desc"
+            String range         // Ví dụ: "0-9"
+    );
+
     Call<List<Post>> searchPosts(
             String titleQuery,
             String contentQuery,
