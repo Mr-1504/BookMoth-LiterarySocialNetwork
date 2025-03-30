@@ -33,7 +33,7 @@ import com.example.bookmoth.data.local.utils.ImageCache;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.databinding.ActivityEditProfileBinding;
-import com.example.bookmoth.domain.model.profile.Gender;
+import com.example.bookmoth.core.enums.Gender;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.dialogs.LoadingUtils;
