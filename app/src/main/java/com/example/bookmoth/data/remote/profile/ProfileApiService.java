@@ -50,7 +50,7 @@ public interface ProfileApiService {
 
     @Multipart
     @PATCH("api/profile/edit")
-    Call<Void> editProfile(
+    Call<Profile> editProfile(
             @PartMap Map<String, RequestBody> params,
             @Part MultipartBody.Part avatar,
             @Part MultipartBody.Part cover

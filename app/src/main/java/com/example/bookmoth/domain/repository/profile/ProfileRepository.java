@@ -39,7 +39,7 @@ public interface ProfileRepository {
      */
     Call<UsernameResponse> checkUsername(String username);
 
-    Call<Void> editProfile(
+    Call<Profile> editProfile(
             Map<String, RequestBody> params,
             MultipartBody.Part avatar,
             MultipartBody.Part cover

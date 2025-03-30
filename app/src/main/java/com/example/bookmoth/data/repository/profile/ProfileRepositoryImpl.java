@@ -59,7 +59,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
 
 
     @Override
-    public Call<Void> editProfile(Map<String, RequestBody> params,  MultipartBody.Part avatar, MultipartBody.Part cover) {
+    public Call<Profile> editProfile(Map<String, RequestBody> params,  MultipartBody.Part avatar, MultipartBody.Part cover) {
         return profileApiService.editProfile(params, avatar, cover);
     }
 }

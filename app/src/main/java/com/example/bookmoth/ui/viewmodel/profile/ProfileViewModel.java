@@ -124,11 +124,11 @@ public class ProfileViewModel {
             MultipartBody.Part avatar, MultipartBody.Part cover,
             final OnEditProfile listener
     ) {
-        profileUseCase.editProfile(params, avatar, cover).enqueue(new Callback<Void>() {
+        profileUseCase.editProfile(params, avatar, cover).enqueue(new Callback<Profile>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    listener.onSuccess();
+            public void onResponse(Call<Profile> call, Response<Profile> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listener.onSuccess(response.body());
                 } else if (response.code() == 400) {
                     listener.onError(context.getString(R.string.try_again));
                 } else if (response.code() == 401) {
@@ -143,7 +143,7 @@ public class ProfileViewModel {
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<Profile> call, Throwable t) {
                 listener.onError(context.getString(R.string.error_connecting_to_server));
             }
         });
@@ -230,7 +230,7 @@ public class ProfileViewModel {
     }
 
     public interface OnEditProfile {
-        void onSuccess();
+        void onSuccess(Profile profile);
 
         void onError(String error);
     }
