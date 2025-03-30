@@ -248,6 +248,35 @@ public class PostViewModel {
             }
         });
     }
+    public void getPostsByUserIds(String userIdFilter, String rangeHeader, final OnGetPost listener) {
+        Call<List<Post>> call = postUseCase.getPostsByUserIds(
+                userIdFilter,       // Ví dụ: "in.(1,2,3)"
+                "timestamp.desc",   // Sắp xếp theo thời gian giảm dần
+                rangeHeader         // Ví dụ: "0-9"
+        );
+
+        call.enqueue(new Callback<List<Post>>() {
+            @Override
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Post> posts = response.body();
+                    Log.d("Supabase", "Số lượng bài viết: " + posts.size());
+                    listener.onGetPostSuccess(posts);
+                } else {
+                    String errorMessage = "Lỗi lấy bài viết: " + (response.errorBody() != null ? response.errorBody().toString() : response.code());
+                    Log.e("Supabase", errorMessage);
+                    listener.onGetPostFailure(errorMessage);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Post>> call, Throwable t) {
+                String errorMessage = "Lỗi kết nối API: " + t.getMessage();
+                Log.e("Supabase", errorMessage);
+                listener.onGetPostFailure(errorMessage);
+            }
+        });
+    }
 
     public interface OnGetPost {
         public void onGetPostSuccess(List<Post> posts);
