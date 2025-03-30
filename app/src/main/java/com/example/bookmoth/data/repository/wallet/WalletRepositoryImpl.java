@@ -1,5 +1,7 @@
 package com.example.bookmoth.data.repository.wallet;
 
+import com.example.bookmoth.data.model.payment.CreateOrderRequest;
+import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
 import com.example.bookmoth.data.model.wallet.ConfirmPinRequest;
 import com.example.bookmoth.data.model.wallet.CreateWalletRequest;
 import com.example.bookmoth.data.remote.utils.RetrofitClient;
@@ -55,5 +57,22 @@ public class WalletRepositoryImpl implements WalletRepository {
     @Override
     public Call<Void> checkWalletExist() {
         return walletApiService.checkWalletExist();
+    }
+
+    /**
+     * Gửi yêu cầu tạo đơn hàng trên ZaloPay.
+     *
+     * @param amount          Số tiền cần thanh toán.
+     * @param description     Mô tả giao dịch.
+     * @param transactionType Kiểu giao dịch (true: nạp tiền, false: thanh toán).
+     * @return {@code Call<ZaloPayTokenResponse>} phản hồi chứa token thanh toán.
+     */
+    @Override
+    public Call<ZaloPayTokenResponse> createOrder(long amount, String description, int transactionType) {
+        return walletApiService.createOrder(new CreateOrderRequest(
+                amount,
+                description,
+                transactionType
+        ));
     }
 }
