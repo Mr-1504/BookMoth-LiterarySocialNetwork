@@ -46,7 +46,6 @@ public interface SupabaseApiService {
     @GET("rest/v1/posts")
     Call<List<Post>> searchPosts(
             @Query("title") String titleQuery,
-            @Query("content") String contentQuery,
             @Query("status") String status
     );
 

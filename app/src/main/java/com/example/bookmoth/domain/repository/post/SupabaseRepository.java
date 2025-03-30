@@ -38,7 +38,6 @@ public interface SupabaseRepository {
 
     Call<List<Post>> searchPosts(
             String titleQuery,
-            String contentQuery,
             String status
     );
 

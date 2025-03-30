@@ -230,7 +230,7 @@ public class PostViewModel {
 //        String contentQuery = searchInContent ? "ilike.*" + keyword + "*" : null; // Nếu không tìm trong content, để null
 //        String statusQuery = "eq." + status;
         String query = "ilike.*" + keyword + "*";
-        postUseCase.searchPosts(query, query, "eq.0").enqueue(new Callback<List<Post>>() {
+        postUseCase.searchPosts(query, "eq.0").enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if(response.isSuccessful()){
