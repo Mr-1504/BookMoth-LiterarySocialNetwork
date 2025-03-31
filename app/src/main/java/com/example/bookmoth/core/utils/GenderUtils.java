@@ -1,13 +1,14 @@
 package com.example.bookmoth.core.utils;
 
-import static com.example.bookmoth.domain.model.profile.Gender.FEMALE;
-import static com.example.bookmoth.domain.model.profile.Gender.MALE;
-import static com.example.bookmoth.domain.model.profile.Gender.OTHER;
+
+import static com.example.bookmoth.core.enums.Gender.FEMALE;
+import static com.example.bookmoth.core.enums.Gender.MALE;
+import static com.example.bookmoth.core.enums.Gender.OTHER;
 
 import android.content.Context;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.domain.model.profile.Gender;
+import com.example.bookmoth.core.enums.Gender;
 
 /**
  * Class tiện ích hỗ trợ xử lý giới tính trong ứng dụng.

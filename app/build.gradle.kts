@@ -23,6 +23,7 @@ android {
         buildConfigField("String", "STORE_PASSWORD", "\"${properties["storePassword"]}\"")
         buildConfigField("String", "KEY_ALIAS", "\"${properties["keyAlias"]}\"")
         buildConfigField("String", "KEY_PASSWORD", "\"${properties["keyPassword"]}\"")
+        buildConfigField("String", "MAC_KEY", "\"${properties["macKey"]}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

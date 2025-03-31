@@ -4,31 +4,37 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.bookmoth.BuildConfig;
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.enums.PaymentMethod;
+import com.example.bookmoth.core.enums.Transaction;
 import com.example.bookmoth.core.utils.Constant.AppInfo;
 import com.example.bookmoth.core.utils.Extension;
-import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.core.utils.HMacHelper;
+import com.example.bookmoth.data.model.profile.ProfileDatabase;
 import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.wallet.WalletRepositoryImpl;
-import com.example.bookmoth.domain.model.payment.TransactionType;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.model.wallet.BalanceResponse;
+import com.example.bookmoth.domain.model.wallet.OrderWorkResponse;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.domain.usecase.wallet.WalletUseCase;
 import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.dialogs.PasswordPopup;
-import com.example.bookmoth.ui.viewmodel.payment.PaymentViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.example.bookmoth.ui.viewmodel.wallet.WalletViewModel;
 
@@ -41,12 +47,17 @@ import vn.zalopay.sdk.listeners.PayOrderListener;
 
 public class ConfirmActivity extends AppCompatActivity {
 
-    private TextView txtAmount, txtDescription, txtBack;
+    private TextView txtAmount, txtDescription, txtBack, tvOption, txtTransactionId;
     private Button confirmButton;
+    private ImageView ivOption;
+    private LinearLayout btnZaloPay, btnOption;
     private PasswordPopup passwordPopup;
     private WalletViewModel walletViewModel;
-    private PaymentViewModel paymentViewModel;
     private ProfileViewModel profileViewModel;
+    private PaymentMethod.Payment_Method paymentMethod;
+    private Transaction.TransactionType transactionType;
+    private ZaloPayTokenResponse token;
+    private String appTransId;
     private Profile _profile;
 
     @Override
@@ -62,34 +73,46 @@ public class ConfirmActivity extends AppCompatActivity {
 
         ZaloPaySDK.init(AppInfo.APP_ID, Environment.SANDBOX);
 
-        String amount = getIntent().getStringExtra("amount");
-        init(amount);
+
+        init();
         clickConfirm();
         clickBack();
+        clickZaloPay();
+        clickWallet();
+    }
+
+    private void clickWallet() {
+        btnOption.setOnClickListener(view -> {
+            paymentMethod = PaymentMethod.Payment_Method.Wallet;
+            btnOption.setBackgroundResource(R.drawable.button_selector);
+            btnZaloPay.setBackgroundResource(R.drawable.button);
+        });
+    }
+
+    private void clickZaloPay() {
+        btnZaloPay.setOnClickListener(view -> {
+            paymentMethod = PaymentMethod.Payment_Method.ZaloPay;
+            btnZaloPay.setBackgroundResource(R.drawable.button_selector);
+            btnOption.setBackgroundResource(R.drawable.button);
+        });
     }
 
     private void clickBack() {
-        txtBack.setOnClickListener(v -> {
-            finish();
-        });
+        txtBack.setOnClickListener(v -> finish());
     }
 
     /**
      * Xử lý sự kiện khi click vào nút xác nhận.
      */
     private void clickConfirm() {
-        confirmButton.setOnClickListener(v -> {
-            inputPin();
-        });
+        confirmButton.setOnClickListener(v -> inputPin());
     }
 
     /**
      * Hiển thị popup nhập mã PIN.
      */
     private void inputPin() {
-        passwordPopup = new PasswordPopup(password -> {
-            confirmPin(password);
-        }, "Nhập mật khẩu để xác nhận giao dịch");
+        passwordPopup = new PasswordPopup(this::confirmPin, "Nhập mật khẩu để xác nhận giao dịch");
 
         passwordPopup.show(getSupportFragmentManager(), passwordPopup.getTag());
     }
@@ -97,9 +120,9 @@ public class ConfirmActivity extends AppCompatActivity {
     /**
      * Khởi tạo các thành phần giao diện và ViewModel.
      */
-    private void init(String amount) {
+    private void init() {
+        LoadingUtils.showLoading(getSupportFragmentManager());
         walletViewModel = new WalletViewModel(new WalletUseCase(new WalletRepositoryImpl()));
-        paymentViewModel = new PaymentViewModel();
         LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
                 this, ProfileDatabase.getInstance(this).profileDao()
         );
@@ -118,11 +141,169 @@ public class ConfirmActivity extends AppCompatActivity {
 
             }
         });
+
+        Intent infor = getIntent();
+
+        int type = infor.getIntExtra("type", 0);
+        transactionType = Transaction.getTransactionType(type);
+
         confirmButton = findViewById(R.id.btn_confirm);
         txtAmount = findViewById(R.id.txtAmount);
-        txtAmount.setText(amount);
         txtBack = findViewById(R.id.txtBack);
         txtDescription = findViewById(R.id.tvDescription);
+        tvOption = findViewById(R.id.tvOption);
+        ivOption = findViewById(R.id.ivOption);
+        btnZaloPay = findViewById(R.id.btnZaloPay);
+        btnOption = findViewById(R.id.btnOption);
+        txtTransactionId = findViewById(R.id.transaction_id);
+
+
+        switch (transactionType) {
+            case DEPOSIT:
+                tvOption.setText(getString(R.string.vietinbank));
+                ivOption.setImageResource(R.drawable.ic_vietinbank);
+                String amount = infor.getStringExtra("amount");
+                createOrder(amount);
+                break;
+            case PAYMENT:
+                tvOption.setText(getString(R.string.wallet));
+                ivOption.setImageResource(R.drawable.ic_app);
+                int workId = infor.getIntExtra("workId", 0);
+                if (workId == 0) {
+                    showError();
+                }
+                orderProduct(workId);
+                break;
+        }
+        paymentMethod = PaymentMethod.Payment_Method.ZaloPay;
+    }
+
+    /**
+     * Tạo giao dịch mua sản phẩm.
+     *
+     * @param workId ID công việc cần mua.
+     */
+    private void orderProduct(int workId) {
+        String time = String.valueOf(Extension.getTimeStamp());
+        String data = workId + "|" + time;
+        String mac = HMacHelper.computeHmac(BuildConfig.MAC_KEY, data);
+
+        walletViewModel.orderProduct(this, workId, time, mac, new WalletViewModel.OnOrderProductListener() {
+            @Override
+            public void onSuccess(OrderWorkResponse response) {
+                LoadingUtils.hideLoading();
+                appTransId = response.getTransId();
+                txtDescription.setText(response.getDesc());
+                txtAmount.setText(Extension.bigDecimalToAmount(response.getAmount()));
+                txtTransactionId.setText(response.getTransId());
+            }
+
+            @Override
+            public void onFailed(String error) {
+                LoadingUtils.hideLoading();
+                if ("INVALID_WALLET".equals(error)) {
+                    Toast.makeText(
+                            ConfirmActivity.this, getString(R.string.please_create_wallet), Toast.LENGTH_SHORT).show();
+                    finish();
+                } else if ("409".equals(error)) {
+                    Toast.makeText(
+                            ConfirmActivity.this, getString(R.string.has_owned), Toast.LENGTH_SHORT).show();
+                    finish();
+                } else
+                    showError();
+            }
+        });
+    }
+
+    /**
+     * Hiển thị thông báo lỗi khi giao dịch thất bại.
+     */
+    private void showError() {
+        Intent intent = new Intent(ConfirmActivity.this, ResultActivity.class);
+        intent.putExtra("status",
+                Transaction.getTransactionResult(Transaction.TransactionResult.FAILED));
+        startActivity(intent);
+        finish();
+    }
+
+
+    private void updatePaymentMethod() {
+        walletViewModel.updatePaymentMethod(this, appTransId, paymentMethod,
+                new WalletViewModel.OnUpdatePaymentMethodListener() {
+                    @Override
+                    public void onUpdatePaymentMethodSuccess() {
+                        switch (paymentMethod) {
+                            case Wallet:
+                                paymentWithWallet();
+                                break;
+                            case ZaloPay:
+                                createZaloPayOrder();
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onUpdatePaymentMethodFailure(String error) {
+                        LoadingUtils.hideLoading();
+                        if ("INVALID_WALLET".equals(error)) {
+                            Toast.makeText(
+                                    ConfirmActivity.this, getString(R.string.please_create_wallet), Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else
+                            showError();
+                    }
+                });
+    }
+
+    private void createZaloPayOrder(){
+        walletViewModel.createZaloPayOrder(this, appTransId, new WalletViewModel.OnCreateOrderListener() {
+            @Override
+            public void onCreateOrderSuccess(ZaloPayTokenResponse response) {
+                token = response;
+                LoadingUtils.hideLoading();
+                startZaloPayPayment(token);
+            }
+
+            @Override
+            public void onCreateOrderFailure(String message) {
+                LoadingUtils.hideLoading();
+                showError();
+            }
+        });
+    }
+
+
+    private void paymentWithWallet() {
+        walletViewModel.paymentWithWallet(this, appTransId, new WalletViewModel.OnPaymentListener() {
+            @Override
+            public void onSuccess() {
+                LoadingUtils.hideLoading();
+                Intent intent = new Intent(ConfirmActivity.this, ResultActivity.class);
+                intent.putExtra("status",
+                        Transaction.getTransactionResult(Transaction.TransactionResult.SUCCESS));
+                intent.putExtra("transId", appTransId);
+                intent.putExtra("amount", txtAmount.getText().toString());
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onFailed(String error) {
+                LoadingUtils.hideLoading();
+                if ("INVALID_WALLET".equals(error)) {
+                    Toast.makeText(
+                            ConfirmActivity.this, getString(R.string.please_create_wallet), Toast.LENGTH_SHORT).show();
+                    finish();
+                } else if ("INVALID_RECEIVER_WALLET".equals(error)) {
+                    Toast.makeText(
+                            ConfirmActivity.this, getString(R.string.invalid_receiver), Toast.LENGTH_SHORT).show();
+                } else if ("INSUFFICIENT_FUNDS".equals(error)) {
+                    Toast.makeText(
+                            ConfirmActivity.this, getString(R.string.insufficient_funds), Toast.LENGTH_SHORT).show();
+                } else
+                    showError();
+            }
+        });
     }
 
     /**
@@ -137,7 +318,7 @@ public class ConfirmActivity extends AppCompatActivity {
             @Override
             public void onSuccess(BalanceResponse balanceResponse) {
                 passwordPopup.dismiss();
-                createOrder();
+                updatePaymentMethod();
             }
 
             @Override
@@ -149,29 +330,30 @@ public class ConfirmActivity extends AppCompatActivity {
     }
 
 
-    private void createOrder(){
-        String stringAmount = txtAmount.getText().toString();
-        long amount = Long.parseLong(Extension.normalize(
-                stringAmount.substring(0, stringAmount.length() - 1)));
+    private void createOrder(String amount) {
         String fullname = Normalizer.normalize(
                 _profile.getLastName() + " " + _profile.getFirstName(), Normalizer.Form.NFD);
+
         String description = String.format(
-                "%s %s", fullname, txtDescription.getText().toString());
-        paymentViewModel.createOrder(
-                ConfirmActivity.this,
-                amount, description,
-                TransactionType.DEPOSIT,
-                new PaymentViewModel.OnCreateOrderListener() {
+                "%s %s", fullname, getString(R.string.deposit_into_bookmoth_account));
+
+        walletViewModel.createOrder(
+                ConfirmActivity.this, Long.parseLong(amount), description,
+                Transaction.TransactionType.DEPOSIT, new WalletViewModel.OnCreateOrderListener() {
                     @Override
-                    public void onCreateOrderSuccess(ZaloPayTokenResponse token) {
+                    public void onCreateOrderSuccess(ZaloPayTokenResponse response) {
                         LoadingUtils.hideLoading();
-                        startZaloPayPayment(token);
+                        token = response;
+                        appTransId = response.getTransId();
+                        txtDescription.setText(description);
+                        txtAmount.setText(Extension.fomatCurrency(amount));
+                        txtTransactionId.setText(response.getTransId());
                     }
 
                     @Override
                     public void onCreateOrderFailure(String message) {
                         LoadingUtils.hideLoading();
-                        Toast.makeText(ConfirmActivity.this, message, Toast.LENGTH_SHORT).show();
+                        showError();
                     }
                 });
     }
@@ -221,7 +403,7 @@ public class ConfirmActivity extends AppCompatActivity {
      * @param intent Đối tượng Intent chứa dữ liệu phản hồi từ ZaloPay.
      */
     @Override
-    public void onNewIntent(Intent intent) {
+    public void onNewIntent(@NonNull Intent intent) {
         System.out.println("New Intent");
         super.onNewIntent(intent);
         ZaloPaySDK.getInstance().onResult(intent);

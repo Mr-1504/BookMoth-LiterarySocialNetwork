@@ -5,7 +5,7 @@ package com.example.bookmoth.data.model.payment;
  */
 public class CreateOrderRequest {
     private long amount;
-    private boolean transactionType;
+    private int transactionType;
     public String description;
 
     /**
@@ -15,7 +15,7 @@ public class CreateOrderRequest {
      * @param description     Mô tả đơn hàng.
      * @param transactionType Loại giao dịch (true: tín dụng, false: ghi nợ).
      */
-    public CreateOrderRequest(long amount, String description, boolean transactionType) {
+    public CreateOrderRequest(long amount, String description, int transactionType) {
         this.amount = amount;
         this.description = description;
         this.transactionType = transactionType;

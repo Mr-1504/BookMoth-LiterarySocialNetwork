@@ -7,7 +7,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 
-import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.data.model.profile.ProfileDatabase;
 
 public class DatabaseManager implements LifecycleObserver {
     private final ProfileDatabase database;

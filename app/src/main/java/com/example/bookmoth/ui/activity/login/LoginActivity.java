@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.data.model.profile.ProfileDatabase;
 import com.example.bookmoth.data.repository.login.LoginRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
