@@ -2,7 +2,6 @@ package com.example.bookmoth.ui.activity.profile;
 
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,8 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
-import com.example.bookmoth.data.local.profile.ProfileDatabase;
-import com.example.bookmoth.data.local.utils.ImageCache;
+import com.example.bookmoth.data.model.profile.ProfileDatabase;
 import com.example.bookmoth.data.repository.post.FlaskRepositoryImpl;
 import com.example.bookmoth.data.repository.post.SupabaseRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
