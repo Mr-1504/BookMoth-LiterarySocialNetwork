@@ -66,7 +66,7 @@ public class DepositActivity extends AppCompatActivity {
             }
 
             Intent intent = new Intent(this, ConfirmActivity.class);
-            intent.putExtra("amount", amount);
+            intent.putExtra("amount", nomalizedAmount);
             startActivity(intent);
         });
     }
