@@ -1,7 +1,7 @@
 package com.example.bookmoth.core.utils;
 
 
-import com.example.bookmoth.domain.model.payment.TransactionType;
+import com.example.bookmoth.core.enums.TransactionType;
 
 public class TransactionUtils {
     public static int getTransactionType(TransactionType type) {
@@ -10,6 +10,10 @@ public class TransactionUtils {
                 return 1;
             case WITHDRAWAL:
                 return 2;
+            case TRANFER:
+                return 3;
+            case PAYMENT:
+                return 4;
             default:
                 return 1;
         }
