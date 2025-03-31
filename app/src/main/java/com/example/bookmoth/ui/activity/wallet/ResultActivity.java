@@ -20,6 +20,7 @@ public class ResultActivity extends AppCompatActivity {
     private ImageView result;
     private TextView txtResult, txtAmount, txtTransId;
     private Button back;
+    private CountDownTimer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class ResultActivity extends AppCompatActivity {
             txtResult.setText(getString(R.string.transaction_canceled));
         }
 
-        new CountDownTimer(5000, 1000) {
+         timer = new CountDownTimer(5000, 1000) {
             public void onTick(long millisUntilFinished) {
                 back.setText(getString(R.string.close) + "(" + millisUntilFinished / 1000 + "s)");
             }
@@ -77,6 +78,7 @@ public class ResultActivity extends AppCompatActivity {
 
     private void clickBack(){
         back.setOnClickListener(view -> {
+            timer.cancel();
             Intent intent = new Intent(ResultActivity.this, WalletActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
