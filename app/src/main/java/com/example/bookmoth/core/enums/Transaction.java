@@ -21,8 +21,7 @@ public class Transaction {
         /**
          * Giao dịch chuyển tiền
          */
-        TRANFER,
-
+        TRANSFER,
         /**
          * Giao dịch thanh toán
          */
