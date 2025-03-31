@@ -51,7 +51,7 @@ public class Transaction {
         switch (type) {
             case WITHDRAWAL:
                 return 2;
-            case TRANFER:
+            case TRANSFER:
                 return 3;
             case PAYMENT:
                 return 4;
@@ -65,7 +65,7 @@ public class Transaction {
             case 2:
                 return TransactionType.WITHDRAWAL;
             case 3:
-                return TransactionType.TRANFER;
+                return TransactionType.TRANSFER;
             case 4:
                 return PAYMENT;
             default:
