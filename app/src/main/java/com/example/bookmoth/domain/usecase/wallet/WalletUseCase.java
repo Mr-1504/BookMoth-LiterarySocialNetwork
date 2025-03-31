@@ -63,4 +63,16 @@ public class WalletUseCase {
     public Call<ZaloPayTokenResponse> createOrder(long amount, String description, int transactionType) {
         return walletRepository.createOrder(amount, description, transactionType);
     }
+
+    /**
+     * Tạo giao dịch mua sản phẩm.
+     *
+     * @param workId    ID công việc cần mua.
+     * @param orderTime Thời gian tạo đơn hàng.
+     * @param mac       Mã xác thực.
+     * @return {@link Call} chứa {@link String}, mã giao dịch.
+     */
+    public Call<String> orderProduct(int workId, String orderTime, String mac) {
+        return walletRepository.orderProduct(workId, orderTime, mac);
+    }
 }
