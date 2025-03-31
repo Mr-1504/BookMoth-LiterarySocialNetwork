@@ -11,13 +11,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.bookmoth.BuildConfig;
 import com.example.bookmoth.R;
-import com.example.bookmoth.core.utils.Extension;
-import com.example.bookmoth.core.utils.HMacHelper;
 import com.example.bookmoth.core.utils.InternetHelper;
 import com.example.bookmoth.core.utils.SecureStorage;
-import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.data.model.profile.ProfileDatabase;
 import com.example.bookmoth.data.local.utils.ImageCache;
 import com.example.bookmoth.data.repository.login.LoginRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
@@ -73,21 +70,10 @@ public class OptionActivity extends AppCompatActivity {
 
     private void clickBuy() {
         btnBuy.setOnClickListener(view -> {
-            String time = String.valueOf(Extension.getTimeStamp());
-            String data = 1 + "|" + time;
-            String mac = HMacHelper.computeHmac(BuildConfig.MAC_KEY, data);
-            walletViewModel.orderProduct(this, 1, time, mac, new WalletViewModel.OnOrderProductListener() {
-                @Override
-                public void onSuccess(String transactionId) {
-                    Intent intent = new Intent(OptionActivity.this, ConfirmActivity.class);
-
-                }
-
-                @Override
-                public void onFailed(String error) {
-
-                }
-            });
+            Intent intent = new Intent(OptionActivity.this, ConfirmActivity.class);
+            intent.putExtra("type", 4);
+            intent.putExtra("workId", 1);
+            startActivity(intent);
         });
     }
 
