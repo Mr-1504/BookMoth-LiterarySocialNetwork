@@ -5,10 +5,11 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.core.enums.TransactionType;
-import com.example.bookmoth.core.utils.TransactionUtils;
+import com.example.bookmoth.core.enums.PaymentMethod;
+import com.example.bookmoth.core.enums.Transaction;
 import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
 import com.example.bookmoth.domain.model.wallet.BalanceResponse;
+import com.example.bookmoth.domain.model.wallet.OrderWorkResponse;
 import com.example.bookmoth.domain.usecase.wallet.WalletUseCase;
 import com.example.bookmoth.ui.activity.login.LoginActivity;
 
@@ -73,7 +74,7 @@ public class WalletViewModel {
                     listener.onFailed(context.getString(R.string.error_invalid_account));
                 } else if (response.code() == 409) {
                     listener.onFailed(context.getString(R.string.wallet_already_exists));
-                } else if (response.code() == 422){
+                } else if (response.code() == 422) {
                     listener.onFailed(context.getString(R.string.cannot_process_request));
                 } else {
                     listener.onFailed(context.getString(R.string.undefined_error));
@@ -96,14 +97,14 @@ public class WalletViewModel {
                 } else if (response.code() == 400) {
                     listener.onFailed(context.getString(R.string.invalid_data));
                 } else if (response.code() == 401) {
-                    if (response.errorBody() != null ) {
+                    if (response.errorBody() != null) {
                         try {
                             JSONObject json = new JSONObject(response.errorBody().string());
                             String errorCode = json.optString("error_code", "");
 
                             if ("INVALID_PIN".equals(errorCode)) {
                                 listener.onFailed(context.getString(R.string.incorrect_pin));
-                            }else {
+                            } else {
                                 Intent intent = new Intent(context, LoginActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 Toast.makeText(context, context.getString(R.string.please_login_again), Toast.LENGTH_SHORT).show();
@@ -117,6 +118,7 @@ public class WalletViewModel {
                     } else {
                         Intent intent = new Intent(context, LoginActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        Toast.makeText(context, context.getString(R.string.please_login_again), Toast.LENGTH_SHORT).show();
                         context.startActivity(intent);
                     }
                 } else if (response.code() == 404) {
@@ -136,9 +138,9 @@ public class WalletViewModel {
     public void createOrder(
             Context context,
             long amount, String description,
-            TransactionType transactionType,
+            Transaction.TransactionType transactionType,
             final OnCreateOrderListener listener) {
-        int type = TransactionUtils.getTransactionType(transactionType);
+        int type = Transaction.getTransactionType(transactionType);
         walletUseCase.createOrder(amount, description, type)
                 .enqueue(new Callback<ZaloPayTokenResponse>() {
                     @Override
@@ -156,7 +158,6 @@ public class WalletViewModel {
                     }
                 });
     }
-
 
 
     /**
@@ -191,36 +192,45 @@ public class WalletViewModel {
     /**
      * Tạo đơn hàng mua sản phẩm
      *
-     * @param context  context của activity
-     * @param workId   ID của sản phẩm
+     * @param context   context của activity
+     * @param workId    ID của sản phẩm
      * @param orderTime thời gian đặt hàng
-     * @param mac      địa chỉ MAC của thiết bị
-     * @param listener listener lắng nghe kết quả
+     * @param mac       địa chỉ MAC của thiết bị
+     * @param listener  listener lắng nghe kết quả
      */
     public void orderProduct(Context context, int workId, String orderTime, String mac, OnOrderProductListener listener) {
-        walletUseCase.orderProduct(workId, orderTime, mac).enqueue(new Callback<String>() {
+        walletUseCase.orderProduct(workId, orderTime, mac).enqueue(new Callback<OrderWorkResponse>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<OrderWorkResponse> call, Response<OrderWorkResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listener.onSuccess(response.body());
                 } else if (response.code() == 400) {
                     listener.onFailed(context.getString(R.string.invalid_data));
                 } else if (response.code() == 401) {
-                    if (response.errorBody() != null ) {
+                    if (response.errorBody() != null) {
                         try {
                             JSONObject json = new JSONObject(response.errorBody().string());
                             String errorCode = json.optString("error_code", "");
 
                             if ("INVALID_MAC".equals(errorCode)) {
                                 listener.onFailed(context.getString(R.string.invalid_transaction));
+                            } else if ("INVALID_TOKEN".equals(errorCode)) {
+                                Intent intent = new Intent(context, LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                Toast.makeText(context, context.getString(R.string.please_login_again), Toast.LENGTH_SHORT).show();
+                                context.startActivity(intent);
+                            } else {
+                                listener.onFailed(context.getString(R.string.undefined_error));
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
                             listener.onFailed(context.getString(R.string.undefined_error));
                         }
                     }
+                } else if (response.code() == 409) {
+                    listener.onFailed("409");
                 } else if (response.code() == 404) {
-                    if (response.errorBody() != null ) {
+                    if (response.errorBody() != null) {
                         try {
                             JSONObject json = new JSONObject(response.errorBody().string());
                             String errorCode = json.optString("error_code", "");
@@ -235,7 +245,7 @@ public class WalletViewModel {
                             listener.onFailed(context.getString(R.string.undefined_error));
                         }
                     }
-                } else if (response.code() == 422){
+                } else if (response.code() == 422) {
                     listener.onFailed(context.getString(R.string.cannot_process_request));
                 } else {
                     listener.onFailed(context.getString(R.string.undefined_error));
@@ -243,17 +253,190 @@ public class WalletViewModel {
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<OrderWorkResponse> call, Throwable t) {
                 listener.onFailed(context.getString(R.string.error_connecting_to_server));
             }
         });
     }
 
     /**
+     * Cập nhật phương thức thanh toán cho giao dịch
+     *
+     * @param context         context của activity
+     * @param transactionId   ID của giao dịch
+     * @param paymentMethodId ID của phương thức thanh toán
+     * @param listener        listener lắng nghe kết quả
+     */
+    public void updatePaymentMethod(
+            Context context, String transactionId, PaymentMethod.Payment_Method paymentMethodId, final OnUpdatePaymentMethodListener listener) {
+
+
+        walletUseCase.updatePaymentMethod(transactionId, PaymentMethod.getPaymentMethod(paymentMethodId))
+                .enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            listener.onUpdatePaymentMethodSuccess();
+                        } else if (response.code() == 400) {
+                            listener.onUpdatePaymentMethodFailure(context.getString(R.string.invalid_data));
+                        } else if (response.code() == 401) {
+                            if (response.errorBody() != null) {
+                                try {
+                                    JSONObject json = new JSONObject(response.errorBody().string());
+                                    String errorCode = json.optString("error_code", "");
+
+                                    if ("INVALID_TOKEN".equals(errorCode)) {
+                                        Intent intent = new Intent(context, LoginActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        Toast.makeText(context, context.getString(R.string.please_login_again), Toast.LENGTH_SHORT).show();
+                                        context.startActivity(intent);
+                                    } else {
+                                        listener.onUpdatePaymentMethodFailure(context.getString(R.string.undefined_error));
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    listener.onUpdatePaymentMethodFailure(context.getString(R.string.undefined_error));
+                                }
+                            }
+                        } else if (response.code() == 404) {
+                            if (response.errorBody() != null) {
+                                try {
+                                    JSONObject json = new JSONObject(response.errorBody().string());
+                                    String errorCode = json.optString("error_code", "");
+
+                                    if ("INVALID_WALLET".equals(errorCode)) {
+                                        listener.onUpdatePaymentMethodFailure("INVALID_WALLET");
+                                    } else if ("INVALID_TRANSACTION".equals(errorCode)) {
+                                        listener.onUpdatePaymentMethodFailure("INVALID_TRANSACTION");
+                                    } else {
+                                        listener.onUpdatePaymentMethodFailure(context.getString(R.string.undefined_error));
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    listener.onUpdatePaymentMethodFailure(context.getString(R.string.undefined_error));
+                                }
+                            }
+                        } else if (response.code() == 422) {
+                            listener.onUpdatePaymentMethodFailure(context.getString(R.string.cannot_process_request));
+                        } else {
+                            listener.onUpdatePaymentMethodFailure(context.getString(R.string.undefined_error));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        listener.onUpdatePaymentMethodFailure(context.getString(R.string.error_connecting_to_server));
+                    }
+                });
+    }
+
+    /**
+     * Thanh toán giao dịch
+     *
+     * @param context       context của activity
+     * @param transactionId ID của giao dịch
+     * @param listener      listener lắng nghe kết quả
+     */
+    public void paymentWithWallet(Context context, String transactionId, final OnPaymentListener listener) {
+        walletUseCase.payment(transactionId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    listener.onSuccess();
+                } else if (response.code() == 400) {
+                    listener.onFailed(context.getString(R.string.invalid_data));
+                } else if (response.code() == 401) {
+                    if (response.errorBody() != null) {
+                        try {
+                            JSONObject json = new JSONObject(response.errorBody().string());
+                            String errorCode = json.optString("error_code", "");
+
+                            if ("INVALID_TOKEN".equals(errorCode)) {
+                                Intent intent = new Intent(context, LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                Toast.makeText(context, context.getString(R.string.please_login_again), Toast.LENGTH_SHORT).show();
+                                context.startActivity(intent);
+                            } else {
+                                listener.onFailed(context.getString(R.string.undefined_error));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            listener.onFailed(context.getString(R.string.undefined_error));
+                        }
+                    }
+                } else if (response.code() == 404) {
+                    if (response.errorBody() != null) {
+                        try {
+                            JSONObject json = new JSONObject(response.errorBody().string());
+                            String errorCode = json.optString("error_code", "");
+
+                            if ("INVALID_WALLET".equals(errorCode)) {
+                                listener.onFailed("INVALID_WALLET");
+                            } else if ("INVALID_TRANSACTION".equals(errorCode)) {
+                                listener.onFailed("INVALID_TRANSACTION");
+                            } else if ("INVALID_RECEIVER_WALLET".equals(errorCode)) {
+                                listener.onFailed("INVALID_RECEIVER_WALLET");
+                            } else {
+                                listener.onFailed(context.getString(R.string.undefined_error));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            listener.onFailed(context.getString(R.string.undefined_error));
+                        }
+                    }
+                } else if (response.code() == 422) {
+                    if (response.errorBody() != null) {
+                        try {
+                            JSONObject json = new JSONObject(response.errorBody().string());
+                            String errorCode = json.optString("error_code", "");
+
+                            if ("INSUFFICIENT_FUNDS".equals(errorCode)) {
+                                listener.onFailed("INSUFFICIENT_FUNDS");
+                            } else {
+                                listener.onFailed(context.getString(R.string.cannot_process_request));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            listener.onFailed(context.getString(R.string.undefined_error));
+                        }
+                    }
+                } else {
+                    listener.onFailed(context.getString(R.string.undefined_error));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void createZaloPayOrder(Context context, String transactionId, final OnCreateOrderListener listener){
+        walletUseCase.createZaloPayOrder(transactionId).enqueue(new Callback<ZaloPayTokenResponse>() {
+            @Override
+            public void onResponse(Call<ZaloPayTokenResponse> call, Response<ZaloPayTokenResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listener.onCreateOrderSuccess(response.body());
+                } else {
+                    listener.onCreateOrderFailure(context.getString(R.string.undefined_error));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ZaloPayTokenResponse> call, Throwable t) {
+                listener.onCreateOrderFailure(context.getString(R.string.error_connecting_to_server));
+            }
+        });
+    }
+
+
+    /**
      * Interface lắng nghe kết quả
      */
     public interface OnWalletListener {
         void onSuccess(BalanceResponse balanceResponse);
+
         void onFailed(String error);
     }
 
@@ -261,7 +444,8 @@ public class WalletViewModel {
      * Interface lắng nghe kết quả tạo đơn hàng
      */
     public interface OnCreateOrderListener {
-        void onCreateOrderSuccess(ZaloPayTokenResponse token);
+        void onCreateOrderSuccess(ZaloPayTokenResponse response);
+
         void onCreateOrderFailure(String message);
     }
 
@@ -269,7 +453,20 @@ public class WalletViewModel {
      * Interface lắng nghe kết quả tạo đơn hàng mua sản phẩm
      */
     public interface OnOrderProductListener {
-        void onSuccess(String transactionId);
+        void onSuccess(OrderWorkResponse response);
+
+        void onFailed(String error);
+    }
+
+    public interface OnUpdatePaymentMethodListener {
+        void onUpdatePaymentMethodSuccess();
+
+        void onUpdatePaymentMethodFailure(String message);
+    }
+
+    public interface OnPaymentListener {
+        void onSuccess();
+
         void onFailed(String error);
     }
 }
