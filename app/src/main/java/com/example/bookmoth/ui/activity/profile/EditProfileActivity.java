@@ -28,7 +28,7 @@ import androidx.core.content.ContextCompat;
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.Extension;
 import com.example.bookmoth.core.utils.GenderUtils;
-import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.data.model.profile.ProfileDatabase;
 import com.example.bookmoth.data.local.utils.ImageCache;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
