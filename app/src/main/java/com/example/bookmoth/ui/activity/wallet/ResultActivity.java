@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.enums.Transaction;
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -45,21 +46,30 @@ public class ResultActivity extends AppCompatActivity {
         back = findViewById(R.id.btn_close);
 
         int status = getIntent().getIntExtra("status", -1);
+        Transaction.TransactionResult transactionResult = Transaction.getTransactionResult(status);
         String amount = getIntent().getStringExtra("amount");
         String transId = getIntent().getStringExtra("transId");
 
         txtTransId.setText(transId);
         txtAmount.setText(amount);
 
-        if (status == 1){
-            result.setImageDrawable(getDrawable(R.drawable.ic_done));
-            txtResult.setText(getString(R.string.transaction_successfully));
-        } else if (status == 0){
-            result.setImageDrawable(getDrawable(R.drawable.ic_failed));
-            txtResult.setText(getString(R.string.transaction_failed));
-        } else {
-            result.setImageDrawable(getDrawable(R.drawable.ic_failed));
-            txtResult.setText(getString(R.string.transaction_canceled));
+        switch (transactionResult){
+            case SUCCESS:
+                result.setImageDrawable(getDrawable(R.drawable.ic_done));
+                txtResult.setText(getString(R.string.transaction_successfully));
+                break;
+            case FAILED:
+                result.setImageDrawable(getDrawable(R.drawable.ic_failed));
+                txtResult.setText(getString(R.string.transaction_failed));
+                break;
+            case CANCEL:
+                result.setImageDrawable(getDrawable(R.drawable.ic_failed));
+                txtResult.setText(getString(R.string.transaction_canceled));
+                break;
+            case ERROR:
+                result.setImageDrawable(getDrawable(R.drawable.ic_failed));
+                txtResult.setText(getString(R.string.transaction_error));
+                break;
         }
 
          timer = new CountDownTimer(5000, 1000) {
