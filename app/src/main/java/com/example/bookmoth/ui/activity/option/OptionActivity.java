@@ -11,7 +11,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.bookmoth.BuildConfig;
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.utils.Extension;
+import com.example.bookmoth.core.utils.HMacHelper;
 import com.example.bookmoth.core.utils.InternetHelper;
 import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.local.profile.ProfileDatabase;
@@ -26,6 +29,7 @@ import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.domain.usecase.wallet.WalletUseCase;
 import com.example.bookmoth.ui.activity.login.LoginActivity;
 import com.example.bookmoth.ui.activity.profile.ProfileActivity;
+import com.example.bookmoth.ui.activity.wallet.ConfirmActivity;
 import com.example.bookmoth.ui.activity.wallet.CreatePinActivity;
 import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.viewmodel.login.LoginViewModel;
@@ -41,7 +45,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
  */
 public class OptionActivity extends AppCompatActivity {
 
-    private Button btnProfile, btnWallet, btnLogout;
+    private Button btnProfile, btnWallet, btnLogout, btnBuy;
     private WalletViewModel walletViewModel;
 
     @Override
@@ -55,6 +59,7 @@ public class OptionActivity extends AppCompatActivity {
             return insets;
         });
 
+        btnBuy = findViewById(R.id.btnbuy);
         btnLogout = findViewById(R.id.btnLogout);
         btnProfile = findViewById(R.id.btnViewProfile);
         btnWallet = findViewById(R.id.btnWallet);
@@ -63,6 +68,27 @@ public class OptionActivity extends AppCompatActivity {
         clickLogout();
         clickWallet();
         clickProfile();
+        clickBuy();
+    }
+
+    private void clickBuy() {
+        btnBuy.setOnClickListener(view -> {
+            String time = String.valueOf(Extension.getTimeStamp());
+            String data = 1 + "|" + time;
+            String mac = HMacHelper.computeHmac(BuildConfig.MAC_KEY, data);
+            walletViewModel.orderProduct(this, 1, time, mac, new WalletViewModel.OnOrderProductListener() {
+                @Override
+                public void onSuccess(String transactionId) {
+                    Intent intent = new Intent(OptionActivity.this, ConfirmActivity.class);
+
+                }
+
+                @Override
+                public void onFailed(String error) {
+
+                }
+            });
+        });
     }
 
 
