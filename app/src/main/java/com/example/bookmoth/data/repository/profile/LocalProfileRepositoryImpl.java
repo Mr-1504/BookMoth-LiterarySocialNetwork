@@ -17,7 +17,7 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.bookmoth.data.local.utils.ImageCache;
-import com.example.bookmoth.data.model.profile.ProfileDao;
+import com.example.bookmoth.data.local.profile.ProfileDao;
 import com.example.bookmoth.data.model.profile.ProfileEntity;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.repository.profile.LocalProfileRepository;
