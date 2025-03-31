@@ -5,6 +5,7 @@ import com.example.bookmoth.data.model.payment.CreateOrderRequest;
 import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
 import com.example.bookmoth.data.model.wallet.ConfirmPinRequest;
 import com.example.bookmoth.data.model.wallet.CreateWalletRequest;
+import com.example.bookmoth.data.model.wallet.OrderProductRequest;
 import com.example.bookmoth.domain.model.wallet.BalanceResponse;
 
 import retrofit2.Call;
@@ -56,4 +57,14 @@ public interface WalletApiService {
      */
     @POST("api/wallet/deposit")
     Call<ZaloPayTokenResponse> createOrder(@Body CreateOrderRequest createOrderRequest);
+
+
+    /**
+     * Tạo giao dịch mua sản phẩm.
+     *
+     * @param request Đối tượng {@link OrderProductRequest} chứa thông tin giao dịch.
+     * @return {@link Call} chứa {@link String}, mã giao dịch.
+     */
+    @POST("api/wallet/order")
+    Call<String> orderProduct(@Body OrderProductRequest request);
 }
