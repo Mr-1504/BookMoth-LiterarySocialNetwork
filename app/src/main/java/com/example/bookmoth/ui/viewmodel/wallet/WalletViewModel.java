@@ -187,6 +187,68 @@ public class WalletViewModel {
         });
     }
 
+
+    /**
+     * Tạo đơn hàng mua sản phẩm
+     *
+     * @param context  context của activity
+     * @param workId   ID của sản phẩm
+     * @param orderTime thời gian đặt hàng
+     * @param mac      địa chỉ MAC của thiết bị
+     * @param listener listener lắng nghe kết quả
+     */
+    public void orderProduct(Context context, int workId, String orderTime, String mac, OnOrderProductListener listener) {
+        walletUseCase.orderProduct(workId, orderTime, mac).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listener.onSuccess(response.body());
+                } else if (response.code() == 400) {
+                    listener.onFailed(context.getString(R.string.invalid_data));
+                } else if (response.code() == 401) {
+                    if (response.errorBody() != null ) {
+                        try {
+                            JSONObject json = new JSONObject(response.errorBody().string());
+                            String errorCode = json.optString("error_code", "");
+
+                            if ("INVALID_MAC".equals(errorCode)) {
+                                listener.onFailed(context.getString(R.string.invalid_transaction));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            listener.onFailed(context.getString(R.string.undefined_error));
+                        }
+                    }
+                } else if (response.code() == 404) {
+                    if (response.errorBody() != null ) {
+                        try {
+                            JSONObject json = new JSONObject(response.errorBody().string());
+                            String errorCode = json.optString("error_code", "");
+
+                            if ("INVALID_WALLET".equals(errorCode)) {
+                                listener.onFailed("INVALID_WALLET");
+                            } else {
+                                listener.onFailed(context.getString(R.string.undefined_error));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            listener.onFailed(context.getString(R.string.undefined_error));
+                        }
+                    }
+                } else if (response.code() == 422){
+                    listener.onFailed(context.getString(R.string.cannot_process_request));
+                } else {
+                    listener.onFailed(context.getString(R.string.undefined_error));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                listener.onFailed(context.getString(R.string.error_connecting_to_server));
+            }
+        });
+    }
+
     /**
      * Interface lắng nghe kết quả
      */
@@ -201,5 +263,13 @@ public class WalletViewModel {
     public interface OnCreateOrderListener {
         void onCreateOrderSuccess(ZaloPayTokenResponse token);
         void onCreateOrderFailure(String message);
+    }
+
+    /**
+     * Interface lắng nghe kết quả tạo đơn hàng mua sản phẩm
+     */
+    public interface OnOrderProductListener {
+        void onSuccess(String transactionId);
+        void onFailed(String error);
     }
 }
