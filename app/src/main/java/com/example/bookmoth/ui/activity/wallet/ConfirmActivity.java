@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +17,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.enums.PaymentMethod;
 import com.example.bookmoth.core.enums.TransactionType;
 import com.example.bookmoth.core.utils.Constant.AppInfo;
 import com.example.bookmoth.core.utils.Extension;
@@ -41,11 +44,14 @@ import vn.zalopay.sdk.listeners.PayOrderListener;
 
 public class ConfirmActivity extends AppCompatActivity {
 
-    private TextView txtAmount, txtDescription, txtBack;
+    private TextView txtAmount, txtDescription, txtBack, tvOption;
     private Button confirmButton;
+    private ImageView ivOption;
+    private LinearLayout btnZaloPay, btnOption;
     private PasswordPopup passwordPopup;
     private WalletViewModel walletViewModel;
     private ProfileViewModel profileViewModel;
+    private PaymentMethod.Payment_Method paymentMethod;
     private Profile _profile;
 
     @Override
@@ -61,10 +67,34 @@ public class ConfirmActivity extends AppCompatActivity {
 
         ZaloPaySDK.init(AppInfo.APP_ID, Environment.SANDBOX);
 
-        String amount = getIntent().getStringExtra("amount");
-        init(amount);
+        Intent infor = getIntent();
+
+        int status = infor.getIntExtra("status", 0);
+
+        String amount = infor.getStringExtra("amount");
+        String desc = infor.getStringExtra("desc");
+        desc = desc == null ? getString(R.string.deposit_into_bookmoth_account) : desc;
+        init(amount, desc, status);
         clickConfirm();
         clickBack();
+        clickZaloPay();
+        clickWallet();
+    }
+
+    private void clickWallet() {
+        btnOption.setOnClickListener(view ->{
+            paymentMethod = PaymentMethod.Payment_Method.Wallet;
+            btnOption.setBackgroundResource(R.drawable.button_selector);
+            btnZaloPay.setBackgroundResource(R.drawable.button);
+        });
+    }
+
+    private void clickZaloPay() {
+        btnZaloPay.setOnClickListener(view ->{
+            paymentMethod = PaymentMethod.Payment_Method.ZaloPay;
+            btnZaloPay.setBackgroundResource(R.drawable.button_selector);
+            btnOption.setBackgroundResource(R.drawable.button);
+        });
     }
 
     private void clickBack() {
@@ -90,7 +120,7 @@ public class ConfirmActivity extends AppCompatActivity {
     /**
      * Khởi tạo các thành phần giao diện và ViewModel.
      */
-    private void init(String amount) {
+    private void init(String amount, String desc, int status) {
         walletViewModel = new WalletViewModel(new WalletUseCase(new WalletRepositoryImpl()));
         LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
                 this, ProfileDatabase.getInstance(this).profileDao()
@@ -115,6 +145,19 @@ public class ConfirmActivity extends AppCompatActivity {
         txtAmount.setText(amount);
         txtBack = findViewById(R.id.txtBack);
         txtDescription = findViewById(R.id.tvDescription);
+        txtDescription.setText(desc);
+        tvOption = findViewById(R.id.tvOption);
+        ivOption = findViewById(R.id.ivOption);
+        btnZaloPay = findViewById(R.id.btnZaloPay);
+        btnOption = findViewById(R.id.btnOption);
+        if (status == 1) {
+            tvOption.setText(getString(R.string.wallet));
+            ivOption.setImageResource(R.drawable.ic_app);
+        } else {
+            tvOption.setText(getString(R.string.vietinbank));
+            ivOption.setImageResource(R.drawable.ic_vietinbank);
+        }
+        paymentMethod = PaymentMethod.Payment_Method.ZaloPay;
     }
 
     /**
