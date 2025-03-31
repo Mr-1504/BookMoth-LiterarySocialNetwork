@@ -8,12 +8,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.enums.TransactionType;
 import com.example.bookmoth.core.utils.Constant.AppInfo;
 import com.example.bookmoth.core.utils.Extension;
 import com.example.bookmoth.data.local.profile.ProfileDatabase;
@@ -21,7 +23,6 @@ import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.wallet.WalletRepositoryImpl;
-import com.example.bookmoth.domain.model.payment.TransactionType;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.model.wallet.BalanceResponse;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
@@ -67,27 +68,21 @@ public class ConfirmActivity extends AppCompatActivity {
     }
 
     private void clickBack() {
-        txtBack.setOnClickListener(v -> {
-            finish();
-        });
+        txtBack.setOnClickListener(v -> finish());
     }
 
     /**
      * Xử lý sự kiện khi click vào nút xác nhận.
      */
     private void clickConfirm() {
-        confirmButton.setOnClickListener(v -> {
-            inputPin();
-        });
+        confirmButton.setOnClickListener(v -> inputPin());
     }
 
     /**
      * Hiển thị popup nhập mã PIN.
      */
     private void inputPin() {
-        passwordPopup = new PasswordPopup(password -> {
-            confirmPin(password);
-        }, "Nhập mật khẩu để xác nhận giao dịch");
+        passwordPopup = new PasswordPopup(this::confirmPin, "Nhập mật khẩu để xác nhận giao dịch");
 
         passwordPopup.show(getSupportFragmentManager(), passwordPopup.getTag());
     }
@@ -218,7 +213,7 @@ public class ConfirmActivity extends AppCompatActivity {
      * @param intent Đối tượng Intent chứa dữ liệu phản hồi từ ZaloPay.
      */
     @Override
-    public void onNewIntent(Intent intent) {
+    public void onNewIntent(@NonNull Intent intent) {
         System.out.println("New Intent");
         super.onNewIntent(intent);
         ZaloPaySDK.getInstance().onResult(intent);
