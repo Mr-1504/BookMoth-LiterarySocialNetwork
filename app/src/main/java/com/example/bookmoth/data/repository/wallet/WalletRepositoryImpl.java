@@ -4,6 +4,7 @@ import com.example.bookmoth.data.model.payment.CreateOrderRequest;
 import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
 import com.example.bookmoth.data.model.wallet.ConfirmPinRequest;
 import com.example.bookmoth.data.model.wallet.CreateWalletRequest;
+import com.example.bookmoth.data.model.wallet.OrderProductRequest;
 import com.example.bookmoth.data.remote.utils.RetrofitClient;
 import com.example.bookmoth.data.remote.wallet.WalletApiService;
 import com.example.bookmoth.domain.model.wallet.BalanceResponse;
@@ -74,5 +75,18 @@ public class WalletRepositoryImpl implements WalletRepository {
                 description,
                 transactionType
         ));
+    }
+
+    /**
+     * Tạo giao dịch mua sản phẩm.
+     *
+     * @param workId    ID công việc cần mua.
+     * @param orderTime Thời gian đặt hàng.
+     * @param mac       Địa chỉ MAC của thiết bị.
+     * @return {@code Call<String>} mã giao dịch.
+     */
+    @Override
+    public Call<String> orderProduct(int workId, String orderTime, String mac) {
+        return walletApiService.orderProduct(new OrderProductRequest(mac, orderTime, workId));
     }
 }
