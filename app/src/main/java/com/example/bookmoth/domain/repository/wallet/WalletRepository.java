@@ -42,4 +42,14 @@ public interface WalletRepository {
      * @return Đối tượng Call chứa phản hồi từ ZaloPay, bao gồm mã token giao dịch.
      */
     Call<ZaloPayTokenResponse> createOrder(long amount, String description, int transactionType);
+
+    /**
+     * Tạo đơn hàng để mua sản phẩm.
+     *
+     * @param workId    ID của sản phẩm.
+     * @param orderTime Thời gian đặt hàng.
+     * @param mac       Địa chỉ MAC của thiết bị.
+     * @return Đối tượng Call chứa phản hồi từ server.
+     */
+    Call<String> orderProduct(int workId, String orderTime, String mac);
 }
