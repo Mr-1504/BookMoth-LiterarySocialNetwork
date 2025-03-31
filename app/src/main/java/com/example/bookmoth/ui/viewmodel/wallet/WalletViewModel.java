@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.enums.TransactionType;
 import com.example.bookmoth.core.utils.TransactionUtils;
 import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
-import com.example.bookmoth.domain.model.payment.TransactionType;
 import com.example.bookmoth.domain.model.wallet.BalanceResponse;
 import com.example.bookmoth.domain.usecase.wallet.WalletUseCase;
 import com.example.bookmoth.ui.activity.login.LoginActivity;
@@ -22,7 +22,7 @@ import retrofit2.Response;
  * Lớp chứa các phương thức liên quan đến ví
  */
 public class WalletViewModel {
-    private WalletUseCase walletUseCase;
+    private final WalletUseCase walletUseCase;
 
     /**
      * Khởi tạo WalletViewModel
