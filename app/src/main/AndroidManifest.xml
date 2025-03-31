@@ -4,8 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> <!-- <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" /> -->
-    <!-- <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" /> -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -22,12 +23,20 @@
         android:theme="@style/Theme.BookMoth"
         tools:targetApi="31">
         <activity
+            android:name=".ui.activity.home.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.post.EditPostActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.profile.EditProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activity.wallet.ResultActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activity.wallet.CreatePinActivity"
             android:exported="false" />
-
         <activity
             android:name=".ui.activity.wallet.ConfirmActivity"
             android:exported="true"
@@ -43,9 +52,6 @@
                     android:scheme="pay_order" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.activity.post.EditPostActivity"
-            android:exported="false" />
         <activity
             android:name=".ui.activity.wallet.DepositActivity"
             android:exported="false" />

@@ -6,12 +6,16 @@ import android.os.Looper;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.domain.model.profile.Profile;
+import com.example.bookmoth.domain.model.profile.UsernameResponse;
 import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -64,9 +68,9 @@ public class ProfileViewModel {
     /**
      * Lấy thông tin hồ sơ từ server theo id và gọi callback tương ứng.
      *
-     * @param context  Context của ứng dụng, dùng để lấy string resource.
+     * @param context   Context của ứng dụng, dùng để lấy string resource.
      * @param profileId id của hồ sơ người dùng.
-     * @param listener Lắng nghe kết quả của quá trình lấy hồ sơ.
+     * @param listener  Lắng nghe kết quả của quá trình lấy hồ sơ.
      */
     public void getProfileById(Context context, String profileId, final OnProfileListener listener) {
         profileUseCase.getProfileById(profileId).enqueue(new Callback<Profile>() {
@@ -87,6 +91,64 @@ public class ProfileViewModel {
             }
         });
     }
+
+
+    /**
+     * Kiểm tra xem username đã tồn tại hay chưa.
+     *
+     * @param context  Context của ứng dụng, dùng để lấy string resource.
+     * @param username username cần kiểm tra.
+     * @param listener Lắng nghe kết quả của quá trình kiểm tra.
+     */
+    public void checkUsername(Context context, String username, final OnCheckUsernameListener listener) {
+        profileUseCase.checkUsername(username).enqueue(new Callback<UsernameResponse>() {
+            @Override
+            public void onResponse(Call<UsernameResponse> call, Response<UsernameResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listener.onProfileSuccess(response.body().isExists());
+                } else {
+                    listener.onProfileFailure(context.getString(R.string.undefined_error));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UsernameResponse> call, Throwable t) {
+                listener.onProfileFailure(context.getString(R.string.error_connecting_to_server));
+            }
+        });
+    }
+
+
+    public void editProfile(
+            Context context, Map<String, RequestBody> params,
+            MultipartBody.Part avatar, MultipartBody.Part cover,
+            final OnEditProfile listener
+    ) {
+        profileUseCase.editProfile(params, avatar, cover).enqueue(new Callback<Profile>() {
+            @Override
+            public void onResponse(Call<Profile> call, Response<Profile> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listener.onSuccess(response.body());
+                } else if (response.code() == 400) {
+                    listener.onError(context.getString(R.string.try_again));
+                } else if (response.code() == 401) {
+                    listener.onError(context.getString(R.string.error_auth));
+                } else if (response.code() == 404) {
+                    listener.onError(context.getString(R.string.error_account));
+                } else if (response.code() == 422) {
+                    listener.onError(context.getString(R.string.cannot_process_request));
+                } else {
+                    listener.onError(context.getString(R.string.undefined_error));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Profile> call, Throwable t) {
+                listener.onError(context.getString(R.string.error_connecting_to_server));
+            }
+        });
+    }
+
 
     /**
      * Xóa thông tin hồ sơ người dùng khỏi bộ nhớ cục bộ.
@@ -116,7 +178,6 @@ public class ProfileViewModel {
             new Handler(Looper.getMainLooper()).post(() -> listener.onProfileSuccess(profile));
         });
     }
-
 
 
     /**
@@ -149,6 +210,29 @@ public class ProfileViewModel {
          * @param error Chuỗi lỗi thông báo cho người dùng.
          */
         void onProfileFailure(String error);
+    }
+
+    /**
+     * Interface dùng để lắng nghe kết quả khi kiểm tra username.
+     */
+    public interface OnCheckUsernameListener {
+        /**
+         * Gọi khi kiểm tra username thành công.
+         */
+        void onProfileSuccess(boolean exists);
+
+        /**
+         * Gọi khi kiểm tra username thất bại do lỗi cụ thể từ server.
+         *
+         * @param error Chuỗi lỗi thông báo cho người dùng.
+         */
+        void onProfileFailure(String error);
+    }
+
+    public interface OnEditProfile {
+        void onSuccess(Profile profile);
+
+        void onError(String error);
     }
 
     public void clear() {

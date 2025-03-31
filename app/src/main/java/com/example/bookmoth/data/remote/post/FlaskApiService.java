@@ -21,4 +21,7 @@ public interface FlaskApiService {
 
     @GET("/profile_avata/{id}")
     Call<Api> getProfileAvata(@Path("id") int id);
+
+    @GET("/idfollowers/{id}")
+    Call<Api> getFollowers(@Path("id") int id);
 }

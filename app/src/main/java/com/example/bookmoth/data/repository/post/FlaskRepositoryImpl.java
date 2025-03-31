@@ -38,4 +38,9 @@ public class FlaskRepositoryImpl implements FlaskRepository {
     public Call<Api> getProfileAvata(int id) {
         return flaskApiService.getProfileAvata(id);
     }
+
+    @Override
+    public Call<Api> getFollowers(int id) {
+        return flaskApiService.getFollowers(id);
+    }
 }

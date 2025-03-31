@@ -6,6 +6,8 @@ import com.example.bookmoth.data.model.register.TokenResponse;
 import com.example.bookmoth.data.remote.login.LoginApiService;
 import com.example.bookmoth.domain.model.login.Token;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.Authenticator;
@@ -45,6 +47,25 @@ public class TokenAuthenticator implements Authenticator {
      */
     @Override
     public Request authenticate(Route route, Response response) throws IOException {
+
+        String errorBody = response.peekBody(Long.MAX_VALUE).string();
+        String errorCode = null;
+
+        if (errorBody != null && !errorBody.isEmpty()) {
+            try {
+                JSONObject jsonObject = new JSONObject(errorBody);
+                if (jsonObject.has("error_code")) {
+                    errorCode = jsonObject.getString("error_code");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (!"INVALID_TOKEN".equals(errorCode)) {
+            return null;
+        }
+
         String refreshToken = SecureStorage.getToken("refresh_token");
         if (refreshToken == null) return null;
 

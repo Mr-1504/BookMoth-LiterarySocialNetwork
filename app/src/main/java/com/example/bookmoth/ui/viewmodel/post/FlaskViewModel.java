@@ -2,10 +2,14 @@ package com.example.bookmoth.ui.viewmodel.post;
 
 import android.content.Context;
 
+import com.example.bookmoth.data.remote.post.Api;
 import com.example.bookmoth.data.remote.post.ApiResponse;
 import com.example.bookmoth.domain.model.post.Book;
+import com.example.bookmoth.domain.model.post.Profile;
 import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.List;
 
@@ -69,6 +73,53 @@ public class FlaskViewModel {
         });
     }
 
+    public void getFollowers(int id, final OnGetFollowers listener) {
+        flaskUseCase.getFollowers(id).enqueue(new Callback<Api>() {
+            @Override
+            public void onResponse(Call<Api> call, Response<Api> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Api api = response.body();
+
+                    if (api != null) {
+                        List<Integer> followers = api.getProfile_ids();
+                        listener.onGetSuccess(followers);
+                    } else {
+                        listener.onGetFailure("Dữ liệu sách rỗng từ API");
+                    }
+                } else {
+                    listener.onGetFailure("Lỗi phản hồi từ API: " + response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Api> call, Throwable t) {
+                listener.onGetFailure("Lỗi kết nối API: " + t.getMessage());
+            }
+        });
+    }
+
+    public void getProfile(int authorId, OnGetProfile listener) {
+        flaskUseCase.getProfile(authorId).enqueue(new Callback<ApiResponse<Profile>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<Profile>> call, Response<ApiResponse<Profile>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listener.onGetSuccess(response.body().getData());
+                } else {
+                    listener.onGetFailure("Failed to get profile");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<Profile>> call, Throwable t) {
+                listener.onGetFailure(t.getMessage());
+            }
+        });
+    }
+
+    public interface OnGetProfile {
+        void onGetSuccess(Profile profile);
+        void onGetFailure(String message);
+    }
     public interface OnGetBook {
         void onGetBookSuccess(List<Book> books);
         void onGetBookFailure(String message);
@@ -76,5 +127,10 @@ public class FlaskViewModel {
     public interface OnGetBookId {
         void onGetBookSuccess(Book book);
         void onGetBookFailure(String message);
+    }
+
+    public interface OnGetFollowers {
+        void onGetSuccess(List<Integer> followers);
+        void onGetFailure(String message);
     }
 }

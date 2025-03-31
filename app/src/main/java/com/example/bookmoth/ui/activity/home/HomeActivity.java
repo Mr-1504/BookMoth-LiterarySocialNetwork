@@ -2,10 +2,13 @@ package com.example.bookmoth.ui.activity.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -20,9 +23,9 @@ import com.example.bookmoth.ui.viewmodel.post.SharedViewModel;
 
 public class HomeActivity extends AppCompatActivity {
 
-
-    private ImageButton buttonHome, buttonBook, buttonStore, buttonNotification, buttonSetting, buttonReload;
+    private ImageButton buttonHome, buttonBook, buttonStore, buttonNotification, buttonSetting, buttonSearch;
     private SharedViewModel viewModel;
+    private TextView tvBookmoth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,8 @@ public class HomeActivity extends AppCompatActivity {
         buttonStore = findViewById(R.id.button_store);
         buttonNotification = findViewById(R.id.button_notification);
         buttonSetting = findViewById(R.id.button_setting);
-        buttonReload = findViewById(R.id.button_reload);
+        buttonSearch = findViewById(R.id.button_search);
+        tvBookmoth = findViewById(R.id.tvBookmoth2);
 
         viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
 
@@ -51,19 +55,73 @@ public class HomeActivity extends AppCompatActivity {
         loadFragment(new HomeFragment());
 
         // Xử lý sự kiện khi bấm các nút
-        buttonHome.setOnClickListener(view -> loadFragment(new HomeFragment()));
-//        buttonBook.setOnClickListener(view -> loadFragment(new BookFragment()));
+        buttonHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadFragment(new HomeFragment());
+                buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search2));
+                buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonStore.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonNotification.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonSetting.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+            }
+        });
+        buttonBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                loadFragment(new BookFragment());
+                buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search2));
+                buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonStore.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonNotification.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonSetting.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+            }
+        });
 
-//        buttonNotification.setOnClickListener(view -> loadFragment(new NotificationFragment()));
-//        buttonSetting.setOnClickListener(view -> loadFragment(new SettingFragment()));
+        buttonStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                loadFragment(new StoreFragment());
+                buttonStore.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search2));
+                buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonNotification.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonSetting.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+            }
+        });
+
+        buttonNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadFragment(new NotificationFragment());
+                buttonNotification.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search2));
+                buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonStore.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonSetting.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+            }
+        });
+
+        buttonSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                loadFragment(new SettingFragment());
+
+            }
+        });
 
         // Xử lý sự kiện reload
-        buttonReload.setOnClickListener(v -> {
+        tvBookmoth.setOnClickListener(v -> {
             viewModel.setButtonClicked();
+        });
+        buttonSearch.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, SearchActivity.class);
+            startActivity(intent);
         });
         
         clickOption();
     }
+
 
     private void clickOption() {
         buttonSetting.setOnClickListener(view -> {
