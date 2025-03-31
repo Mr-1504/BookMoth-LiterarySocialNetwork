@@ -129,4 +129,6 @@
     <string name="do_you_want_to_save_change">Bạn có muốn lưu thay đổi?</string>
     <string name="incorrect_pin">Mã PIN không chính xác</string>
     <string name="please_login_again">Lỗi tài khoản, vui lòng đăng nhập lại!</string>
+    <string name="invalid_transaction">Giao dịch không hợp lệ</string>
+    <string name="wallet">Ví BookMoth</string>
 </resources>
