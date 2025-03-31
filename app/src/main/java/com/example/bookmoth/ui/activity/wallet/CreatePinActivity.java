@@ -16,7 +16,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.bookmoth.R;
-import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.data.model.profile.ProfileDatabase;
 import com.example.bookmoth.data.local.utils.ImageCache;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
