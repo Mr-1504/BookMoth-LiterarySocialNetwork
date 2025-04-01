@@ -14,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.InternetHelper;
 import com.example.bookmoth.core.utils.SecureStorage;
-import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.data.model.profile.ProfileDatabase;
 import com.example.bookmoth.data.local.utils.ImageCache;
 import com.example.bookmoth.data.repository.login.LoginRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
@@ -26,6 +26,7 @@ import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.domain.usecase.wallet.WalletUseCase;
 import com.example.bookmoth.ui.activity.login.LoginActivity;
 import com.example.bookmoth.ui.activity.profile.ProfileActivity;
+import com.example.bookmoth.ui.activity.wallet.ConfirmActivity;
 import com.example.bookmoth.ui.activity.wallet.CreatePinActivity;
 import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.viewmodel.login.LoginViewModel;
@@ -41,7 +42,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
  */
 public class OptionActivity extends AppCompatActivity {
 
-    private Button btnProfile, btnWallet, btnLogout;
+    private Button btnProfile, btnWallet, btnLogout, btnBuy;
     private WalletViewModel walletViewModel;
 
     @Override
@@ -55,6 +56,7 @@ public class OptionActivity extends AppCompatActivity {
             return insets;
         });
 
+        btnBuy = findViewById(R.id.btnbuy);
         btnLogout = findViewById(R.id.btnLogout);
         btnProfile = findViewById(R.id.btnViewProfile);
         btnWallet = findViewById(R.id.btnWallet);
@@ -63,6 +65,16 @@ public class OptionActivity extends AppCompatActivity {
         clickLogout();
         clickWallet();
         clickProfile();
+        clickBuy();
+    }
+
+    private void clickBuy() {
+        btnBuy.setOnClickListener(view -> {
+            Intent intent = new Intent(OptionActivity.this, ConfirmActivity.class);
+            intent.putExtra("type", 4);
+            intent.putExtra("workId", 1);
+            startActivity(intent);
+        });
     }
 
 
@@ -112,29 +124,51 @@ public class OptionActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.WEB_CLIENT_ID))
-                .requestEmail()
-                .build();
+        if(!InternetHelper.isNetworkAvailable(this)){
+            LoadingUtils.hideLoading();
+            Toast.makeText(this, getString(R.string.no_internet), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new LoginViewModel(new LoginUseCase(new LoginRepositoryImpl())).logout(this, new LoginViewModel.OnLogoutListener() {
+            @Override
+            public void onSuccess() {
+                try{
+                    new ProfileViewModel(new ProfileUseCase(
+                            new LocalProfileRepositoryImpl(
+                                    OptionActivity.this, ProfileDatabase.getInstance(OptionActivity.this).profileDao()),
+                            new ProfileRepositoryImpl()
+                    )).deleteProfile();
+                    ImageCache.deleteBitmap(OptionActivity.this, "avatar.png");
+                    ImageCache.deleteBitmap(OptionActivity.this, "cover.png");
+                    SecureStorage.clearToken();
 
-        GoogleSignInClient client = GoogleSignIn.getClient(this, signInOptions);
-        client.signOut();
+                    GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestIdToken(getString(R.string.WEB_CLIENT_ID))
+                            .requestEmail()
+                            .build();
 
-        new LoginViewModel(new LoginUseCase(new LoginRepositoryImpl())).logout(this);
+                    GoogleSignInClient client = GoogleSignIn.getClient(OptionActivity.this, signInOptions);
+                    client.signOut();
 
-        new ProfileViewModel(new ProfileUseCase(
-                new LocalProfileRepositoryImpl(
-                        this, ProfileDatabase.getInstance(this).profileDao()),
-                new ProfileRepositoryImpl()
-        )).deleteProfile();
-        ImageCache.deleteBitmap(this, "avatar.png");
-        ImageCache.deleteBitmap(this, "cover.png");
+                    Intent intent = new Intent(OptionActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    LoadingUtils.hideLoading();
+                    startActivity(intent);
+                }
+                catch (Exception ex){
+                    LoadingUtils.hideLoading();
+                    ex.printStackTrace();
+                }
 
-        SecureStorage.clearToken();
+            }
 
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        LoadingUtils.hideLoading();
-        startActivity(intent);
+            @Override
+            public void onError(String error) {
+                LoadingUtils.hideLoading();
+                Toast.makeText(OptionActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 }

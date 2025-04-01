@@ -108,18 +108,22 @@ public class LoginViewModel extends ViewModel {
         });
     }
 
-    public void logout(Context context){
+    public void logout(Context context, final OnLogoutListener listener){
         String deviceId = MyFirebaseMessagingService.getDeviceId(context);
 
         loginUseCase.logout(deviceId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-
+                if (response.isSuccessful()){
+                    listener.onSuccess();
+                } else {
+                    listener.onError(context.getString(R.string.undefined_error));
+                }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-
+                listener.onError(context.getString(R.string.error_connecting_to_server));
             }
         });
     }
@@ -138,6 +142,11 @@ public class LoginViewModel extends ViewModel {
          *
          * @param error Chuỗi lỗi thông báo cho người dùng.
          */
+        void onError(String error);
+    }
+
+    public interface OnLogoutListener {
+        void onSuccess();
         void onError(String error);
     }
 }

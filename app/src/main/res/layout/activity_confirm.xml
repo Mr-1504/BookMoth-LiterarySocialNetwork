@@ -5,7 +5,7 @@
     android:id="@id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/white"
     tools:context=".ui.activity.wallet.ConfirmActivity">
 
     <!-- Thanh tiêu đề -->
@@ -91,6 +91,33 @@
                 android:textColor="#6F6F6F"
                 android:textSize="16sp" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_weight="1"
+                    android:text="@string/transaction_id"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/transaction_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="30dp"
+                    android:text="@string/free"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
             <!-- Chi tiết giao dịch -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -109,7 +136,7 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/transaction_id"
+                    android:id="@+id/transaction_fee"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="30dp"
@@ -146,6 +173,7 @@
             android:paddingTop="10dp">
 
             <LinearLayout
+                android:id="@+id/btnZaloPay"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
@@ -169,6 +197,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/btnOption"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="8dp"
@@ -178,12 +207,14 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/ivOption"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginEnd="5dp"
                     android:src="@drawable/ic_vietinbank" />
 
                 <TextView
+                    android:id="@+id/tvOption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/vietinbank"

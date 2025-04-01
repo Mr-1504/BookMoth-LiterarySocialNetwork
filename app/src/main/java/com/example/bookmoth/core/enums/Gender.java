@@ -1,4 +1,4 @@
-package com.example.bookmoth.domain.model.profile;
+package com.example.bookmoth.core.enums;
 
 /**
  * Enum đại diện cho giới tính của người dùng.

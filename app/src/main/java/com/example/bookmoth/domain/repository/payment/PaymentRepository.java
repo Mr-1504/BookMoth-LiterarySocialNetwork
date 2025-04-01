@@ -17,5 +17,5 @@ public interface PaymentRepository {
      * @param transactionType Loại giao dịch (true: nạp, false: rút).
      * @return Đối tượng Call chứa phản hồi từ ZaloPay, bao gồm mã token giao dịch.
      */
-    Call<ZaloPayTokenResponse> createOrder(long amount, String description, boolean transactionType);
+    Call<ZaloPayTokenResponse> createOrder(long amount, String description, int transactionType);
 }

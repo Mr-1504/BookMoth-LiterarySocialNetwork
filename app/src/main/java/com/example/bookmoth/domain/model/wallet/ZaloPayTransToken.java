@@ -1,4 +1,4 @@
-package com.example.bookmoth.domain.model.payment;
+package com.example.bookmoth.domain.model.wallet;
 
 /**
  * Class đại diện cho token giao dịch của ZaloPay.

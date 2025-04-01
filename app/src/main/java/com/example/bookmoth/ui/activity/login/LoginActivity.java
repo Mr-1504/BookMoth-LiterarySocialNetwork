@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.data.local.profile.ProfileDatabase;
+import com.example.bookmoth.data.model.profile.ProfileDatabase;
 import com.example.bookmoth.data.repository.login.LoginRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
@@ -187,6 +187,7 @@ public class LoginActivity extends AppCompatActivity {
                 loginViewModel.loginWithGoogle(this, account.getIdToken(), new LoginViewModel.OnLoginListener() {
                     @Override
                     public void onSuccess() {
+                        client.signOut();
                         saveProfile();
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         LoadingUtils.hideLoading();

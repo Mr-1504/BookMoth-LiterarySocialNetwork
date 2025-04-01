@@ -57,7 +57,8 @@
             android:exported="false" />
         <activity
             android:name=".ui.activity.wallet.WalletActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="standard"/>
         <activity
             android:name=".ui.activity.option.OptionActivity"
             android:exported="false" />
