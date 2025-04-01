@@ -30,6 +30,7 @@ public class WalletActivity extends AppCompatActivity {
     private ProfileViewModel profileViewModel;
     private TextView userName, userBalance, txtBack, accountName;
     private ActivityWalletBinding binding;
+    private Profile me;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,7 @@ public class WalletActivity extends AppCompatActivity {
                     public void onProfileSuccess(Profile profile) {
                         if (profile == null) return;
                         getBalance(profile);
+                        me = profile;
                     }
 
                     @Override
@@ -88,6 +90,7 @@ public class WalletActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
                             profileViewModel.saveProfile(profile);
                             getBalance(profile);
+                            me = profile;
                         });
                     }
 
@@ -129,6 +132,7 @@ public class WalletActivity extends AppCompatActivity {
             Intent intent = new Intent(this, DepositActivity.class);
             String balance = userBalance.getText().toString();
             intent.putExtra("balance", balance.substring(0, balance.length() - 4));
+            intent.putExtra("me", me);
             startActivity(intent);
         });
     }
