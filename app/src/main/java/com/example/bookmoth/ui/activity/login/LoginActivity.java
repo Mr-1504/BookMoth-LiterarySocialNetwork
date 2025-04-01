@@ -187,6 +187,7 @@ public class LoginActivity extends AppCompatActivity {
                 loginViewModel.loginWithGoogle(this, account.getIdToken(), new LoginViewModel.OnLoginListener() {
                     @Override
                     public void onSuccess() {
+                        client.signOut();
                         saveProfile();
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         LoadingUtils.hideLoading();
