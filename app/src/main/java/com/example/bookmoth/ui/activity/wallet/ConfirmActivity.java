@@ -23,19 +23,14 @@ import com.example.bookmoth.core.enums.Transaction;
 import com.example.bookmoth.core.utils.Constant.AppInfo;
 import com.example.bookmoth.core.utils.Extension;
 import com.example.bookmoth.core.utils.HMacHelper;
-import com.example.bookmoth.data.model.profile.ProfileDatabase;
 import com.example.bookmoth.data.model.payment.ZaloPayTokenResponse;
-import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
-import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.wallet.WalletRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.model.wallet.BalanceResponse;
 import com.example.bookmoth.domain.model.wallet.OrderWorkResponse;
-import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.domain.usecase.wallet.WalletUseCase;
 import com.example.bookmoth.ui.dialogs.LoadingUtils;
 import com.example.bookmoth.ui.dialogs.PasswordPopup;
-import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.example.bookmoth.ui.viewmodel.wallet.WalletViewModel;
 
 import java.text.Normalizer;
@@ -47,18 +42,19 @@ import vn.zalopay.sdk.listeners.PayOrderListener;
 
 public class ConfirmActivity extends AppCompatActivity {
 
-    private TextView txtAmount, txtDescription, txtBack, tvOption, txtTransactionId;
+    private TextView txtAmount;
+    private TextView txtDescription;
+    private TextView txtBack;
+    private TextView txtTransactionId;
     private Button confirmButton;
-    private ImageView ivOption;
     private LinearLayout btnZaloPay, btnOption;
     private PasswordPopup passwordPopup;
     private WalletViewModel walletViewModel;
-    private ProfileViewModel profileViewModel;
     private PaymentMethod.Payment_Method paymentMethod;
     private Transaction.TransactionType transactionType;
     private ZaloPayTokenResponse token;
     private String appTransId;
-    private Profile _profile;
+    private Profile me;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,24 +119,6 @@ public class ConfirmActivity extends AppCompatActivity {
     private void init() {
         LoadingUtils.showLoading(getSupportFragmentManager());
         walletViewModel = new WalletViewModel(new WalletUseCase(new WalletRepositoryImpl()));
-        LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
-                this, ProfileDatabase.getInstance(this).profileDao()
-        );
-        profileViewModel = new ProfileViewModel(
-                new ProfileUseCase(localRepo, new ProfileRepositoryImpl())
-        );
-
-        profileViewModel.getProfileLocal(new ProfileViewModel.OnProfileListener() {
-            @Override
-            public void onProfileSuccess(Profile profile) {
-                _profile = profile;
-            }
-
-            @Override
-            public void onProfileFailure(String error) {
-
-            }
-        });
 
         Intent infor = getIntent();
 
@@ -151,8 +129,8 @@ public class ConfirmActivity extends AppCompatActivity {
         txtAmount = findViewById(R.id.txtAmount);
         txtBack = findViewById(R.id.txtBack);
         txtDescription = findViewById(R.id.tvDescription);
-        tvOption = findViewById(R.id.tvOption);
-        ivOption = findViewById(R.id.ivOption);
+        TextView tvOption = findViewById(R.id.tvOption);
+        ImageView ivOption = findViewById(R.id.ivOption);
         btnZaloPay = findViewById(R.id.btnZaloPay);
         btnOption = findViewById(R.id.btnOption);
         txtTransactionId = findViewById(R.id.transaction_id);
@@ -163,6 +141,7 @@ public class ConfirmActivity extends AppCompatActivity {
                 tvOption.setText(getString(R.string.vietinbank));
                 ivOption.setImageResource(R.drawable.ic_vietinbank);
                 String amount = infor.getStringExtra("amount");
+                me = (Profile) infor.getSerializableExtra("me");
                 createOrder(amount);
                 break;
             case PAYMENT:
@@ -222,6 +201,8 @@ public class ConfirmActivity extends AppCompatActivity {
         Intent intent = new Intent(ConfirmActivity.this, ResultActivity.class);
         intent.putExtra("status",
                 Transaction.getTransactionResult(Transaction.TransactionResult.FAILED));
+        intent.putExtra("transId", appTransId);
+        intent.putExtra("amount", txtAmount.getText().toString());
         startActivity(intent);
         finish();
     }
@@ -237,7 +218,11 @@ public class ConfirmActivity extends AppCompatActivity {
                                 paymentWithWallet();
                                 break;
                             case ZaloPay:
-                                createZaloPayOrder();
+                                if (transactionType == Transaction.TransactionType.DEPOSIT){
+                                    startZaloPayPayment(token);
+                                } else {
+                                    createZaloPayOrder();
+                                }
                                 break;
                         }
                     }
@@ -332,7 +317,7 @@ public class ConfirmActivity extends AppCompatActivity {
 
     private void createOrder(String amount) {
         String fullname = Normalizer.normalize(
-                _profile.getLastName() + " " + _profile.getFirstName(), Normalizer.Form.NFD);
+                me.getLastName() + " " + me.getFirstName(), Normalizer.Form.NFD);
 
         String description = String.format(
                 "%s %s", fullname, getString(R.string.deposit_into_bookmoth_account));
