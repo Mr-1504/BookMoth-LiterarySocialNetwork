@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -19,8 +18,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
-import com.example.bookmoth.data.local.profile.ProfileDatabase;
-import com.example.bookmoth.data.model.profile.ProfileDao;
+import com.example.bookmoth.data.model.profile.ProfileDatabase;
+import com.example.bookmoth.data.local.profile.ProfileDao;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.profile.Profile;

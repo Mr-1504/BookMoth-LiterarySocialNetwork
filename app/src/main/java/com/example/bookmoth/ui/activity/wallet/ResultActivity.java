@@ -14,12 +14,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.enums.Transaction;
 
 public class ResultActivity extends AppCompatActivity {
 
     private ImageView result;
     private TextView txtResult, txtAmount, txtTransId;
     private Button back;
+    private CountDownTimer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,24 +46,33 @@ public class ResultActivity extends AppCompatActivity {
         back = findViewById(R.id.btn_close);
 
         int status = getIntent().getIntExtra("status", -1);
+        Transaction.TransactionResult transactionResult = Transaction.getTransactionResult(status);
         String amount = getIntent().getStringExtra("amount");
         String transId = getIntent().getStringExtra("transId");
 
         txtTransId.setText(transId);
         txtAmount.setText(amount);
 
-        if (status == 1){
-            result.setImageDrawable(getDrawable(R.drawable.ic_done));
-            txtResult.setText(getString(R.string.transaction_successfully));
-        } else if (status == 0){
-            result.setImageDrawable(getDrawable(R.drawable.ic_failed));
-            txtResult.setText(getString(R.string.transaction_failed));
-        } else {
-            result.setImageDrawable(getDrawable(R.drawable.ic_failed));
-            txtResult.setText(getString(R.string.transaction_canceled));
+        switch (transactionResult){
+            case SUCCESS:
+                result.setImageDrawable(getDrawable(R.drawable.ic_done));
+                txtResult.setText(getString(R.string.transaction_successfully));
+                break;
+            case FAILED:
+                result.setImageDrawable(getDrawable(R.drawable.ic_failed));
+                txtResult.setText(getString(R.string.transaction_failed));
+                break;
+            case CANCEL:
+                result.setImageDrawable(getDrawable(R.drawable.ic_failed));
+                txtResult.setText(getString(R.string.transaction_canceled));
+                break;
+            case ERROR:
+                result.setImageDrawable(getDrawable(R.drawable.ic_failed));
+                txtResult.setText(getString(R.string.transaction_error));
+                break;
         }
 
-        new CountDownTimer(5000, 1000) {
+         timer = new CountDownTimer(5000, 1000) {
             public void onTick(long millisUntilFinished) {
                 back.setText(getString(R.string.close) + "(" + millisUntilFinished / 1000 + "s)");
             }
@@ -77,6 +88,7 @@ public class ResultActivity extends AppCompatActivity {
 
     private void clickBack(){
         back.setOnClickListener(view -> {
+            timer.cancel();
             Intent intent = new Intent(ResultActivity.this, WalletActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

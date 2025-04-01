@@ -1,4 +1,4 @@
-package com.example.bookmoth.data.model.profile;
+package com.example.bookmoth.data.local.profile;
 
 
 import androidx.room.Dao;
@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.example.bookmoth.domain.model.profile.Profile;
+import com.example.bookmoth.data.model.profile.ProfileEntity;
 
 /**
  * Interface định nghĩa các phương thức truy cập dữ liệu liên quan đến hồ sơ người dùng.

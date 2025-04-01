@@ -1,4 +1,4 @@
-package com.example.bookmoth.data.local.profile;
+package com.example.bookmoth.data.model.profile;
 
 import android.content.Context;
 
@@ -6,8 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.example.bookmoth.data.model.profile.ProfileDao;
-import com.example.bookmoth.data.model.profile.ProfileEntity;
+import com.example.bookmoth.data.local.profile.ProfileDao;
 
 /**
  * Lớp cơ sở dữ liệu Room chứa thông tin hồ sơ người dùng.

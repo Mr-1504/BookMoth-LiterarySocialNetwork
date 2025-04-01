@@ -8,7 +8,6 @@ import android.os.Build;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.example.bookmoth.core.utils.SecureStorage;
-import com.example.bookmoth.data.local.profile.ProfileDatabase;
 import com.example.bookmoth.data.local.utils.DatabaseManager;
 
 public class BookMothApplication extends Application {
