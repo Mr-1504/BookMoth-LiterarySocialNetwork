@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.Extension;
+import com.example.bookmoth.domain.model.profile.Profile;
 
 import java.math.BigDecimal;
 
@@ -22,6 +23,7 @@ public class DepositActivity extends AppCompatActivity {
     private int[] btnNumber;
     private Button btnBackspace, btnNext, btnBack;
     private TextView tvAmount, tvBalance;
+    private Profile me;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class DepositActivity extends AppCompatActivity {
 
             Intent intent = new Intent(this, ConfirmActivity.class);
             intent.putExtra("amount", nomalizedAmount);
+            intent.putExtra("me", me);
             startActivity(intent);
         });
     }
@@ -101,6 +104,7 @@ public class DepositActivity extends AppCompatActivity {
         String balance = getIntent().getStringExtra("balance");
         String formattedBalance = String.format("%s %sđ", tvBalance.getText().toString(), balance);
         tvBalance.setText(formattedBalance);
+        me = (Profile) getIntent().getSerializableExtra("me");
     }
 
     private void clickNumber() {
