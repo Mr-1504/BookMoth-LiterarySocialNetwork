@@ -161,6 +161,7 @@ public class OptionActivity extends AppCompatActivity {
                         new RegisterViewModel.OnRegisterListener() {
                             @Override
                             public void onSuccess() {
+                                client.signOut();
                                 Intent intent = new Intent(OptionActivity.this, RegisterResultActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 intent.putExtra("registerViewModel", registerViewModel);
