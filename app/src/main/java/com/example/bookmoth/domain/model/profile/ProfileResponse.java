@@ -55,4 +55,36 @@ public class ProfileResponse {
     public void setFollowed(int i) {
         followed = i;
     }
+
+    public void setFollowers(int followers) {
+        this.followers = followers;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public void setFirst_name(String first_name) {
+        this.first_name = first_name;
+    }
+
+    public void setFollowing(int following) {
+        this.following = following;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name = last_name;
+    }
+
+    public void setMutualCount(int mutualCount) {
+        this.mutualCount = mutualCount;
+    }
+
+    public void setProfile_Id(int profile_Id) {
+        this.profile_Id = profile_Id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }
