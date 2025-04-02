@@ -1,5 +1,6 @@
 package com.example.bookmoth.domain.usecase.profile;
 
+import com.example.bookmoth.domain.model.profile.FollowResponse;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.model.profile.ProfileResponse;
 import com.example.bookmoth.domain.model.profile.UsernameResponse;
@@ -140,5 +141,15 @@ public class ProfileUseCase {
      */
     public Call<Void> unfollow(String profileId) {
         return remoteRepo.unfollow(profileId);
+    }
+
+    /**
+     * Kiểm tra xem người dùng đã follow profileId chưa.
+     *
+     * @param profileId id của người dùng cần kiểm tra.
+     * @return Đối tượng Call chứa thông tin về việc follow người dùng.
+     */
+    public Call<FollowResponse> isFollowing(String profileId) {
+        return remoteRepo.isFollowing(profileId);
     }
 }
