@@ -87,6 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:paddingTop="4dp"
+                android:textAlignment="center"
                 android:text="@string/deposit_into_bookmoth_account"
                 android:textColor="#6F6F6F"
                 android:textSize="16sp" />
