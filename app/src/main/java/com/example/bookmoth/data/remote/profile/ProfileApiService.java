@@ -1,5 +1,7 @@
 package com.example.bookmoth.data.remote.profile;
 
+import com.example.bookmoth.data.model.profile.FollowRequest;
+import com.example.bookmoth.domain.model.profile.FollowResponse;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.model.profile.ProfileResponse;
 import com.example.bookmoth.domain.model.profile.UsernameResponse;
@@ -81,11 +83,11 @@ public interface ProfileApiService {
     /**
      * Follow người dùng.
      *
-     * @param id id của người dùng cần follow.
+     * @param request chứa id của người dùng cần follow.
      * @return {@link Call} chứa thông tin về việc follow người dùng.
      */
     @POST("api/profile/follow")
-    Call<Void> follow(@Body String id);
+    Call<Void> follow(@Body FollowRequest request);
 
     /**
      * Unfollow người dùng.
@@ -96,4 +98,12 @@ public interface ProfileApiService {
     @DELETE("api/profile/follow/{followingId}")
     Call<Void> unfollow(@Path("followingId") String id);
 
+    /**
+     * Kiểm tra xem người dùng đã follow người dùng khác chưa.
+     *
+     * @param id id của người dùng cần kiểm tra.
+     * @return {@link Call} chứa thông tin về việc đã follow hay chưa.
+     */
+    @GET("api/profile/is-following/{followingId}")
+    Call<FollowResponse> isFollowing(@Path("followingId") String id);
 }
