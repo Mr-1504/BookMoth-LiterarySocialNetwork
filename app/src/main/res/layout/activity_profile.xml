@@ -162,6 +162,16 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/notFound"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textAlignment="center"
+                    android:textColor="#808080"
+                    android:text="@string/no_post"
+                    android:textSize="17sp"
+                    android:visibility="gone"/>
 
                 <!-- RecyclerView -->
                 <androidx.recyclerview.widget.RecyclerView
