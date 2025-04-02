@@ -1,7 +1,9 @@
 package com.example.bookmoth.data.repository.profile;
 
+import com.example.bookmoth.data.model.profile.FollowRequest;
 import com.example.bookmoth.data.remote.profile.ProfileApiService;
 import com.example.bookmoth.data.remote.utils.RetrofitClient;
+import com.example.bookmoth.domain.model.profile.FollowResponse;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.model.profile.ProfileResponse;
 import com.example.bookmoth.domain.model.profile.UsernameResponse;
@@ -91,7 +93,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
      */
     @Override
     public Call<Void> follow(String profileId) {
-        return profileApiService.follow(profileId);
+        return profileApiService.follow(new FollowRequest(profileId));
     }
 
     /**
@@ -103,5 +105,16 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     @Override
     public Call<Void> unfollow(String profileId) {
         return profileApiService.unfollow(profileId);
+    }
+
+    /**
+     * Kiểm tra xem người dùng đã follow người dùng khác chưa.
+     *
+     * @param profileId id của người dùng cần kiểm tra.
+     * @return {@code Call<Boolean>} phản hồi chứa thông tin về việc follow người dùng.
+     */
+    @Override
+    public Call<FollowResponse> isFollowing(String profileId) {
+        return profileApiService.isFollowing(profileId);
     }
 }
