@@ -200,17 +200,27 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void loadPostProfileID() {
+        TextView error = findViewById(R.id.notFound);
         postViewModel.getPostByIdUser("eq." + profileId, new PostViewModel.OnGetPost() {
             @Override
             public void onGetPostSuccess(List<Post> posts) {
                 postList.clear();
                 postList.addAll(posts);
                 postAdapter.notifyDataSetChanged();
+
+                error.setVisibility(View.GONE);
+                content.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onGetPostFailure(String message) {
-                Toast.makeText(ProfileActivity.this, message, Toast.LENGTH_SHORT).show();
+                error.setVisibility(View.VISIBLE);
+                content.setVisibility(View.GONE);
+                if(message.contains("API")){
+                    error.setText(getString(R.string.error_connecting_to_server));
+                } else {
+                    error.setText(getString(R.string.no_post));
+                }
             }
         });
     }
