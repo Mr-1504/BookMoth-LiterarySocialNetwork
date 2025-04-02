@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.SearchActivity">
+    tools:context=".ui.activity.home.SearchActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -156,6 +156,17 @@
             </LinearLayout>
 
         </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/notFound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textAlignment="center"
+            android:textColor="#808080"
+            android:text="@string/not_found_profile"
+            android:textSize="17sp"
+            android:visibility="gone"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewSearch"
