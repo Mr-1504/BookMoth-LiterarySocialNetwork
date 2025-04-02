@@ -136,4 +136,7 @@
     <string name="invalid_receiver">Người nhận không đúng</string>
     <string name="insufficient_funds">Không đủ số dư. Vui lòng nạp thêm tiền.</string>
     <string name="has_owned">Bạn đã sở hữu rồi</string>
+    <string name="mutual_friend">bạn chung</string>
+    <string name="not_found_profile">Không tìm thấy người dùng nào</string>
+    <string name="no_post">Chưa có bài viết nào</string>
 </resources>
