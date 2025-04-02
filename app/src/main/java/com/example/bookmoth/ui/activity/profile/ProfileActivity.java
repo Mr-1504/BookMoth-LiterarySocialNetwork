@@ -1,8 +1,13 @@
 package com.example.bookmoth.ui.activity.profile;
 
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -52,6 +57,8 @@ public class ProfileActivity extends AppCompatActivity {
     private List<Post> postList = new ArrayList<>();
     private RecyclerView content;
     private String profileId;
+    private int follower = 0;
+    private boolean isFollowing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +76,58 @@ public class ProfileActivity extends AppCompatActivity {
         loadPostProfileID();
         clickReturn();
         clickEditProfile();
+        clickFollow();
+    }
+
+    private void clickFollow() {
+        follow.setOnClickListener(view ->{
+            if (isFollowing) {
+                follow.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#e8f4fc")));
+                follow.setText(getString(R.string.follow));
+                follow.setTextColor(ColorStateList.valueOf(Color.parseColor("#30577c")));
+
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    profileViewModel.unfollow(this, profileId, new ProfileViewModel.OnFollowProfile() {
+                        @Override
+                        public void onSuccess() {
+                            isFollowing = false;
+                            follower -= 1;
+                            txtFollower.setText(String.format("%s %s", follower, getString(R.string.follower)));
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            follow.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#DCDADA")));
+                            follow.setText(getString(R.string.following));
+                            follow.setTextColor(Color.BLACK);
+                        }
+                    });
+                }, 600);
+
+            } else {
+                follow.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#DCDADA")));
+                follow.setText(getString(R.string.following));
+                follow.setTextColor(Color.BLACK);
+
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    profileViewModel.follow(this, profileId, new ProfileViewModel.OnFollowProfile() {
+                        @Override
+                        public void onSuccess() {
+                            isFollowing = true;
+                            follower += 1;
+                            txtFollower.setText(String.format("%s %s", follower, getString(R.string.follower)));
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            follow.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#e8f4fc")));
+                            follow.setText(getString(R.string.follow));
+                            follow.setTextColor(ColorStateList.valueOf(Color.parseColor("#30577c")));
+                        }
+                    });
+                }, 600);
+            }
+        });
     }
 
     private void clickEditProfile() {
@@ -79,6 +138,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void clickReturn() {
         txtBack.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("follower", follower);
+            resultIntent.putExtra("profileId", profileId);
+            resultIntent.putExtra("followed", isFollowing ? 1 : 0);
+            setResult(Activity.RESULT_OK, resultIntent);
             finish();
         });
     }
@@ -115,7 +179,7 @@ public class ProfileActivity extends AppCompatActivity {
                 follow.setVisibility(View.GONE);
                 message.setVisibility(View.GONE);
             } else {
-
+                checkFollow(profileId);
                 editProfile.setVisibility(View.GONE);
                 follow.setVisibility(View.VISIBLE);
                 message.setVisibility(View.VISIBLE);
@@ -128,6 +192,30 @@ public class ProfileActivity extends AppCompatActivity {
             message.setVisibility(View.GONE);
             getProfileById(profileId);
         }
+    }
+
+    private void checkFollow(String profileId) {
+        profileViewModel.isFollow(this, profileId, new ProfileViewModel.OnIsFollowProfile() {
+            @Override
+            public void onSuccess(boolean isFollow) {
+                isFollowing = isFollow;
+                if (isFollow) {
+                    follow.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#DCDADA")));
+                    follow.setText(getString(R.string.following));
+                    follow.setTextColor(Color.BLACK);
+                } else {
+                    follow.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#e8f4fc")));
+                    follow.setText(getString(R.string.follow));
+                    follow.setTextColor(ColorStateList.valueOf(Color.parseColor("#30577c")));
+
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Toast.makeText(ProfileActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void getProfileById(String profileId) {
@@ -173,6 +261,7 @@ public class ProfileActivity extends AppCompatActivity {
         txtName.setText(String.format("%s %s",
                 profile.getLastName(), profile.getFirstName()));
 
+        follower = profile.getFollower();
         txtFollower.setText(String.format("%s %s", profile.getFollower(), getString(R.string.follower)));
         txtFollowing.setText(String.format("%s %s", getString(R.string.following), profile.getFollowing()));
 
@@ -224,4 +313,16 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("follower", follower);
+        resultIntent.putExtra("profileId", profileId);
+        resultIntent.putExtra("followed", isFollowing ? 1 : 0);
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
+        super.onBackPressed();
+    }
+
 }
