@@ -1,5 +1,6 @@
 package com.example.bookmoth.ui.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -31,6 +32,7 @@ import java.util.List;
 
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileViewHolder> {
 
+    private static final int REQUEST_CODE = 1001;
     private final Context context;
     private final List<ProfileResponse> profiles;
     private final ProfileViewModel profileViewModel;
@@ -90,7 +92,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
             holder.itemView.setOnClickListener(view ->{
                 Intent intent = new Intent(context, ProfileActivity.class);
                 intent.putExtra("profileId", String.valueOf(profileResponse.getProfile_Id()));
-                context.startActivity(intent);
+                ((Activity) context).startActivityForResult(intent, REQUEST_CODE);
             });
 
             follow(holder, profileResponse);
@@ -110,6 +112,10 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
                         @Override
                         public void onSuccess() {
                             profileResponse.setFollowed(0);
+                            profileResponse.setFollowers(profileResponse.getFollowers() - 1);
+                            String strFollower = profileResponse.getFollowers() > 0 ?
+                                    String.format("%s %s", profileResponse.getFollowers(), context.getString(R.string.follower)) : "";
+                            holder.follower.setText(strFollower);
                         }
 
                         @Override
@@ -130,7 +136,12 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ProfileV
                     profileViewModel.follow(context, String.valueOf(profileResponse.getProfile_Id()), new ProfileViewModel.OnFollowProfile() {
                         @Override
                         public void onSuccess() {
-                            profileResponse.setFollowed(0);
+                            profileResponse.setFollowed(1);
+
+                            profileResponse.setFollowers(profileResponse.getFollowers() + 1);
+                            String strFollower = profileResponse.getFollowers() > 0 ?
+                                    String.format("%s %s", profileResponse.getFollowers(), context.getString(R.string.follower)) : "";
+                            holder.follower.setText(strFollower);
                         }
 
                         @Override
