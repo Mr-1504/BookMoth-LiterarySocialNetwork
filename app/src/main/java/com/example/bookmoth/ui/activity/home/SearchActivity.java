@@ -2,9 +2,13 @@ package com.example.bookmoth.ui.activity.home;
 
 import static java.security.AccessController.getContext;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,13 +19,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.data.model.profile.ProfileDatabase;
 import com.example.bookmoth.data.repository.post.FlaskRepositoryImpl;
 import com.example.bookmoth.data.repository.post.SupabaseRepositoryImpl;
+import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
+import com.example.bookmoth.data.repository.profile.ProfileRepositoryImpl;
 import com.example.bookmoth.domain.model.post.Post;
+import com.example.bookmoth.domain.model.profile.Profile;
+import com.example.bookmoth.domain.model.profile.ProfileResponse;
 import com.example.bookmoth.domain.usecase.post.FlaskUseCase;
 import com.example.bookmoth.domain.usecase.post.PostUseCase;
+import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.adapter.PostAdapter;
+import com.example.bookmoth.ui.adapter.ProfileAdapter;
 import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
+import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +47,13 @@ public class SearchActivity extends AppCompatActivity {
     private EditText edtSearch;
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
+    private ProfileAdapter profileAdapter;
     private PostViewModel postViewModel;
+    private ProfileViewModel profileViewModel;
+    private List<ProfileResponse> profileResponses;
     private List<Post> postList = new ArrayList<>();
     private int searchType = POST_SEARCH;
+    private TextView notFound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +66,7 @@ public class SearchActivity extends AppCompatActivity {
             return insets;
         });
         declare();
+        notFound = findViewById(R.id.notFound);
         btnBack.setOnClickListener(v -> finish());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         btnSearch.setOnClickListener(v -> {
@@ -59,7 +76,7 @@ public class SearchActivity extends AppCompatActivity {
                 return;
             }
             // search
-            if(searchType == POST_SEARCH) {
+            if (searchType == POST_SEARCH) {
 
                 // search post
                 postAdapter = new PostAdapter(this, postList, new PostUseCase(new SupabaseRepositoryImpl()), new FlaskUseCase(new FlaskRepositoryImpl()));
@@ -71,21 +88,43 @@ public class SearchActivity extends AppCompatActivity {
                         postList.clear();
                         postList.addAll(posts);
                         postAdapter.notifyDataSetChanged();
+                        recyclerView.setVisibility(View.VISIBLE);
+                        notFound.setVisibility(View.GONE);
                     }
 
                     @Override
                     public void onGetPostFailure(String message) {
-                        edtSearch.setError(message);
+                        notFound.setText(message);
+                        recyclerView.setVisibility(View.GONE);
+                        notFound.setVisibility(View.VISIBLE);
                     }
                 });
-            }
-            else if(searchType == PROFILE_SEARCH) {
-                // search profile
-            }
-            else if(searchType == BOOK_SEARCH) {
+            } else if (searchType == PROFILE_SEARCH) {
+                LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
+                        this, ProfileDatabase.getInstance(this).profileDao()
+                );
+                profileViewModel = new ProfileViewModel(new ProfileUseCase(localRepo, new ProfileRepositoryImpl()));
+
+                profileViewModel.searchProfile(this, search, new ProfileViewModel.OnSearchProfile() {
+                    @Override
+                    public void onSuccess(List<ProfileResponse> responses) {
+                        profileResponses = responses;
+                        profileAdapter = new ProfileAdapter(SearchActivity.this, profileResponses);
+                        recyclerView.setAdapter(profileAdapter);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        notFound.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void OnError(String error) {
+                        notFound.setText(error);
+                        recyclerView.setVisibility(View.GONE);
+                        notFound.setVisibility(View.VISIBLE);
+                    }
+                });
+            } else if (searchType == BOOK_SEARCH) {
                 // search book
-            }
-            else if(searchType == WORKS_SEARCH) {
+            } else if (searchType == WORKS_SEARCH) {
                 // search works
             }
         });
@@ -121,6 +160,26 @@ public class SearchActivity extends AppCompatActivity {
             btnBook.setImageResource(R.drawable.search1);
             btnPost.setImageResource(R.drawable.search1);
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1001 && resultCode == Activity.RESULT_OK && data != null) {
+            String profileId = data.getStringExtra("profileId");
+            int followed = data.getIntExtra("followed", 0);
+            int followers = data.getIntExtra("follower", 0);
+
+            for (int i = 0; i < profileResponses.size(); i++) {
+                if (String.valueOf(profileResponses.get(i).getProfile_Id()).equals(profileId)) {
+                    profileResponses.get(i).setFollowed(followed);
+                    profileResponses.get(i).setFollowers(followers);
+                    profileAdapter.notifyItemChanged(i);
+                    break;
+                }
+            }
+        }
     }
     private void declare() {
         btnBack = findViewById(R.id.btnBackSearch);
