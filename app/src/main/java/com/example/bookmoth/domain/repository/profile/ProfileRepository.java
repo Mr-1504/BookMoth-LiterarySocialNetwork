@@ -1,5 +1,6 @@
 package com.example.bookmoth.domain.repository.profile;
 
+import com.example.bookmoth.domain.model.profile.FollowResponse;
 import com.example.bookmoth.domain.model.profile.Profile;
 import com.example.bookmoth.domain.model.profile.ProfileResponse;
 import com.example.bookmoth.domain.model.profile.UsernameResponse;
@@ -79,4 +80,12 @@ public interface ProfileRepository {
      * @return Đối tượng Call chứa thông tin hồ sơ người dùng sau khi unfollow.
      */
     Call<Void> unfollow(String profileId);
+
+    /**
+     * Kiểm tra xem người dùng đã follow người dùng khác chưa.
+     *
+     * @param profileId id của người dùng cần kiểm tra.
+     * @return Đối tượng Call chứa thông tin về việc người dùng đã follow người dùng khác chưa.
+     */
+    Call<FollowResponse> isFollowing(String profileId);
 }
