@@ -9,10 +9,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Lớp giúp khởi tạo các instance của Retrofit để kết nối với server.
  */
 public class RetrofitClient {
-    private static final String BASE_ASP_SERVER_URL = "http://127.0.0.1:7100/";
+    private static final String BASE_ASP_SERVER_URL = "http://192.168.218.134:7100/";
     private static final String SUPABASE_URL = "https://vhqcdiaoqrlcsnqvjpqh.supabase.co/";
     private static final String FLASK_URL = "http://127.0.0.1:5000/";
-
+    private static final String SHOP_BASE_URL = "http://10.0.2.2:8000/";
+    private static  Retrofit shopServerRetrofit;
     private static Retrofit aspServerRetrofit;
     private static Retrofit supabaseRetrofit;
     private static Retrofit flaskRetrofit;
@@ -82,5 +83,16 @@ public class RetrofitClient {
                     .build();
         }
         return flaskRetrofit;
+    }
+
+
+    public static Retrofit getShopServerRetrofit(){
+        if(shopServerRetrofit == null){
+            shopServerRetrofit = new Retrofit.Builder()
+                    .baseUrl(SHOP_BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+        return shopServerRetrofit;
     }
 }

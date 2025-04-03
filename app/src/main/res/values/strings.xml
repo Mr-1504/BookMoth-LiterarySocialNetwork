@@ -139,4 +139,8 @@
     <string name="mutual_friend">bạn chung</string>
     <string name="not_found_profile">Không tìm thấy người dùng nào</string>
     <string name="no_post">Chưa có bài viết nào</string>
+    <string name="profile_desc">Profile Image</string>
+    <string name="search_hint">Bạn muốn đọc gì ?</string>
+    <string name="tab_description">Tab menu</string>
+    <string name="choose_catagory">Chọn thể loại</string>
 </resources>

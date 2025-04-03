@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bookmoth.R;
 import com.example.bookmoth.ui.activity.option.OptionActivity;
+import com.example.bookmoth.ui.activity.shop.ShopActivity;
 import com.example.bookmoth.ui.viewmodel.post.SharedViewModel;
 
 public class HomeActivity extends AppCompatActivity {
@@ -87,6 +88,9 @@ public class HomeActivity extends AppCompatActivity {
                 buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
                 buttonNotification.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
                 buttonSetting.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+
+                Intent intent = new Intent(HomeActivity.this, ShopActivity.class);
+                startActivity(intent);
             }
         });
 
