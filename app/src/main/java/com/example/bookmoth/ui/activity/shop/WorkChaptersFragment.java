@@ -12,8 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.data.repository.shop.ShopRepositoryImpl;
 import com.example.bookmoth.domain.model.shop.Chapter;
+import com.example.bookmoth.domain.usecase.shop.ShopUseCase;
 import com.example.bookmoth.ui.adapter.shop.Chapter_Adapter;
+import com.example.bookmoth.ui.viewmodel.shop.ShopViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +43,23 @@ public class WorkChaptersFragment extends Fragment implements OnChapterClickList
         rvChapters = view.findViewById(R.id.rv_chapters);
         rvChapters.setLayoutManager( new LinearLayoutManager(getContext()));
         rvChapters.setAdapter(chapterAdapter);
+        ShopViewModel shopViewModel = new ShopViewModel(new ShopUseCase(new ShopRepositoryImpl()));
 
         if(getArguments() != null) {
             int workId = getArguments().getInt(ARG_WORK_ID);
+            shopViewModel.getChaptersByWorkId(getContext(), workId, new ShopViewModel.OnGetChaptersByWorkIdListener() {
+                @Override
+                public void onSuccess(List<Chapter> responses) {
+                    chapterList.clear();
+                    chapterList.addAll(responses);
+                    chapterAdapter.notifyDataSetChanged();
+                }
 
+                @Override
+                public void onError(String error) {
+
+                }
+            });
         }
         return  view;
     }

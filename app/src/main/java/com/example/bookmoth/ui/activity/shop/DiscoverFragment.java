@@ -30,9 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link DiscoverFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class DiscoverFragment extends Fragment {
 
@@ -48,18 +45,18 @@ public class DiscoverFragment extends Fragment {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView( LayoutInflater inflater,  ViewGroup container,  Bundle savedInstanceState) {
-        Log.d("HomeFragment", "onCreateView called");
-        View view = inflater.inflate(R.layout.fragment_home,container,false);
+        Log.d("Discovery", "onCreateView called");
+        View view = inflater.inflate(R.layout.fragment_discover,container,false);
         rvNewReleases = view.findViewById(R.id.rv_new_releases);
         rvPopular = view.findViewById(R.id.rv_popular);
         if (rvNewReleases == null || rvPopular == null) {
-            Log.e("HomeFragment", "RecyclerView is null");
+            Log.e("Discovery", "RecyclerView is null");
             Toast.makeText(getContext(), "Lỗi: RecyclerView không tìm thấy", Toast.LENGTH_LONG).show();
             return view;
         }
 
         shopViewModel = new ShopViewModel(new ShopUseCase(new ShopRepositoryImpl()));
-        Log.d("HomeFragment", "WorkRepository initialized");
+        Log.d("Discovery", "WorkRepository initialized");
 
         rvNewReleases.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL,false));
         rvPopular.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL,false));
@@ -73,7 +70,7 @@ public class DiscoverFragment extends Fragment {
         rvPopular.setItemViewCacheSize(20);
         rvPopular.setDrawingCacheEnabled(true);
         rvPopular.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        Log.d("HomeFragment", "RecyclerView LayoutManagers set");
+        Log.d("Discovery", "RecyclerView LayoutManagers set");
         rvPopular.setNestedScrollingEnabled(false);
 
         Work_Adapter newReleaseAdapter = new Work_Adapter(newReleases,getContext());
@@ -82,17 +79,17 @@ public class DiscoverFragment extends Fragment {
 
         rvNewReleases.setAdapter(newReleaseAdapter);
         rvPopular.setAdapter(popularAdapter);
-        Log.d("HomeFragment", "RecyclerView Adapters set");
+        Log.d("Discovery", "RecyclerView Adapters set");
         final ViewPager2 viewPager = getActivity() != null ? getActivity().findViewById(R.id.view_pager) : null;
         if (viewPager == null) {
-            Log.e("HomeFragment", "ViewPager2 not found in Activity");
+            Log.e("Discovery", "ViewPager2 not found in Activity");
         } else {
             rvNewReleases.setOnTouchListener((v, event) -> {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         isUserScrolling = true;
                         viewPager.setUserInputEnabled(false);
-                        Log.d("HomeFragment", "Disabled ViewPager2 scrolling while touching rvNewReleases");
+                        Log.d("Discovery", "Disabled ViewPager2 scrolling while touching rvNewReleases");
                         stopAutoScroll();
                         break;
                     case MotionEvent.ACTION_MOVE:
@@ -102,7 +99,7 @@ public class DiscoverFragment extends Fragment {
                     case MotionEvent.ACTION_CANCEL:
                         isUserScrolling = false;
                         viewPager.setUserInputEnabled(true);
-                        Log.d("HomeFragment", "Enabled ViewPager2 scrolling after releasing rvNewReleases");
+                        Log.d("Discovery", "Enabled ViewPager2 scrolling after releasing rvNewReleases");
                         startAutoScroll();
                         break;
                 }
@@ -114,7 +111,7 @@ public class DiscoverFragment extends Fragment {
                     case MotionEvent.ACTION_DOWN:
                         isUserScrolling = true;
                         viewPager.setUserInputEnabled(false);
-                        Log.d("HomeFragment", "Disabled ViewPager2 scrolling while touching rvPopular");
+                        Log.d("Discovery", "Disabled ViewPager2 scrolling while touching rvPopular");
                         stopAutoScroll();
                         break;
                     case MotionEvent.ACTION_MOVE:
@@ -124,7 +121,7 @@ public class DiscoverFragment extends Fragment {
                     case MotionEvent.ACTION_CANCEL:
 //                        isUserScrolling = false;
                         viewPager.setUserInputEnabled(true);
-                        Log.d("HomeFragment", "Enabled ViewPager2 scrolling after releasing rvPopular");
+                        Log.d("Discovery", "Enabled ViewPager2 scrolling after releasing rvPopular");
                         startAutoScroll();
                         break;
                 }
@@ -136,14 +133,14 @@ public class DiscoverFragment extends Fragment {
                     super.onScrollStateChanged(recyclerView, newState);
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         viewPager.setUserInputEnabled(true);
-                        Log.d("HomeFragment", "rvNewReleases stopped scrolling, enabled ViewPager2");
+                        Log.d("Discovery", "rvNewReleases stopped scrolling, enabled ViewPager2");
                         if (!isUserScrolling) {
                             startAutoScroll(); // Chỉ khởi động lại nếu không phải người dùng cuộn
                         }
                     } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                         isUserScrolling = true;
                         viewPager.setUserInputEnabled(false);
-                        Log.d("HomeFragment", "rvNewReleases scrolling by user, disabled ViewPager2");
+                        Log.d("Discovery", "rvNewReleases scrolling by user, disabled ViewPager2");
                         stopAutoScroll();
                     }
                 }
@@ -155,14 +152,14 @@ public class DiscoverFragment extends Fragment {
                     super.onScrollStateChanged(recyclerView, newState);
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         viewPager.setUserInputEnabled(true);
-                        Log.d("HomeFragment", "rvPopular stopped scrolling, enabled ViewPager2");
+                        Log.d("Discovery", "rvPopular stopped scrolling, enabled ViewPager2");
                         if (!isUserScrolling) {
                             startAutoScroll();
                         }
                     } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                         isUserScrolling = true;
                         viewPager.setUserInputEnabled(false);
-                        Log.d("HomeFragment", "rvPopular scrolling by user, disabled ViewPager2");
+                        Log.d("Discovery", "rvPopular scrolling by user, disabled ViewPager2");
                         stopAutoScroll();
                     }
                 }
@@ -236,20 +233,20 @@ public class DiscoverFragment extends Fragment {
     }
 
     private void fetchData() {
-        Log.d("HomeFragment", "Fetching data...");
+        Log.d("Discovery", "Fetching data...");
         stopAutoScroll();
 
         shopViewModel.getNewReleases(getContext(), new ShopViewModel.OnGetNewReleasesListener() {
             @Override
             public void onSuccess(List<Work> data) {
                 if (isAdded()) {
-                    Log.d("HomeFragment", "New releases data received: " + data.size() + " items");
+                    Log.d("Discovery", "New releases data received: " + data.size() + " items");
                     List<Work> newWorks = new ArrayList<>(data);
                     newReleases.clear();
                     newReleases.addAll(newWorks);
                     rvNewReleases.getAdapter().notifyDataSetChanged();
                     if (newWorks.isEmpty()) {
-                        Log.w("HomeFragment", "New releases list is empty");
+                        Log.w("Discovery", "New releases list is empty");
                         Toast.makeText(getContext(), "Không có truyện mới!", Toast.LENGTH_SHORT).show();
                     } else {
                         rvNewReleases.scrollToPosition(0);
@@ -260,7 +257,7 @@ public class DiscoverFragment extends Fragment {
 
             @Override
             public void onFailure(String error) {
-                Log.e("HomeFragment", "Error fetching new releases: " + error);
+                Log.e("Discovery", "Error fetching new releases: " + error);
             }
         });
 
@@ -268,13 +265,13 @@ public class DiscoverFragment extends Fragment {
             @Override
             public void onSuccess(List<Work> work) {
                 if (isAdded()) {
-                    Log.d("HomeFragment", "Popular data received: " + work.size() + " items");
+                    Log.d("Discovery", "Popular data received: " + work.size() + " items");
                     List<Work> newWorks = new ArrayList<>(work);
                     popular.clear();
                     popular.addAll(newWorks);
                     rvPopular.getAdapter().notifyDataSetChanged();
                     if (newWorks.isEmpty()) {
-                        Log.w("HomeFragment", "Popular list is empty");
+                        Log.w("Discovery", "Popular list is empty");
                         Toast.makeText(getContext(), "Không có truyện nổi bật!", Toast.LENGTH_SHORT).show();
                     } else {
                         rvPopular.scrollToPosition(0);
@@ -285,7 +282,7 @@ public class DiscoverFragment extends Fragment {
 
             @Override
             public void onFailure(String error) {
-                Log.e("HomeFragment", "Error fetching popular: " + error);
+                Log.e("Discovery", "Error fetching popular: " + error);
             }
         });
     }
@@ -295,14 +292,14 @@ public class DiscoverFragment extends Fragment {
             autoScrollHandler.removeCallbacks(autoScrollRunnablePopular);
             autoScrollHandler.postDelayed(autoScrollRunnableNewReleases, AUTO_SCROLL_INTERVAL);
             autoScrollHandler.postDelayed(autoScrollRunnablePopular, AUTO_SCROLL_INTERVAL);
-            Log.d("HomeFragment", "Auto-scroll started");
+            Log.d("Discovery", "Auto-scroll started");
         }
     }
     private void stopAutoScroll() {
         if (autoScrollHandler != null) {
             autoScrollHandler.removeCallbacks(autoScrollRunnableNewReleases);
             autoScrollHandler.removeCallbacks(autoScrollRunnablePopular);
-            Log.d("HomeFragment", "Auto-scroll stopped");
+            Log.d("Discovery", "Auto-scroll stopped");
         }
     }
     @Override

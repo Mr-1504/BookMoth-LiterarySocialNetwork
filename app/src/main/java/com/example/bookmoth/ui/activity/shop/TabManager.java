@@ -56,10 +56,10 @@ public class TabManager {
                 pagerAdapter.clear();
                 Log.d("TabManager", "Cleared existing tabs and fragments");
 
-                pagerAdapter.addFragment(new HomeFragment(), "Khám phá");
+                pagerAdapter.addFragment(new DiscoverFragment(), "Khám phá");
                 tabLayout.addTab(tabLayout.newTab().setText("Khám phá"));
 
-                pagerAdapter.addFragment(CategoryFragment.newInstance(new ArrayList<Category>()), "Thể loại");
+                pagerAdapter.addFragment(CategoryFragment.newInstance(new ArrayList<>(category)), "Thể loại");
                 tabLayout.addTab(tabLayout.newTab().setText("Thể loại"));
 
                 Log.d("TabManager", "Fragments added to ViewPager2: " + pagerAdapter.getItemCount());

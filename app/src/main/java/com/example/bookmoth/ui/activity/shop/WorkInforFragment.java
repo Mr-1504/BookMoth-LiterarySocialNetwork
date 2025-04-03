@@ -11,10 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.data.repository.shop.ShopRepositoryImpl;
 import com.example.bookmoth.domain.model.shop.Category;
 import com.example.bookmoth.domain.model.shop.Chapter;
 import com.example.bookmoth.domain.model.shop.Profile;
 import com.example.bookmoth.domain.model.shop.Work;
+import com.example.bookmoth.domain.usecase.shop.ShopUseCase;
 import com.example.bookmoth.ui.viewmodel.shop.ShopViewModel;
 
 import java.util.List;
@@ -22,7 +24,6 @@ import java.util.List;
 public class WorkInforFragment extends Fragment {
     private static final String ARG_WORK_ID = "work_id";
     private TextView tvAuthor, tvCategories, tvChapterCount, tvDescription;
-    private ShopViewModel shopViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class WorkInforFragment extends Fragment {
         tvCategories = view.findViewById(R.id.tv_categories);
         tvChapterCount = view.findViewById(R.id.tv_chapter_count);
         tvDescription = view.findViewById(R.id.tv_description);
+        ShopViewModel shopViewModel = new ShopViewModel(new ShopUseCase(new ShopRepositoryImpl()));
 
         if(getArguments() != null) {
             int  workId = getArguments().getInt(ARG_WORK_ID);

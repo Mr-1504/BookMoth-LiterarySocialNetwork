@@ -23,6 +23,7 @@ public class ShopActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
+    private TabManager tabManager;
     private ShopViewModel shopViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +36,14 @@ public class ShopActivity extends AppCompatActivity {
             return insets;
         });
 
+        shopViewModel = new ShopViewModel(new ShopUseCase(new ShopRepositoryImpl()));
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
         ViewPager2 viewPager = findViewById(R.id.view_pager);
+        tabManager = new TabManager(this,tabLayout,viewPager,shopViewModel);
+        Log.d("MainActivity", "TabManager initialized");
+        tabManager.fetchCategories();
+        Log.d("MainActivity", "fetchCategories called");
 
-        shopViewModel = new ShopViewModel(new ShopUseCase(new ShopRepositoryImpl()));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
