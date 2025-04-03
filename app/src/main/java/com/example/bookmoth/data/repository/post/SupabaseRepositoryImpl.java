@@ -39,8 +39,8 @@ public class SupabaseRepositoryImpl implements SupabaseRepository {
         return supabaseApiService.getPostsByUserIds(userIdFilter,order,range);
     }
     @Override
-    public Call<List<Post>> searchPosts(String titleQuery, String contentQuery, String status) {
-        return supabaseApiService.searchPosts(titleQuery,contentQuery,status);
+    public Call<List<Post>> searchPosts(String titleQuery, String status) {
+        return supabaseApiService.searchPosts(titleQuery,status);
     }
 
     @Override

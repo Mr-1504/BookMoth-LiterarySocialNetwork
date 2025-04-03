@@ -9,7 +9,10 @@ import com.example.bookmoth.domain.model.post.Profile;
 import com.example.bookmoth.domain.repository.post.FlaskRepository;
 
 import java.util.List;
+import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 public class FlaskRepositoryImpl implements FlaskRepository {
@@ -42,5 +45,15 @@ public class FlaskRepositoryImpl implements FlaskRepository {
     @Override
     public Call<Api> getFollowers(int id) {
         return flaskApiService.getFollowers(id);
+    }
+
+    @Override
+    public Call<Api> checkBlood(int id, MultipartBody.Part body) {
+        return flaskApiService.checkBlood(id, body);
+    }
+
+    @Override
+    public Call<ResponseBody> processImage(int id, MultipartBody.Part body) {
+        return flaskApiService.processImage(id, body);
     }
 }

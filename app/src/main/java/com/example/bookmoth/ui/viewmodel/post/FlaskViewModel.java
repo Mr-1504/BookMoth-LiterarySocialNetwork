@@ -11,8 +11,12 @@ import com.example.bookmoth.domain.usecase.post.PostUseCase;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -114,6 +118,58 @@ public class FlaskViewModel {
                 listener.onGetFailure(t.getMessage());
             }
         });
+    }
+
+    public void getCheckBlood(int id, MultipartBody.Part body, OnGetCheckBlood listener) {
+        flaskUseCase.checkBlood(id, body).enqueue(new Callback<Api>() {
+            @Override
+            public void onResponse(Call<Api> call, Response<Api> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Api api = response.body();
+                    listener.onGetSuccess(api.getCheckBlood());
+                } else {
+                    listener.onGetFailure("Failed to get check blood");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Api> call, Throwable t) {
+                listener.onGetFailure(t.getMessage());
+            }
+        });
+    }
+
+    public void getProcessImage(int id, MultipartBody.Part body, OnGetProcessImage listener) {
+        flaskUseCase.processImage(id, body).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        byte[] imageBytes = response.body().bytes();
+                        listener.onGetSuccess(imageBytes);
+                    } catch (IOException e) {
+                        listener.onGetFailure("Failed to read image data: " + e.getMessage());
+                    }
+                } else {
+                    listener.onGetFailure("Failed to get process image");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                listener.onGetFailure(t.getMessage());
+            }
+        });
+    }
+
+    public interface OnGetCheckBlood {
+        void onGetSuccess(int checkBlood);
+        void onGetFailure(String message);
+    }
+
+    public interface OnGetProcessImage {
+        void onGetSuccess(byte[] imageBytes); // Đổi thành byte[] để nhận dữ liệu ảnh
+        void onGetFailure(String message);
     }
 
     public interface OnGetProfile {

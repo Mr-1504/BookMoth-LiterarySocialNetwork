@@ -107,7 +107,7 @@
                 android:background="@drawable/search1"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/setting" />
+                android:src="@drawable/settingfix" />
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

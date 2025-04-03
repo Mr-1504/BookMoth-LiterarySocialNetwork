@@ -43,10 +43,9 @@ public class PostUseCase {
     }
     public Call<List<Post>> searchPosts(
             String titleQuery,
-            String contentQuery,
             String status
     ) {
-        return supabaseRepository.searchPosts(titleQuery, contentQuery, status);
+        return supabaseRepository.searchPosts(titleQuery, status);
     }
 
     public Call<ResponseBody> updateLike(

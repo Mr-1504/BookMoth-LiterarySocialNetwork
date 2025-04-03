@@ -1,8 +1,12 @@
 package com.example.bookmoth.ui.activity.post;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.model.profile.ProfileDatabase;
+import com.example.bookmoth.data.remote.post.Api;
 import com.example.bookmoth.data.repository.post.FlaskRepositoryImpl;
 import com.example.bookmoth.data.repository.post.SupabaseRepositoryImpl;
 import com.example.bookmoth.data.repository.profile.LocalProfileRepositoryImpl;
@@ -33,6 +38,8 @@ import com.example.bookmoth.ui.viewmodel.post.FlaskViewModel;
 import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -42,6 +49,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
 public class CreatePostActivity extends AppCompatActivity {
@@ -107,13 +115,66 @@ public class CreatePostActivity extends AppCompatActivity {
             fileType = getFileType(fileUri);
             imgView = findViewById(R.id.imageView1);
             imgView.setVisibility(View.VISIBLE);
-            Glide.with(this).load(fileUri).into(imgView);
-            if (fileUri != null) {
-                Toast.makeText(this, "Đã chọn: " + fileUri.getPath(), Toast.LENGTH_SHORT).show();
+            Map<String, Object> body = new HashMap<>();
+            body.put("image", fileUri);
+            profileId = SecureStorage.getToken("profileId");
+            getProfile();
 
-            } else {
-                Toast.makeText(this, "Không thể lấy tệp", Toast.LENGTH_SHORT).show();
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(fileUri);
+                if (inputStream != null) {
+                    byte[] fileBytes = getBytesFromInputStream(inputStream);
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), fileBytes);
+                    MultipartBody.Part body1 = MultipartBody.Part.createFormData("image", "image.jpg", requestFile);
+
+                    flaskViewModel.getCheckBlood(Integer.parseInt(profileId), body1, new FlaskViewModel.OnGetCheckBlood() {
+                        @Override
+                        public void onGetSuccess(int checkBlood) {
+                            if (checkBlood == 1) {
+                                btnSubmitPost.setEnabled(false);
+                                progressBar.setVisibility(View.VISIBLE);
+                                Toast.makeText(CreatePostActivity.this, "Đang kiểm tra nội dung...", Toast.LENGTH_SHORT).show();
+
+                                flaskViewModel.getProcessImage(Integer.parseInt(profileId), body1, new FlaskViewModel.OnGetProcessImage() {
+                                    @Override
+                                    public void onGetSuccess(byte[] imageBytes) {
+                                        Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                                        imgView.setImageBitmap(bitmap);
+                                        Toast.makeText(CreatePostActivity.this, "Kiểm tra nội dung thành công", Toast.LENGTH_SHORT).show();
+                                        btnSubmitPost.setEnabled(true);
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+
+                                    @Override
+                                    public void onGetFailure(String message) {
+                                        btnSubmitPost.setEnabled(true);
+                                        progressBar.setVisibility(View.GONE);
+                                        Toast.makeText(CreatePostActivity.this, "Lỗi kiểm tra nội dung: " + message, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } else {
+                                btnSubmitPost.setEnabled(true);
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(CreatePostActivity.this, "Không phát hiện máu", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onGetFailure(String message) {
+                            btnSubmitPost.setEnabled(true);
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(CreatePostActivity.this, "Lỗi kiểm tra điều kiện: " + message, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(this, "Không thể đọc file", Toast.LENGTH_SHORT).show();
+                }
+            } catch (IOException e) {
+                Toast.makeText(this, "Lỗi khi đọc file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
+
+            Glide.with(this).load(fileUri).into(imgView);
+            Toast.makeText(this, "Đã chọn: " + fileUri.toString(), Toast.LENGTH_SHORT).show();
         }
         if (requestCode == PICK_BOOK_REQUEST && resultCode == RESULT_OK && data != null) {
             selectedWorkId = data.getIntExtra("work_id", -1);
@@ -121,6 +182,18 @@ public class CreatePostActivity extends AppCompatActivity {
                 fetchProductImage(selectedWorkId);
             }
         }
+    }
+    // Hàm chuyển InputStream thành byte[]
+    private byte[] getBytesFromInputStream(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+        int len;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        inputStream.close();
+        return byteBuffer.toByteArray();
     }
     private void fetchProductImage(int workId) {
         flaskViewModel.getBookById(workId, new FlaskViewModel.OnGetBookId() {
@@ -189,6 +262,7 @@ public class CreatePostActivity extends AppCompatActivity {
                         @Override
                         public void onStorageFailure(String message) {
                             Toast.makeText(CreatePostActivity.this,message,Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
                         }
                     });
 

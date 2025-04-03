@@ -12,6 +12,24 @@ public class Api {
         @SerializedName("profile_ids")
         private List<Integer> profile_ids;
 
+        @SerializedName("checkBlood")
+        private int checkBlood;
+
+        @SerializedName("error")
+        private String error;
+
+        @SerializedName("message")
+        private String message;
+
+        public int getCheckBlood() {
+            return checkBlood;
+        }
+        public String getError() {
+            return error;
+        }
+        public String getMessage() {
+            return message;
+        }
         public String getData() {
             return data;
         }

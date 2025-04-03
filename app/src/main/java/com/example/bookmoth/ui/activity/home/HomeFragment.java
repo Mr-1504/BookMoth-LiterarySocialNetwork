@@ -274,7 +274,6 @@ public class HomeFragment extends Fragment {
         dbHelper.savePosts(posts);
     }
 
-    // Xóa các phương thức không cần thiết
     private void loadPosts() {
         resetAndLoadPosts(); // Gộp vào resetAndLoadPosts để đồng nhất logic
     }
