@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fgWorkInfor"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_author"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tác giả: [Tên tác giả]"
+        android:textSize="16sp"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tv_categories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thể loại: [Danh sách thể loại]"
+        android:textSize="16sp"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tv_chapter_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Độ dài: [Số chương]"
+        android:textSize="16sp"
+        android:paddingBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Giới thiệu: [Mô tả truyện]"
+        android:textSize="16sp" />
+</LinearLayout>
