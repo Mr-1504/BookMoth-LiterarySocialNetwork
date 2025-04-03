@@ -39,6 +39,7 @@ import com.example.bookmoth.domain.usecase.profile.ProfileUseCase;
 import com.example.bookmoth.ui.adapter.PostAdapter;
 import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ import java.util.List;
  */
 public class ProfileActivity extends AppCompatActivity {
 
-    private Button editProfile, follow, message;
+    private MaterialButton editProfile, follow, message;
     private ProfileViewModel profileViewModel;
     private TextView txtFollower, txtFollowing, txtName, txtUsername, txtBack;
     private ImageView avatar, coverPhoto;
@@ -273,7 +274,7 @@ public class ProfileActivity extends AppCompatActivity {
                 .placeholder(R.drawable.avatar)
                 .error(R.drawable.avatar)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .override(200, 200) // Giảm kích thước ảnh để tăng tốc
+                .override(400, 400) // Giảm kích thước ảnh để tăng tốc
                 .thumbnail(0.1f) // Load ảnh nhỏ trước để hiển thị nhanh hơn
                 .into(avatar);
 
