@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:padding="8dp">
+
+    <ImageButton
+        android:id="@+id/imgbtn_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="#00FFFFFF"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:paddingRight="4dp"
+        android:paddingBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_arrow_back_24"
+        app:tint="@color/general" />
+
+    <TextView
+        android:id="@+id/rdr_tv_chaptitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="The chapter's title goes here"
+        android:textColor="@color/general"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/rdr_tv_chapindex"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgbtn_back"
+        app:layout_constraintTop_toTopOf="@+id/imgbtn_back" />
+
+    <TextView
+        android:id="@+id/rdr_tv_chapindex"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:text="Chapter no.XX"
+        android:textColor="@color/general"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgbtn_back"
+        app:layout_constraintEnd_toEndOf="@+id/rdr_tv_chaptitle"
+        app:layout_constraintStart_toStartOf="@+id/rdr_tv_chaptitle"
+        app:layout_constraintTop_toBottomOf="@+id/rdr_tv_chaptitle" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize">
+
+    <ImageButton
+        android:id="@+id/rdr_imgbtn_prev"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/general"
+        app:srcCompat="@drawable/baseline_navigate_before_24" />
+
+    <ImageButton
+        android:id="@+id/rdr_imgbtn_coloradjust"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/rdr_imgbtn_prev"
+        app:layout_constraintEnd_toStartOf="@id/rdr_imgbtn_chaplist"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/general"
+        app:srcCompat="@drawable/baseline_remove_red_eye_24" />
+
+    <ImageButton
+        android:id="@+id/rdr_imgbtn_chaplist"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/rdr_imgbtn_coloradjust"
+        app:layout_constraintEnd_toStartOf="@id/rdr_imgbtn_textformat"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/general"
+        app:srcCompat="@drawable/baseline_view_list_24" />
+
+    <ImageButton
+        android:id="@+id/rdr_imgbtn_textformat"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/rdr_imgbtn_chaplist"
+        app:layout_constraintEnd_toStartOf="@id/rdr_imgbtn_next"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/general"
+        app:srcCompat="@drawable/baseline_format_color_text_24" />
+
+    <ImageButton
+        android:id="@+id/rdr_imgbtn_next"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="#00FFFFFF"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/general"
+        app:srcCompat="@drawable/baseline_navigate_next_24" />
+</androidx.constraintlayout.widget.ConstraintLayout>

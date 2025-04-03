@@ -2,4 +2,15 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="general">#000000</color>
+    <color name="background">#FFFFFF</color>
+    <color name="faintbox">@color/material_dynamic_neutral99</color>
+
+    <color name="text_white">#FFF8F8F8</color>
+    <color name="text_black">#FF080808</color>
+    <color name="text_ink">#FF15195D</color>
+    <color name="bg_amodel">#FF000000</color>
+    <color name="bg_light">#FFFFFFFF</color>
+    <color name="bg_paper">#FFFFFFEE</color>
 </resources>
