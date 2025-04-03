@@ -44,11 +44,11 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         Glide.with(context)
                 .load(book.getCover_url())
                 .placeholder(R.drawable.placeholder_image)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)  // Không lưu cache
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .timeout(10_000)
                 .override(512,512)
                 .thumbnail(0.4f)
-                .skipMemoryCache(true)  // Bỏ qua cache RAM
+                .skipMemoryCache(true)
                 .into(holder.bookCover);
         Log.d("BOOK_ADAPTER", "Book Title: " + book.getTitle() + ", work_id: " + book.getWorks_id());
         holder.itemView.setOnClickListener(v -> listener.onBookClick(book.getWorks_id()));

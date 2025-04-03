@@ -7,7 +7,10 @@ import com.example.bookmoth.domain.repository.post.FlaskRepository;
 import com.example.bookmoth.domain.model.post.Book;
 
 import java.util.List;
+import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 
 public class FlaskUseCase {
@@ -36,5 +39,12 @@ public class FlaskUseCase {
         return flaskRepository.getFollowers(id);
     }
 
+    public Call<Api> checkBlood(int id, MultipartBody.Part body) {
+        return flaskRepository.checkBlood(id, body);
+    }
+
+    public Call<ResponseBody> processImage(int id, MultipartBody.Part body) {
+        return flaskRepository.processImage(id, body);
+    }
 
 }
