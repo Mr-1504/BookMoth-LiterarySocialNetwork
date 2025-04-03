@@ -15,6 +15,7 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
+            android:background="@color/white"
             android:layout_height="280dp">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -46,14 +47,24 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/cover" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginBottom="40dp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_gravity="bottom"/>
+
+
                 <!-- Avatar -->
                 <ImageView
                     android:id="@+id/imageViewAvatar"
-                    android:layout_width="124dp"
-                    android:layout_height="122dp"
-                    android:layout_gravity="bottom|center_horizontal"
+                    android:layout_width="170dp"
+                    android:layout_height="170dp"
+                    android:layout_gravity="bottom|left"
                     android:layout_marginBottom="-30dp"
+                    android:layout_marginStart="15dp"
                     android:background="@drawable/circle_background"
+                    android:foreground="@drawable/circle_border"
                     android:clipToOutline="true"
                     android:scaleType="centerCrop"
                     android:src="@drawable/avatar" />
@@ -69,13 +80,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
+                android:orientation="vertical">
 
                 <!-- Thông tin cá nhân -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -99,6 +111,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:layout_marginBottom="15dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -122,14 +137,18 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:layout_marginBottom="15dp"
                     android:orientation="vertical">
                     <!-- Nút chỉnh sửa -->
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnEditProfile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:backgroundTint="#0445ae"
+                        android:backgroundTint="#135FDB"
+                        app:cornerRadius="10dp"
                         android:text="Chỉnh sửa trang cá nhân"
                         android:textColor="@android:color/white" />
 
@@ -138,29 +157,89 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <Button
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnFollow"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:layout_weight="1"
                             android:backgroundTint="#0445ae"
+                            app:cornerRadius="10dp"
                             android:text="@string/follow"
                             android:textColor="@android:color/white" />
 
-                        <Button
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnMessage"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:layout_marginTop="8dp"
                             android:layout_weight="1"
-                            android:backgroundTint="#0445ae"
+                            android:backgroundTint="#135FDB"
+                            app:cornerRadius="10dp"
                             android:text="@string/message"
                             android:textColor="@android:color/white" />
                     </LinearLayout>
 
                 </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="6dp"
+                    android:background="#D5D2D2"
+                    android:layout_gravity="bottom"/>
+
+                <LinearLayout
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/post"
+                        android:padding="0dp"
+                        android:textColor="#075B9E"
+                        android:fontFamily="@font/robotobold"
+                        android:backgroundTint="#D5EBEF"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/friend"
+                        android:padding="0dp"
+                        android:textColor="#4D4D4D"
+                        android:fontFamily="@font/robotobold"
+                        android:backgroundTint="@android:color/transparent"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/photo"
+                        android:padding="0dp"
+                        android:textColor="#4D4D4D"
+                        android:fontFamily="@font/robotobold"
+                        android:backgroundTint="@android:color/transparent"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/video"
+                        android:padding="0dp"
+                        android:textColor="#4D4D4D"
+                        android:fontFamily="@font/robotobold"
+                        android:backgroundTint="@android:color/transparent"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#D5D2D2"
+                    android:layout_gravity="bottom"/>
 
                 <TextView
                     android:id="@+id/notFound"
@@ -179,6 +258,8 @@
                     android:layout_marginTop="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp"
                     android:nestedScrollingEnabled="false" />
 
             </LinearLayout>
