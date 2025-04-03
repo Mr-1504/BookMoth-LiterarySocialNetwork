@@ -124,29 +124,51 @@ public class OptionActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.WEB_CLIENT_ID))
-                .requestEmail()
-                .build();
+        if(!InternetHelper.isNetworkAvailable(this)){
+            LoadingUtils.hideLoading();
+            Toast.makeText(this, getString(R.string.no_internet), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new LoginViewModel(new LoginUseCase(new LoginRepositoryImpl())).logout(this, new LoginViewModel.OnLogoutListener() {
+            @Override
+            public void onSuccess() {
+                try{
+                    new ProfileViewModel(new ProfileUseCase(
+                            new LocalProfileRepositoryImpl(
+                                    OptionActivity.this, ProfileDatabase.getInstance(OptionActivity.this).profileDao()),
+                            new ProfileRepositoryImpl()
+                    )).deleteProfile();
+                    ImageCache.deleteBitmap(OptionActivity.this, "avatar.png");
+                    ImageCache.deleteBitmap(OptionActivity.this, "cover.png");
+                    SecureStorage.clearToken();
 
-        GoogleSignInClient client = GoogleSignIn.getClient(this, signInOptions);
-        client.signOut();
+                    GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestIdToken(getString(R.string.WEB_CLIENT_ID))
+                            .requestEmail()
+                            .build();
 
-        new LoginViewModel(new LoginUseCase(new LoginRepositoryImpl())).logout(this);
+                    GoogleSignInClient client = GoogleSignIn.getClient(OptionActivity.this, signInOptions);
+                    client.signOut();
 
-        new ProfileViewModel(new ProfileUseCase(
-                new LocalProfileRepositoryImpl(
-                        this, ProfileDatabase.getInstance(this).profileDao()),
-                new ProfileRepositoryImpl()
-        )).deleteProfile();
-        ImageCache.deleteBitmap(this, "avatar.png");
-        ImageCache.deleteBitmap(this, "cover.png");
+                    Intent intent = new Intent(OptionActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    LoadingUtils.hideLoading();
+                    startActivity(intent);
+                }
+                catch (Exception ex){
+                    LoadingUtils.hideLoading();
+                    ex.printStackTrace();
+                }
 
-        SecureStorage.clearToken();
+            }
 
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        LoadingUtils.hideLoading();
-        startActivity(intent);
+            @Override
+            public void onError(String error) {
+                LoadingUtils.hideLoading();
+                Toast.makeText(OptionActivity.this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 }

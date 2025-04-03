@@ -1,10 +1,13 @@
 package com.example.bookmoth.domain.usecase.profile;
 
+import com.example.bookmoth.domain.model.profile.FollowResponse;
 import com.example.bookmoth.domain.model.profile.Profile;
+import com.example.bookmoth.domain.model.profile.ProfileResponse;
 import com.example.bookmoth.domain.model.profile.UsernameResponse;
 import com.example.bookmoth.domain.repository.profile.LocalProfileRepository;
 import com.example.bookmoth.domain.repository.profile.ProfileRepository;
 
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -92,6 +95,14 @@ public class ProfileUseCase {
         return remoteRepo.checkUsername(username);
     }
 
+    /**
+     * Chỉnh sửa thông tin hồ sơ người dùng.
+     *
+     * @param params thông tin hồ sơ cần chỉnh sửa.
+     * @param avatar ảnh đại diện mới.
+     * @param cover  ảnh bìa mới.
+     * @return Đối tượng Call chứa thông tin hồ sơ người dùng sau khi chỉnh sửa.
+     */
     public Call<Profile> editProfile(
             Map<String, RequestBody> params,
             MultipartBody.Part avatar,
@@ -100,5 +111,45 @@ public class ProfileUseCase {
         return remoteRepo.editProfile(
                 params, avatar, cover
         );
+    }
+
+    /**
+     * Tìm kiếm hồ sơ người dùng theo tên.
+     *
+     * @param searchString tên cần tìm kiếm.
+     * @return Đối tượng Call chứa danh sách hồ sơ người dùng tìm được.
+     */
+    public Call<List<ProfileResponse>> searchProfile(String searchString){
+        return remoteRepo.searchProfile(searchString);
+    }
+
+    /**
+     * Follow người dùng.
+     *
+     * @param profileId id của người dùng cần follow
+     * @return Đối tượng Call chứa thông tin hồ sơ người dùng sau khi follow.
+     */
+    public Call<Void> follow(String profileId) {
+        return remoteRepo.follow(profileId);
+    }
+
+    /**
+     * Unfollow người dùng.
+     *
+     * @param profileId id của người dùng cần unfollow
+     * @return Đối tượng Call chứa thông tin hồ sơ người dùng sau khi unfollow.
+     */
+    public Call<Void> unfollow(String profileId) {
+        return remoteRepo.unfollow(profileId);
+    }
+
+    /**
+     * Kiểm tra xem người dùng đã follow profileId chưa.
+     *
+     * @param profileId id của người dùng cần kiểm tra.
+     * @return Đối tượng Call chứa thông tin về việc follow người dùng.
+     */
+    public Call<FollowResponse> isFollowing(String profileId) {
+        return remoteRepo.isFollowing(profileId);
     }
 }
