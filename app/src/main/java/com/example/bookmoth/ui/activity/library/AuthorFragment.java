@@ -44,14 +44,13 @@ public class AuthorFragment extends Fragment {
         this.view = view;
         initObjects();
         initLiveData();
-        viewModel.fetchCreatedWorks();
     }
 
-//    @Override
-//    public void onHiddenChanged(boolean hidden) {
-//        super.onHiddenChanged(hidden);
-//        if (!hidden) viewModel.fetchCreatedWorks();
-//    }
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) viewModel.fetchCreatedWorks();
+    }
 
     private void initObjects() {
         viewModel = new ViewModelProvider(requireActivity()).get(LibraryWorkViewModel.class);
@@ -76,7 +75,7 @@ public class AuthorFragment extends Fragment {
         });
         rv_works_adapter.attachWorkClickListener(pos -> {
             Intent workDash = new Intent(requireContext(), WorkDashboardActivity.class);
-            workDash.putExtra("work_id", works.get(pos-1).getWork_id());
+            workDash.putExtra("work_id", works.get(pos-2).getWork_id());
             startActivity(workDash);
         });
         rv_works_adapter.attachRefreshListener(view -> viewModel.fetchCreatedWorks());

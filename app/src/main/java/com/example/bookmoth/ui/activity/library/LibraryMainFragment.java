@@ -30,17 +30,18 @@ public class LibraryMainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_library_main, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_library_main, container, false);
         this.view = view;
         initObjects();
         initFunctions();
         initLiveData();
         changeListMode(MODE_READER);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     private void initObjects() {

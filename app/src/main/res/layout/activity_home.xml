@@ -123,4 +123,13 @@
             android:layout_height="match_parent" />
     </androidx.core.widget.NestedScrollView>
 
+    <FrameLayout
+        android:id="@+id/library_own_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:paddingTop="66dp">
+
+    </FrameLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

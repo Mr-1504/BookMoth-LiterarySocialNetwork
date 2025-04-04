@@ -3,6 +3,7 @@ package com.example.bookmoth.ui.activity.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.ui.activity.library.LibTestFragment;
 import com.example.bookmoth.ui.activity.library.LibraryMainFragment;
 import com.example.bookmoth.ui.activity.option.OptionActivity;
 import com.example.bookmoth.ui.activity.option.SettingFragment;
@@ -29,6 +31,9 @@ public class HomeActivity extends AppCompatActivity {
     private ImageButton buttonHome, buttonBook, buttonStore, buttonNotification, buttonSetting, buttonSearch;
     private SharedViewModel viewModel;
     private TextView tvBookmoth;
+
+    private Fragment libraryMainFragment = new LibraryMainFragment();
+    private FrameLayout libraryOwnFrame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +58,10 @@ public class HomeActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
 
+        libraryOwnFrame = findViewById(R.id.library_own_frame);
+        libraryOwnFrame.setVisibility(View.GONE);
+        initLibraryFragment();
+
         // Mặc định hiển thị HomeFragment khi mở ứng dụng
         loadFragment(new HomeFragment());
 
@@ -71,7 +80,8 @@ public class HomeActivity extends AppCompatActivity {
         buttonBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadFragment(new LibraryMainFragment());
+                loadFragment(new LibTestFragment());
+                libraryOwnFrame.setVisibility(View.VISIBLE);
                 buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search2));
                 buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
                 buttonStore.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
@@ -135,9 +145,14 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void loadFragment(Fragment fragment) {
+        libraryOwnFrame.setVisibility(View.GONE);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
+    }
+
+    private void initLibraryFragment() {
+        getSupportFragmentManager().beginTransaction().replace(R.id.library_own_frame, libraryMainFragment).commit();
     }
 }
