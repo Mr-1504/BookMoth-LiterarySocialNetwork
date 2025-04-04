@@ -147,4 +147,13 @@
     <string name="profile_desc">Profile Image</string>
     <string name="search_hint">Bạn muốn đọc gì ?</string>
     <string name="tab_description">Tab menu</string>
+    <string name="menu">Menu</string>
+    <string name="your_wallet">Ví của bạn</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="your_book">Sách của bạn</string>
+    <string name="your_library">Thư viện của bạn</string>
+    <string name="your_work">Tác phẩm của bạn</string>
+    <string name="more">Xem thêm</string>
+    <string name="help">Trung tâm hỗ trợ</string>
+    <string name="setting">Cài đặt</string>
 </resources>
