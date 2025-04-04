@@ -44,4 +44,7 @@ public interface ShopApiService {
             @Query("page") int page,
             @Query("per_page") int perPage
     );
+
+    @GET("/search/{title}")
+    Call<List<Work>> getWorkByTitle(@Path("title") String title);
 }
