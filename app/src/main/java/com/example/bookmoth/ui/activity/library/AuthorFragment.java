@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookmoth.R;
-import com.example.bookmoth.core.libraryutils.AppConst;
+import com.example.bookmoth.core.libraryutils.LibraryConst;
 import com.example.bookmoth.domain.model.library.Work;
 import com.example.bookmoth.ui.adapter.AuthorPageRecyclerViewAdapter;
 import com.example.bookmoth.ui.activity.authorcrud.AddChapterActivity;
@@ -44,13 +44,14 @@ public class AuthorFragment extends Fragment {
         this.view = view;
         initObjects();
         initLiveData();
+        viewModel.fetchCreatedWorks();
     }
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) viewModel.fetchCreatedWorks();
-    }
+//    @Override
+//    public void onHiddenChanged(boolean hidden) {
+//        super.onHiddenChanged(hidden);
+//        if (!hidden) viewModel.fetchCreatedWorks();
+//    }
 
     private void initObjects() {
         viewModel = new ViewModelProvider(requireActivity()).get(LibraryWorkViewModel.class);
@@ -65,12 +66,12 @@ public class AuthorFragment extends Fragment {
         rv_works_adapter = new AuthorPageRecyclerViewAdapter(works);
         rv_works_adapter.attachAddWorkListener(pos -> {
             Intent createWork = new Intent(requireContext(), AddWorkActivity.class);
-            createWork.putExtra("credential", AppConst.TEST_TOKEN);
+            createWork.putExtra("credential", LibraryConst.TEST_TOKEN);
             startActivity(createWork);
         });
         rv_works_adapter.attachAddChapteristener(pos -> {
             Intent addChapter = new Intent(requireContext(), AddChapterActivity.class);
-            Bundle req = AddChapterActivity.makeRequirementBundle(AppConst.TEST_TOKEN, works);
+            Bundle req = AddChapterActivity.makeRequirementBundle(LibraryConst.TEST_TOKEN, works);
             addChapter.putExtra("requirement", req);
             startActivity(addChapter);
         });
@@ -79,6 +80,7 @@ public class AuthorFragment extends Fragment {
             workDash.putExtra("work_id", works.get(pos-1).getWork_id());
             startActivity(workDash);
         });
+        rv_works_adapter.attachRefreshListener(view -> viewModel.fetchCreatedWorks());
         rv_works.setAdapter(rv_works_adapter);
     }
 
@@ -86,7 +88,7 @@ public class AuthorFragment extends Fragment {
         rv_layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (position == AuthorPageRecyclerViewAdapter.VIEWTYPE_QUICKACTION) return 3;
+                if (position == AuthorPageRecyclerViewAdapter.VIEWTYPE_QUICKACTION || position == AuthorPageRecyclerViewAdapter.VIEWTYPE_HEADER) return 3;
                 return 1;
             }
         });

@@ -1,6 +1,6 @@
 package com.example.bookmoth.core.libraryutils;
 
-public class AppConst {
+public class LibraryConst {
     public static final String API_URL = "http://localhost:1445";
     public static final String CDN_COVER = "/libapi/cdn/cover/";
     public static final String CDN_CONTENT = "/libapi/cdn/content/";

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
-import com.example.bookmoth.core.libraryutils.AppConst;
+import com.example.bookmoth.core.libraryutils.LibraryConst;
 import com.example.bookmoth.domain.model.library.Work;
 import com.example.bookmoth.ui.viewholder.RefreshBarTitleRecyclerViewHolder;
 import com.example.bookmoth.ui.viewholder.WorkItemRecyclerViewHolder;
@@ -67,7 +67,7 @@ public class ReaderPageRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
             hdr.author.setText(String.valueOf(item.getAuthor_name()));
             if (item.getCover_url() != null && !item.getCover_url().equalsIgnoreCase("null"))
                 Glide.with(holder.itemView)
-                        .load(AppConst.API_URL + AppConst.CDN_COVER + item.getCover_url() + "?v=" + System.currentTimeMillis())
+                        .load(LibraryConst.API_URL + LibraryConst.CDN_COVER + item.getCover_url() + "?v=" + System.currentTimeMillis())
                         .into(hdr.cover);
         }
     }

@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.bookmoth.core.libraryutils.AppConst;
+import com.example.bookmoth.core.libraryutils.LibraryConst;
 import com.example.bookmoth.core.libraryutils.InnerCallback;
 import com.example.bookmoth.data.repository.library.LibApiRepository;
 import com.example.bookmoth.domain.model.library.Work;
@@ -34,7 +34,7 @@ public class LibraryWorkViewModel extends AndroidViewModel {
     public LiveData<List<Work>> getCreatedWorks() {return createdWorks;}
 
     public void fetchOwnedWorks() {
-        getOwnedWorks.run(AppConst.TEST_TOKEN, new InnerCallback<List<Work>>() {
+        getOwnedWorks.run(LibraryConst.TEST_TOKEN, new InnerCallback<List<Work>>() {
             @Override
             public void onSuccess(List<Work> body) {
                 ownedWorks.setValue(body);
@@ -48,7 +48,7 @@ public class LibraryWorkViewModel extends AndroidViewModel {
         });
     }
     public void fetchCreatedWorks() {
-        getCreatedWorks.run(AppConst.TEST_TOKEN, new InnerCallback<List<Work>>() {
+        getCreatedWorks.run(LibraryConst.TEST_TOKEN, new InnerCallback<List<Work>>() {
             @Override
             public void onSuccess(List<Work> body) {
                 createdWorks.setValue(body);

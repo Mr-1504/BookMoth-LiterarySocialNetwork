@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.bookmoth.core.libraryutils.AppConst;
+import com.example.bookmoth.core.libraryutils.LibraryConst;
 import com.example.bookmoth.core.libraryutils.InnerCallback;
 import com.example.bookmoth.data.repository.library.LibApiRepository;
 import com.example.bookmoth.domain.model.library.Work;
@@ -43,12 +43,12 @@ public class UpdateWorkViewModel extends ViewModel {
         }
 
         Work workInfos = new Work();
-        workInfos.setProfile_id(AppConst.PROFILE_ID);
+        workInfos.setProfile_id(LibraryConst.PROFILE_ID);
         if (infos.containsKey("title")) workInfos.setTitle(infos.getString("title"));
         if (infos.containsKey("price")) workInfos.setPrice((double) infos.getInt("price"));
         if (infos.containsKey("description")) workInfos.setDescription(infos.getString("description"));
 
-        updateWork.run(AppConst.TEST_TOKEN, infos.getInt("work_id"), coverImage, workInfos, new InnerCallback<String>() {
+        updateWork.run(LibraryConst.TEST_TOKEN, infos.getInt("work_id"), coverImage, workInfos, new InnerCallback<String>() {
             @Override
             public void onSuccess(String body) {
                 message.setValue("");

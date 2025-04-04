@@ -20,7 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
-import com.example.bookmoth.core.libraryutils.AppConst;
+import com.example.bookmoth.core.libraryutils.LibraryConst;
 import com.example.bookmoth.core.libraryutils.ErrorDialog;
 import com.example.bookmoth.core.libraryutils.InnerToast;
 import com.example.bookmoth.core.libraryutils.ValueGen;
@@ -137,7 +137,7 @@ public class UpdateChapterActivity extends AppCompatActivity {
 
     private Bundle compileInfoBundle() {
         Bundle infos = new Bundle();
-        infos.putString("credential", AppConst.TEST_TOKEN);
+        infos.putString("credential", LibraryConst.TEST_TOKEN);
         infos.putInt("chapter_id", chapter.getChapter_id());
         infos.putString("title", inp_title.getText().toString().isBlank() ? null : inp_title.getText().toString());
         if (inp_content_uri != null) {

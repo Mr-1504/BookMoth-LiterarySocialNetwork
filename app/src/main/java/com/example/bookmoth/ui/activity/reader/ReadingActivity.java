@@ -24,7 +24,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.example.bookmoth.R;
-import com.example.bookmoth.core.libraryutils.AppConst;
+import com.example.bookmoth.core.libraryutils.LibraryConst;
 import com.example.bookmoth.core.libraryutils.ErrorDialog;
 import com.example.bookmoth.core.libraryutils.InnerToast;
 import com.example.bookmoth.core.libraryutils.UniversalAnimate;
@@ -359,7 +359,7 @@ public class ReadingActivity extends AppCompatActivity {
     }
 
     private void loadExpansionData() {
-        ManageSettingUseCase settingUseCase = new ManageSettingUseCase(new SharedPreferencesRepository(getSharedPreferences(AppConst.SHAREDPREFS_NAME, MODE_PRIVATE)));
+        ManageSettingUseCase settingUseCase = new ManageSettingUseCase(new SharedPreferencesRepository(getSharedPreferences(LibraryConst.SHAREDPREFS_NAME, MODE_PRIVATE)));
         textFormatViewModel.loadSettings(settingUseCase);
         colorAdjustViewModel.loadSettings(settingUseCase);
 

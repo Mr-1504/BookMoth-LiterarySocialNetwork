@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.gson.Gson;
-import com.example.bookmoth.core.libraryutils.AppConst;
+import com.example.bookmoth.core.libraryutils.LibraryConst;
 import com.example.bookmoth.core.libraryutils.InnerCallback;
 import com.example.bookmoth.data.repository.library.LibApiRepository;
 import com.example.bookmoth.domain.model.library.Chapter;
@@ -43,7 +43,7 @@ public class WorkDashboardViewModel extends ViewModel {
     private void setChapters(List<Chapter> chapters) {this.chapters.setValue(chapters);}
 
     public void fetchWork(int work_id) {
-        getWorkStats.run(AppConst.TEST_TOKEN, work_id, new InnerCallback<ResponseBody>() {
+        getWorkStats.run(LibraryConst.TEST_TOKEN, work_id, new InnerCallback<ResponseBody>() {
             @Override
             public void onSuccess(ResponseBody body) {
                 try {
@@ -75,7 +75,7 @@ public class WorkDashboardViewModel extends ViewModel {
 
     public void removeWork(int work_id) {
         action = ACTION_REMWORK;
-        removeWork.run(AppConst.TEST_TOKEN, work_id, new InnerCallback<String>() {
+        removeWork.run(LibraryConst.TEST_TOKEN, work_id, new InnerCallback<String>() {
             @Override
             public void onSuccess(String body) {
                 message.setValue("");
@@ -90,7 +90,7 @@ public class WorkDashboardViewModel extends ViewModel {
 
     public void removeChaper(int chapter_id) {
         action = ACTION_REMCHAP;
-        removeChapter.run(AppConst.TEST_TOKEN, chapter_id, new InnerCallback<String>() {
+        removeChapter.run(LibraryConst.TEST_TOKEN, chapter_id, new InnerCallback<String>() {
             @Override
             public void onSuccess(String body) {
                 message.setValue("");

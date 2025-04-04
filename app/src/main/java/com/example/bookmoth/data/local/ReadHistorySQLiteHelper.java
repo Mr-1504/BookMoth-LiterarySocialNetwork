@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import com.example.bookmoth.core.libraryutils.AppConst;
+import com.example.bookmoth.core.libraryutils.LibraryConst;
 import com.example.bookmoth.core.libraryutils.DateTimeFormat;
 import com.example.bookmoth.domain.model.library.ReadHistory;
 
@@ -22,7 +22,7 @@ public class ReadHistorySQLiteHelper extends SQLiteOpenHelper {
     private final SQLiteDatabase rd = getReadableDatabase();
 
     public ReadHistorySQLiteHelper(@Nullable Context context) {
-        super(context, AppConst.SQLITEDB_NAME, null, 1);
+        super(context, LibraryConst.SQLITEDB_NAME, null, 1);
     }
 
     @Override

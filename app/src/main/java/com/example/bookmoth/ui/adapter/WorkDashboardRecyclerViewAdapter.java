@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
-import com.example.bookmoth.core.libraryutils.AppConst;
+import com.example.bookmoth.core.libraryutils.LibraryConst;
 import com.example.bookmoth.core.libraryutils.DateTimeFormat;
 import com.example.bookmoth.domain.model.library.Chapter;
 import com.example.bookmoth.domain.model.library.Work;
@@ -73,7 +73,7 @@ public class WorkDashboardRecyclerViewAdapter extends RecyclerView.Adapter<Recyc
             WorkDashboardStatsRecyclerViewHolder hdr = (WorkDashboardStatsRecyclerViewHolder) holder;
             if (work.getCover_url() != null && !work.getCover_url().isBlank()) {
                 Glide.with(hdr.cover)
-                        .load(AppConst.API_URL + AppConst.CDN_COVER + work.getCover_url() + "?v=" + System.currentTimeMillis())
+                        .load(LibraryConst.API_URL + LibraryConst.CDN_COVER + work.getCover_url() + "?v=" + System.currentTimeMillis())
                         .into(hdr.cover);
             }
             hdr.author.setText(work.getAuthor_name());

@@ -7,7 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.bookmoth.core.libraryutils.AppConst;
+import com.example.bookmoth.core.libraryutils.LibraryConst;
 import com.example.bookmoth.core.libraryutils.InnerCallback;
 import com.example.bookmoth.data.repository.library.LibApiRepository;
 import com.example.bookmoth.data.repository.library.ReadHistoryRepo;
@@ -28,7 +28,7 @@ public class ReaderMainViewModel extends AndroidViewModel {
     public LiveData<String> getMarkdownString() {return markdownString;}
     public LiveData<String> getMessage() {return message;}
     public void fetchChapterContent(Chapter chapter) {
-        getChapterContent.run(AppConst.TEST_TOKEN, chapter.getContent_url(), new InnerCallback<String>() {
+        getChapterContent.run(LibraryConst.TEST_TOKEN, chapter.getContent_url(), new InnerCallback<String>() {
             @Override
             public void onSuccess(String body) {
                 markdownString.setValue(body);

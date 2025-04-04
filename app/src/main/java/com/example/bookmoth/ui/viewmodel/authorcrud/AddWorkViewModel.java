@@ -9,7 +9,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.bookmoth.core.libraryutils.AppConst;
+import com.example.bookmoth.core.libraryutils.LibraryConst;
 import com.example.bookmoth.core.libraryutils.InnerCallback;
 import com.example.bookmoth.data.repository.library.LibApiRepository;
 import com.example.bookmoth.domain.model.library.Work;
@@ -51,12 +51,12 @@ public class AddWorkViewModel extends AndroidViewModel {
         }
 
         Work work = new Work();
-        work.setProfile_id(AppConst.PROFILE_ID);
+        work.setProfile_id(LibraryConst.PROFILE_ID);
         work.setTitle(infos.getString("title"));
         work.setPrice((double) infos.getInt("price"));
         work.setDescription(infos.getString("description"));
 
-        createWork.run(AppConst.TEST_TOKEN, coverImage, work, new InnerCallback<String>() {
+        createWork.run(LibraryConst.TEST_TOKEN, coverImage, work, new InnerCallback<String>() {
             @Override
             public void onSuccess(String body) {
                 message.setValue("");

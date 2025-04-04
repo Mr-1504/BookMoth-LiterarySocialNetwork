@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
-import com.example.bookmoth.core.libraryutils.AppConst;
+import com.example.bookmoth.core.libraryutils.LibraryConst;
 import com.example.bookmoth.core.libraryutils.ErrorDialog;
 import com.example.bookmoth.core.libraryutils.InnerToast;
 import com.example.bookmoth.domain.model.library.Work;
@@ -105,7 +105,7 @@ public class UpdateWorkActivity extends AppCompatActivity {
         price.setText(String.format("%.2f", work.getPrice()));
         if (work.getCover_url() != null)
             Glide.with(this)
-                    .load(AppConst.API_URL + AppConst.CDN_COVER + work.getCover_url() + "?v=" + System.currentTimeMillis())
+                    .load(LibraryConst.API_URL + LibraryConst.CDN_COVER + work.getCover_url() + "?v=" + System.currentTimeMillis())
                     .into(img_coverpreview);
     }
 
