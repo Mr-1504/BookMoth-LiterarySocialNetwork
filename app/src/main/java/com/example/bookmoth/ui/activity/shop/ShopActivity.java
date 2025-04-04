@@ -1,11 +1,20 @@
 package com.example.bookmoth.ui.activity.shop;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -14,8 +23,11 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.bookmoth.R;
 import com.example.bookmoth.data.repository.shop.ShopRepositoryImpl;
 import com.example.bookmoth.domain.usecase.shop.ShopUseCase;
+import com.example.bookmoth.ui.activity.home.HomeActivity;
 import com.example.bookmoth.ui.viewmodel.shop.ShopViewModel;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
 
 import retrofit2.Retrofit;
 
@@ -25,6 +37,10 @@ public class ShopActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private TabManager tabManager;
     private ShopViewModel shopViewModel;
+    private EditText searchBar;
+    private ImageButton btnBack, btnMic, btnSearch;
+    private ActivityResultLauncher<Intent> speechToTextLauncher;
+    private Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +53,14 @@ public class ShopActivity extends AppCompatActivity {
         });
 
         shopViewModel = new ShopViewModel(new ShopUseCase(new ShopRepositoryImpl()));
+        toolbar = findViewById(R.id.toolBar);
+        setSupportActionBar(toolbar);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        ViewPager2 viewPager = findViewById(R.id.view_pager);
+        viewPager =(ViewPager2) findViewById(R.id.view_pager);
+        btnBack = (ImageButton) findViewById(R.id.btn_back);
+        btnMic = (ImageButton) findViewById(R.id.btn_mic);
+        btnSearch = (ImageButton) findViewById(R.id.btn_search);
+        searchBar = (EditText) findViewById(R.id.searchbar);
         tabManager = new TabManager(this,tabLayout,viewPager,shopViewModel);
         Log.d("MainActivity", "TabManager initialized");
         tabManager.fetchCategories();
@@ -61,5 +83,65 @@ public class ShopActivity extends AppCompatActivity {
                 Log.d("TabLayout", "Reselected tab: " + (tab != null ? tab.getText() : "null"));
             }
         });
+        btnBack.setOnClickListener(v -> {
+            Intent intent = new Intent(ShopActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (viewPager.getCurrentItem() == 0) {
+                    finish();
+                } else {
+                    viewPager.setCurrentItem(0);
+                }
+            }
+        });
+
+        speechToTextLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                ArrayList<String> resultText = result.getData().getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                if (resultText != null && !resultText.isEmpty()) {
+                    searchBar.setText(resultText.get(0));
+                }
+                else {
+                    Toast.makeText(this, "No speech recognized", Toast.LENGTH_SHORT).show();
+                }
+            }
+            else {
+                Toast.makeText(this, "Speech recognition failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btnMic.setOnClickListener(v -> startSpeechToText());
+        btnSearch.setOnClickListener(v -> {
+            String query = searchBar.getText().toString();
+            if (!query.isEmpty()) {
+                Intent intent = new Intent(ShopActivity.this, SearchWorkActivity.class);
+                intent.putExtra("query", query);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Please enter a search term", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void startSpeechToText() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        if (intent.resolveActivity(getPackageManager()) == null) {
+            Toast.makeText(this, "Speech recognition not supported", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "vi-VN");
+        intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Nói gì đó...");
+        try {
+            speechToTextLauncher.launch(intent);
+        } catch (Exception e) {
+            Log.e("ShopActivity", "Error starting speech recognition", e);
+            Toast.makeText(this, "Error starting speech recognition", Toast.LENGTH_SHORT).show();
+        }
     }
 }

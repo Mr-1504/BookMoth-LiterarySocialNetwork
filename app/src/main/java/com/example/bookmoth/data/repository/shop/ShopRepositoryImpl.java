@@ -64,4 +64,9 @@ public class ShopRepositoryImpl implements ShopRepository {
     public Call<WorkResponse> getWorksByTag(String tag, int page, int perPage) {
         return shopApiService.getWorksByTag(tag, page, perPage);
     }
+
+    @Override
+    public Call<List<Work>> getWorkByTitle(String title) {
+        return shopApiService.getWorkByTitle(title);
+    }
 }

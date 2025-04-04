@@ -1,133 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/work_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <LinearLayout
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/iv_work_cover"
-            android:layout_width="120dp"
-            android:layout_height="160dp"
-            android:layout_gravity="center"
-            android:scaleType="centerCrop"
-            app:shapeAppearanceOverlay="@style/RoundedImageView"
-            android:contentDescription="Work cover" />
+        <!-- Nút quay về -->
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Quay về"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_back"
+            android:tint="@android:color/black" />
 
-
+        <!-- Tiêu đề Toolbar -->
         <TextView
-            android:id="@+id/tv_work_title"
-            android:layout_width="match_parent"
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp" />
+            android:text="Chi tiết tác phẩm"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center" />
 
+    </androidx.appcompat.widget.Toolbar>
 
-        <TextView
-            android:id="@+id/tv_author"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:paddingBottom="8dp" />
-
+    <!-- ScrollView chứa nội dung -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingBottom="8dp">
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_work_cover"
+                android:layout_width="120dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/RoundedImageView"
+                android:contentDescription="Work cover" />
+
+            <TextView
+                android:id="@+id/tv_work_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tv_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:paddingBottom="8dp" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingEnd="16dp">
+                android:gravity="center"
+                android:paddingBottom="8dp">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    app:srcCompat="@drawable/eye" />
-
-                <TextView
-                    android:id="@+id/tv_view_count"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textSize="16sp"
-                    android:paddingStart="4dp" />
+                    android:orientation="horizontal"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:srcCompat="@drawable/eye" />
+
+                    <TextView
+                        android:id="@+id/tv_view_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="16sp"
+                        android:paddingStart="4dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:srcCompat="@drawable/book" />
+                    <TextView
+                        android:id="@+id/tv_chapter_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="16sp"
+                        android:paddingStart="4dp" />
+                </LinearLayout>
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Giá: [Giá tiền]"
+                android:textSize="16sp"
+                android:paddingBottom="8dp"
+                android:gravity="center"/>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingBottom="16dp">
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    app:srcCompat="@drawable/book" />
-                <TextView
-                    android:id="@+id/tv_chapter_count"
+                <Button
+                    android:id="@+id/btn_buy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textSize="16sp"
-                    android:paddingStart="4dp" />
+                    android:layout_marginEnd="8dp"
+                    android:text="Buy" />
             </LinearLayout>
-        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Giá: [Giá tiền]"
-            android:textSize="16sp"
-            android:paddingBottom="8dp"
-            android:gravity="center"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingBottom="16dp">
-
-            <Button
-                android:id="@+id/btn_buy"
-                android:layout_width="wrap_content"
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout_detail"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Buy" />
+                android:contentDescription="Tab"
+                app:tabMode="fixed"
+                app:tabGravity="fill"
+                app:tabTextColor="@android:color/black"
+                app:tabSelectedTextColor="@android:color/darker_gray"
+                app:tabIndicatorColor="@android:color/darker_gray" />
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="300dp" />
         </LinearLayout>
+    </ScrollView>
 
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="Tab"
-            app:tabMode="fixed"
-            app:tabGravity="fill"
-            app:tabTextColor="@android:color/black"
-            app:tabSelectedTextColor="@android:color/darker_gray"
-            app:tabIndicatorColor="@android:color/darker_gray" />
-
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/view_pager_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="300dp" />
-    </LinearLayout>
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

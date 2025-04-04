@@ -28,9 +28,19 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp">
 
+                <ImageButton
+                    android:id="@+id/btn_back"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Quay về"
+                    android:src="@drawable/ic_back"
+                    android:scaleType="fitCenter"/>
+
                 <EditText
                     android:id="@+id/searchbar"
-                    android:layout_width="357dp"
+                    android:layout_width="250dp"
                     android:layout_height="54dp"
                     android:hint="@string/search_hint"
                     android:inputType="text"
@@ -39,17 +49,27 @@
                     android:padding="10dp">
                 </EditText>
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/ivProfile"
+                <ImageButton
+                    android:id="@+id/btn_mic"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Speech to Text"
+                    android:src="@drawable/ic_mic"
+                    android:scaleType="fitCenter"/>
+
+                <ImageButton
+                    android:id="@+id/btn_search"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_marginStart="10dp"
-                    android:contentDescription="@string/profile_desc"
-                    android:src="@drawable/ic_profile"
-                    android:scaleType="centerCrop"
-                    app:cornerFamily="rounded"
-                    app:cornerSize="50%"
-                    android:autofillHints="search" />
+                    android:layout_marginEnd="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Tìm kiếm"
+                    android:src="@drawable/ic_search"
+                    android:scaleType="fitCenter"/>
+
+
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
         <com.google.android.material.tabs.TabLayout
