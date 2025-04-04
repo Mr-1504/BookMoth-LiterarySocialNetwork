@@ -64,6 +64,7 @@ public class LocalProfileRepositoryImpl implements LocalProfileRepository {
                                                 @Nullable Transition<? super Bitmap> transition) {
                         Log.d("Glide", "Avatar Bitmap received - Width: " + resource.getWidth() + " Height: " + resource.getHeight());
 
+                        ImageCache.deleteBitmap(context, "avatar.png");
                         String avatarPath = ImageCache.saveBitmap(
                                 context.getApplicationContext(), resource, "avatar.png");
                         Log.d("saveProfile", "Avatar saved at: " + avatarPath);
@@ -94,6 +95,7 @@ public class LocalProfileRepositoryImpl implements LocalProfileRepository {
                                                                 @Nullable Transition<? super Bitmap> transition) {
                                         Log.d("Glide", "Cover Photo Bitmap received - Width: " + resource.getWidth() + " Height: " + resource.getHeight());
 
+                                        ImageCache.deleteBitmap(context, "cover.png");
                                         String coverPhotoPath = ImageCache.saveBitmap(
                                                 context.getApplicationContext(), resource, "cover.png");
                                         Log.d("saveProfile", "Cover photo saved at: " + coverPhotoPath);
