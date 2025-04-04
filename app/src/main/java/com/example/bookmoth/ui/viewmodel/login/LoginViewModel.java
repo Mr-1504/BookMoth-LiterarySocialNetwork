@@ -58,9 +58,9 @@ public class LoginViewModel extends ViewModel {
                 } else if (response.code() == 404) {
                     listener.onError(context.getString(R.string.account_does_not_exist));
                 } else if (response.code() == 500) {
-                    listener.onError(context.getString(R.string.error_connecting_to_server));
+                    listener.onError(context.getString(R.string.cannot_process_request));
                 } else if (response.code() == 400) {
-                    listener.onError(context.getString(R.string.invalid_email));
+                    listener.onError(context.getString(R.string.please_enter_full_information));
                 } else {
                     listener.onError(context.getString(R.string.undefined_error));
                 }

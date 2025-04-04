@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background"
+    tools:context="com.example.bookmoth.ui.activity.reader.TextFormatFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/faintbox"
+        android:paddingTop="32dp">
+
+        <SeekBar
+            android:id="@+id/rdr_stg_textsize"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:max="6"
+            android:progress="0"
+            app:layout_constraintBottom_toTopOf="@+id/rdr_sp_fontfamily"
+            app:layout_constraintEnd_toEndOf="@+id/rdr_sp_fontfamily"
+            app:layout_constraintStart_toStartOf="@+id/rdr_sp_fontfamily" />
+
+        <Spinner
+            android:id="@+id/rdr_sp_fontfamily"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textdemo_regular"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Aa"
+            android:textColor="@color/general"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/rdr_stg_textsize"
+            app:layout_constraintStart_toStartOf="@+id/rdr_stg_textsize" />
+
+        <TextView
+            android:id="@+id/textdemo_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Aa"
+            android:textColor="@color/general"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/rdr_stg_textsize"
+            app:layout_constraintEnd_toStartOf="@id/textdemo_italic"
+            app:layout_constraintStart_toEndOf="@+id/textdemo_regular" />
+
+        <TextView
+            android:id="@+id/textdemo_italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Aa"
+            android:textColor="@color/general"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toTopOf="@+id/rdr_stg_textsize"
+            app:layout_constraintEnd_toStartOf="@+id/textdemo_bolditalic"
+            app:layout_constraintStart_toEndOf="@id/textdemo_bold" />
+
+        <TextView
+            android:id="@+id/textdemo_bolditalic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Aa"
+            android:textColor="@color/general"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toTopOf="@+id/rdr_stg_textsize"
+            app:layout_constraintEnd_toEndOf="@+id/rdr_stg_textsize" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

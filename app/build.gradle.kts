@@ -101,6 +101,7 @@ dependencies {
     // Other libraries
     implementation(libs.glide)
     implementation(libs.security.crypto)
+    implementation(libs.legacy.support.v4)
     annotationProcessor(libs.compiler)
     implementation(files("zpdk-release-v3.1.aar"))
 
@@ -140,5 +141,14 @@ dependencies {
 
     //cardview
     implementation(libs.cardview)
+
+
+    //markwon
+    implementation ("io.noties.markwon:core:4.6.2")
+
+    //Glide
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
 
 }

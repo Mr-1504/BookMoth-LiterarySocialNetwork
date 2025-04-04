@@ -293,6 +293,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     .into(holder.imageView);
         }
 
+        clickOpenProfile(holder, post.getAuthorId());
+
+    }
+
+    private void clickOpenProfile(PostViewHolder holder, int authorId) {
+        holder.imageView.setOnClickListener(view -> {
+            Intent intent = new Intent(context, ProfileActivity.class);
+            intent.putExtra("profileId", authorId);
+            context.startActivity(intent);
+        });
+
+        holder.nameProfile.setOnClickListener(view -> {
+            Intent intent = new Intent(context, ProfileActivity.class);
+            intent.putExtra("profileId", authorId);
+            context.startActivity(intent);
+        });
     }
     private boolean isImageFile(String url) {
         return url.endsWith(".jpg") || url.endsWith(".png") || url.endsWith(".jpeg");

@@ -22,6 +22,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BookMoth"
         tools:targetApi="31">
+
+        <activity
+            android:name=".ui.activity.shop.CategoryWorksActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.shop.WorkDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activity.shop.ShopActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.activity.home.SearchActivity"
             android:exported="false" />
@@ -58,7 +68,7 @@
         <activity
             android:name=".ui.activity.wallet.WalletActivity"
             android:exported="false"
-            android:launchMode="standard"/>
+            android:launchMode="standard" />
         <activity
             android:name=".ui.activity.option.OptionActivity"
             android:exported="false" />
@@ -127,6 +137,28 @@
             android:exported="false" />
         <activity
             android:name=".ui.activity.home.HomeActivity"
+            android:exported="false" />
+
+        <activity
+            android:name="com.example.bookmoth.ui.activity.authorcrud.UpdateChapterActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.bookmoth.ui.activity.authorcrud.UpdateWorkActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.bookmoth.ui.activity.workdetails.WorkDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.bookmoth.ui.activity.authorcrud.AddChapterActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.bookmoth.ui.activity.authorcrud.AddWorkActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.bookmoth.ui.activity.reader.ReadingActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.bookmoth.ui.activity.workdetails.WorkDetailActivity"
             android:exported="false" />
     </application>
 
