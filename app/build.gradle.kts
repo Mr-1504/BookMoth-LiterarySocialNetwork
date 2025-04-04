@@ -101,6 +101,7 @@ dependencies {
     // Other libraries
     implementation(libs.glide)
     implementation(libs.security.crypto)
+    implementation(libs.legacy.support.v4)
     annotationProcessor(libs.compiler)
     implementation(files("zpdk-release-v3.1.aar"))
 
