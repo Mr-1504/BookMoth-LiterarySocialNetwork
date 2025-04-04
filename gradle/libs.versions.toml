@@ -30,6 +30,7 @@ retrofit = "2.9.0"
 roomCompiler = "2.6.1"
 roomRuntime = "2.6.1"
 securityCrypto = "1.0.0"
+legacySupportV4 = "1.0.0"
 
 [libraries]
 cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
@@ -64,6 +65,7 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
+legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
