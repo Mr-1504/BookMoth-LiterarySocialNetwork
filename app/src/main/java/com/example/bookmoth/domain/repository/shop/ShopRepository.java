@@ -31,7 +31,7 @@ public interface ShopRepository {
 
     Call<Profile> getProfileById( int profileId);
 
-    Call<WorkResponse> getWorksByTag (
-            String tag, int page, int perPage
-    );
+    Call<WorkResponse> getWorksByTag (String tag, int page, int perPage);
+
+    Call<List<Work>> getWorkByTitle(String title);
 }

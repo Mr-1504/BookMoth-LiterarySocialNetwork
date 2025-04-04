@@ -14,7 +14,7 @@ public class RetrofitClient {
     private static final String BASE_ASP_SERVER_URL = "http://127.0.0.1:7100/";
     private static final String SUPABASE_URL = "https://vhqcdiaoqrlcsnqvjpqh.supabase.co/";
     private static final String FLASK_URL = "http://127.0.0.1:5000/";
-    private static final String SHOP_BASE_URL = "http://10.0.2.2:8000/";
+    private static final String SHOP_BASE_URL = "http://127.0.0.1:8000/";
     private static final String LIBRARY_API_URL = "http://localhost:1445";
     private static  Retrofit shopServerRetrofit;
     private static Retrofit aspServerRetrofit;
@@ -22,12 +22,6 @@ public class RetrofitClient {
     private static Retrofit flaskRetrofit;
     private static Retrofit libraryRetrofit;
 
-    /**
-     * Trả về instance của Retrofit để kết nối với server ASP.NET.
-     * Nếu chưa khởi tạo, sẽ tạo mới với các interceptor cần thiết.
-     *
-     * @return {@link Retrofit} instance kết nối đến ASP.NET server.
-     */
     public static Retrofit getAspServerRetrofit() {
         if (aspServerRetrofit == null) {
             HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();

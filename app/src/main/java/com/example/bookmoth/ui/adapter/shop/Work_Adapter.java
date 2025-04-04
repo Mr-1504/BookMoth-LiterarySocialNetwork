@@ -22,7 +22,6 @@ import java.util.List;
 
 public class Work_Adapter extends RecyclerView.Adapter<Work_Adapter.WorkViewHolder> {
     private List<Work> works;
-
     private Context context;
 
     @NonNull
