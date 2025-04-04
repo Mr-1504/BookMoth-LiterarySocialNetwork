@@ -139,9 +139,23 @@
     <string name="mutual_friend">bạn chung</string>
     <string name="not_found_profile">Không tìm thấy người dùng nào</string>
     <string name="no_post">Chưa có bài viết nào</string>
+    <string name="please_enter_full_information">Vui lòng nhập đủ thông tin</string>
+    <string name="post">Bài viết</string>
+    <string name="photo">Ảnh</string>
+    <string name="friend">Bạn bè</string>
+    <string name="video">Video</string>
     <string name="profile_desc">Profile Image</string>
     <string name="search_hint">Bạn muốn đọc gì ?</string>
     <string name="tab_description">Tab menu</string>
+    <string name="menu">Menu</string>
+    <string name="your_wallet">Ví của bạn</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="your_book">Sách của bạn</string>
+    <string name="your_library">Thư viện của bạn</string>
+    <string name="your_work">Tác phẩm của bạn</string>
+    <string name="more">Xem thêm</string>
+    <string name="help">Trung tâm hỗ trợ</string>
+    <string name="setting">Cài đặt</string>
     <string name="choose_catagory">Chọn thể loại</string>
 
     <string name="general_submit">Xác nhận</string>

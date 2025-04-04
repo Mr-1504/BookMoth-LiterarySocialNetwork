@@ -50,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     private GoogleSignInOptions signInOptions;
     private GoogleSignInClient client;
     private TextInputEditText email, password;
+    private ProfileViewModel profileViewModel;
     int RC_LOGIN = 20;
     private ActivityLoginBinding binding;
 
@@ -67,6 +68,12 @@ public class LoginActivity extends AppCompatActivity {
                 new ProfileRepositoryImpl()
         )).deleteProfile();
 
+
+        LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
+                this, ProfileDatabase.getInstance(this).profileDao()
+        );
+        profileViewModel = new ProfileViewModel(
+                new ProfileUseCase(localRepo, new ProfileRepositoryImpl()));
         forgotPassword = binding.forgotPasswordButton;
         register = binding.registerButton;
         email = findViewById(R.id.username);
@@ -214,11 +221,6 @@ public class LoginActivity extends AppCompatActivity {
      * Lưu thông tin người dùng vào cơ sở dữ liệu.
      */
     private void saveProfile() {
-        LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
-                this, ProfileDatabase.getInstance(this).profileDao()
-        );
-        ProfileViewModel profileViewModel = new ProfileViewModel(
-                new ProfileUseCase(localRepo, new ProfileRepositoryImpl()));
 
         profileViewModel.getProfile(this, new ProfileViewModel.OnProfileListener() {
             @Override
