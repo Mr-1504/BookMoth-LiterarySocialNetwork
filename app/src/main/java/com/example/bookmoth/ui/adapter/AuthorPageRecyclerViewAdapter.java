@@ -81,7 +81,7 @@ public class AuthorPageRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         } else
         if (holder instanceof WorkItemRecyclerViewHolder) {
             WorkItemRecyclerViewHolder hdr = (WorkItemRecyclerViewHolder) holder;
-            Work item = works.get(position - 1);
+            Work item = works.get(position - 2);
 
             hdr.title.setText(item.getTitle());
             hdr.author.setText(item.getAuthor_name());

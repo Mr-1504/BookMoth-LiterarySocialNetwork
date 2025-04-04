@@ -44,14 +44,13 @@ public class AuthorFragment extends Fragment {
         this.view = view;
         initObjects();
         initLiveData();
-        viewModel.fetchCreatedWorks();
     }
 
-//    @Override
-//    public void onHiddenChanged(boolean hidden) {
-//        super.onHiddenChanged(hidden);
-//        if (!hidden) viewModel.fetchCreatedWorks();
-//    }
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) viewModel.fetchCreatedWorks();
+    }
 
     private void initObjects() {
         viewModel = new ViewModelProvider(requireActivity()).get(LibraryWorkViewModel.class);
