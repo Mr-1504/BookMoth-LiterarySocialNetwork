@@ -103,7 +103,7 @@ public class RetrofitClient {
     public static Retrofit getLibraryRetrofit() {
         if (libraryRetrofit == null) {
             libraryRetrofit = new Retrofit.Builder()
-                    .baseUrl(LibraryConst.API_URL)
+                    .baseUrl(LIBRARY_API_URL)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
