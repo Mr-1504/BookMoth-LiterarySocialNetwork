@@ -1,4 +1,4 @@
-package com.example.bookmoth.ui.activity.details;
+package com.example.bookmoth.ui.activity.workdetails;
 
 import android.content.Intent;
 import android.os.Bundle;

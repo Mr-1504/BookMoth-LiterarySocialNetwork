@@ -146,7 +146,7 @@
             android:name="com.example.bookmoth.ui.activity.authorcrud.UpdateWorkActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.bookmoth.ui.activity.details.WorkDashboardActivity"
+            android:name="com.example.bookmoth.ui.activity.workdetails.WorkDashboardActivity"
             android:exported="false" />
         <activity
             android:name="com.example.bookmoth.ui.activity.authorcrud.AddChapterActivity"
@@ -158,7 +158,7 @@
             android:name="com.example.bookmoth.ui.activity.reader.ReadingActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.bookmoth.ui.activity.details.WorkDetailActivity"
+            android:name="com.example.bookmoth.ui.activity.workdetails.WorkDetailActivity"
             android:exported="false" />
     </application>
 

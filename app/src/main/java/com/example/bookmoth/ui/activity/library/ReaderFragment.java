@@ -17,7 +17,7 @@ import com.example.bookmoth.R;
 import com.example.bookmoth.domain.model.library.Work;
 import com.example.bookmoth.ui.adapter.ReaderPageRecyclerViewAdapter;
 import com.example.bookmoth.ui.viewmodel.worklist.LibraryWorkViewModel;
-import com.example.bookmoth.ui.activity.details.WorkDetailActivity;
+import com.example.bookmoth.ui.activity.workdetails.WorkDetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;

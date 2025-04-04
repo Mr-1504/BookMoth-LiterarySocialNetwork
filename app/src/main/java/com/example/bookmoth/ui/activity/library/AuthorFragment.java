@@ -19,7 +19,7 @@ import com.example.bookmoth.domain.model.library.Work;
 import com.example.bookmoth.ui.adapter.AuthorPageRecyclerViewAdapter;
 import com.example.bookmoth.ui.activity.authorcrud.AddChapterActivity;
 import com.example.bookmoth.ui.activity.authorcrud.AddWorkActivity;
-import com.example.bookmoth.ui.activity.details.WorkDashboardActivity;
+import com.example.bookmoth.ui.activity.workdetails.WorkDashboardActivity;
 import com.example.bookmoth.ui.viewmodel.worklist.LibraryWorkViewModel;
 
 import java.util.ArrayList;
