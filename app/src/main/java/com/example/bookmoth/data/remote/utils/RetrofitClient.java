@@ -102,8 +102,18 @@ public class RetrofitClient {
 
     public static Retrofit getLibraryRetrofit() {
         if (libraryRetrofit == null) {
+
+            HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(new AuthInterceptor())
+                    .authenticator(new TokenAuthenticator(BASE_ASP_SERVER_URL))
+                    .build();
+
             libraryRetrofit = new Retrofit.Builder()
                     .baseUrl(LIBRARY_API_URL)
+                    .client(client)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
