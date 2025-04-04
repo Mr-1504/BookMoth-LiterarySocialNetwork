@@ -25,7 +25,7 @@
             android:paddingTop="4dp"
             android:paddingRight="4dp"
             android:paddingBottom="4dp"
-            android:tint="@color/general"
+            app:tint="@color/general"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_arrow_back_24" />
