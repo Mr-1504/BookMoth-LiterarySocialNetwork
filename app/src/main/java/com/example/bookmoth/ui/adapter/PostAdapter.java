@@ -294,6 +294,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
         }
 
+        clickOpenProfile(holder, post.getAuthorId());
+
+    }
+
+    private void clickOpenProfile(PostViewHolder holder, int authorId) {
+        holder.imageView.setOnClickListener(view -> {
+            Intent intent = new Intent(context, ProfileActivity.class);
+            intent.putExtra("profileId", authorId);
+            context.startActivity(intent);
+        });
+
+        holder.nameProfile.setOnClickListener(view -> {
+            Intent intent = new Intent(context, ProfileActivity.class);
+            intent.putExtra("profileId", authorId);
+            context.startActivity(intent);
+        });
     }
 //    private void getImageProfile(int authorId, ImageCallback callback) {
 //        flaskUseCase.getProfileAvata(authorId).enqueue(new Callback<Api>() {

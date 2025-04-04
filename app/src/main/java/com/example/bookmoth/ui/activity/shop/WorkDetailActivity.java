@@ -1,5 +1,6 @@
 package com.example.bookmoth.ui.activity.shop;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,11 +14,14 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.enums.Transaction;
 import com.example.bookmoth.data.repository.shop.ShopRepositoryImpl;
 import com.example.bookmoth.domain.model.shop.Chapter;
 import com.example.bookmoth.domain.model.shop.Profile;
 import com.example.bookmoth.domain.model.shop.Work;
 import com.example.bookmoth.domain.usecase.shop.ShopUseCase;
+import com.example.bookmoth.ui.activity.option.OptionActivity;
+import com.example.bookmoth.ui.activity.wallet.ConfirmActivity;
 import com.example.bookmoth.ui.adapter.shop.DetailPager_Adapter;
 import com.example.bookmoth.ui.viewmodel.shop.ShopViewModel;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -97,6 +101,17 @@ public class WorkDetailActivity extends AppCompatActivity {
                 }
             }).attach();
         }
+
+        clickBuy();
+    }
+
+    private void clickBuy() {
+        btnBuy.setOnClickListener(view -> {
+            Intent intent = new Intent(WorkDetailActivity.this, ConfirmActivity.class);
+            intent.putExtra("type", Transaction.getTransactionType(Transaction.TransactionType.PAYMENT));
+            intent.putExtra("workId", work.getWork_id());
+            startActivity(intent);
+        });
     }
 
     private void initWidget() {
