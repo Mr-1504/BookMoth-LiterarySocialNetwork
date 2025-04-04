@@ -2,7 +2,7 @@ package com.example.bookmoth.data.repository.library;
 
 import android.content.Context;
 
-import com.example.bookmoth.data.local.ReadHistorySQLiteHelper;
+import com.example.bookmoth.data.local.library.ReadHistorySQLiteHelper;
 import com.example.bookmoth.domain.model.library.ReadHistory;
 
 public class ReadHistoryRepo {

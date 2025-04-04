@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import com.example.bookmoth.domain.model.library.Chapter;
 import com.example.bookmoth.domain.model.library.Work;
 import com.example.bookmoth.data.remote.library.LibApiService;
-import com.example.bookmoth.data.remote.library.RetrofitClient;
+import com.example.bookmoth.data.remote.utils.RetrofitClient;
 import com.example.bookmoth.core.libraryutils.InnerCallback;
 
 import java.io.File;
@@ -31,7 +31,7 @@ public class LibApiRepository {
     private LibApiService api;
 
     public LibApiRepository() {
-        api = RetrofitClient.getInstance().create(LibApiService.class);
+        api = RetrofitClient.getLibraryRetrofit().create(LibApiService.class);
     }
 
     public void getChapterContent(String token, String content_url, InnerCallback<String> callback) {

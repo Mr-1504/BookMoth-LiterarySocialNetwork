@@ -1,4 +1,4 @@
-package com.example.bookmoth.data.local;
+package com.example.bookmoth.data.local.library;
 
 import android.content.ContentValues;
 import android.content.Context;
