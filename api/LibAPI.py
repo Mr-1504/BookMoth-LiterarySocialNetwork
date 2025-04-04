@@ -27,6 +27,17 @@ import string
 import subprocess
 # import waitress
 
+import jwt
+
+secret_key = "1k3akdh27dh4idj1gd4f82324eergfwe"
+
+decoded = jwt.decode(
+    token,
+    key=secte,
+    algorithms=["HS256"],
+    audience="expected-audience"
+)
+
 class SQLCons:
     IP = ".\\SQLEXPRESS"
     DB_NAME = "BookMoth"
@@ -184,11 +195,19 @@ def now_time():
 
 
 # My poor brain can't think of a clever way to do this, so...
-def extract_token(bearer):
+def extract_token(bearer, tokentype):
     if not bearer:
         return None
-    return bearer.split(" ")[1]
-
+    token = bearer.split(" ")[1]
+    try:
+        if tokentype == 1:
+            return token
+        if tokentype == 0:
+            decoded_token = jwt.decode(token, secret_key, algorithms=["HS256"], audience="com.example.bookmoth")
+            account_id = decoded_token.get("accountId")
+            return account_id
+    except Exception:
+        return 0
 
 class Validate:
     """
@@ -202,10 +221,10 @@ class Validate:
         :param bearer: request.headers.get("Authorization")
         :return: ID người dùng / 0 và báo cáo trạng thái
         """
-        token = extract_token(bearer)
+        token = extract_token(bearer, 0)
         if not token:
             return 0, ResponseDict.AUTH_WRONGFORMAT
-        with sql().execute(f"select * from {TokensConst._TABLE_NAME} where {TokensConst.token} = ?", token) as cr:
+        with sql().execute(f"select * from {AccsConst._TABLE_NAME} where {AccsConst.aid} = ?", token) as cr:
             ft = cr.fetchone()
             cr.fetchall()
         if ft is None:
@@ -223,7 +242,7 @@ class Validate:
         :param pid: Profile ID
         :return: Message and HTTP code
         """
-        pid = extract_token()
+        pid = extract_token(pid_token, 1)
         with sql().execute(f"select {ProfsConst.pid} from {ProfsConst._TABLE_NAME} where {ProfsConst.aid} = ? and {ProfsConst.pid} = ?",
                            (aid, pid)) as cr:
             ft = cr.fetchone()
@@ -1040,6 +1059,6 @@ def get_account_info():
 if __name__ == "__main__":
     libapi_firstrun()
     # waitress.serve(libapi, host="localhost", port=1445) #waitress
-    flask.run(host="localhost", port=1445)  #basic Flask
+    flask.run(host="192.168.218.34", port=1445)  #basic Flask
 # , ssl_context=("cert.pem", "key.pem")
 
