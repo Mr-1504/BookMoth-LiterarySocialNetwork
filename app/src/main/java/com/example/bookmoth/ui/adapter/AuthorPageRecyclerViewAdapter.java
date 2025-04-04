@@ -21,6 +21,7 @@ public class AuthorPageRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     public static int VIEWTYPE_HEADER = 0;
     public static int VIEWTYPE_QUICKACTION = 1;
     public static int VIEWTYPE_WORKITEM = 2;
+    public static int VIEWTYPE_ENDITEM = 3;
 
     private List<Work> works;
 
@@ -55,13 +56,15 @@ public class AuthorPageRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
         } else if (viewType == VIEWTYPE_HEADER) {
             return new RefreshBarTitleRecyclerViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.view_header_titlewithrefresh, parent, false), refreshListener);
         } else {
-            return new WorkItemRecyclerViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_work_card, parent, false), workClickListener);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_work_card, parent, false);
+            if (viewType == VIEWTYPE_ENDITEM) v.setPadding(0, 0, 0, (int) (66 * parent.getResources().getDisplayMetrics().density));
+            return new WorkItemRecyclerViewHolder(v, workClickListener);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-        return position == 0 ? VIEWTYPE_HEADER : position == 1 ? VIEWTYPE_QUICKACTION : VIEWTYPE_WORKITEM;
+        return position == 0 ? VIEWTYPE_HEADER : position == 1 ? VIEWTYPE_QUICKACTION : position == works.size()+1 ? VIEWTYPE_ENDITEM : VIEWTYPE_WORKITEM;
     }
 
     @Override
