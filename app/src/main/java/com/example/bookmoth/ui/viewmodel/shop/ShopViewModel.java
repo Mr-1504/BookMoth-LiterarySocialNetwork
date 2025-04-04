@@ -174,6 +174,25 @@ public class ShopViewModel {
         });
     }
 
+    public void getWorkByTitle(Context context, String title, final OnGetWorkByTitleListener listener) {
+        shopUseCase.getWorkByTitle(title).enqueue(new Callback<List<Work>>() {
+            @Override
+            public void onResponse(Call<List<Work>> call, Response<List<Work>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<Work> works = response.body();
+                    listener.onSuccess(works);
+                } else {
+                    listener.onFailure(context.getString(R.string.undefined_error));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Work>> call, Throwable t) {
+                listener.onFailure(context.getString(R.string.error_connecting_to_server));
+            }
+        });
+    }
+
     public interface OnCategoryClickListener {
         void onSuccess(List<Category> category);
         void onFailure(String error);
@@ -211,6 +230,11 @@ public class ShopViewModel {
 
     public interface OnGetProfileByIdListener{
         void onSuccess(Profile profile);
+        void onFailure(String error);
+    }
+
+    public interface OnGetWorkByTitleListener {
+        void onSuccess(List<Work> work);
         void onFailure(String error);
     }
 }

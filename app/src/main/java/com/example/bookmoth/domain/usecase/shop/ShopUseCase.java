@@ -53,4 +53,8 @@ public class ShopUseCase {
     public Call<WorkResponse> getWorksByTag(String tag, int page, int perPage) {
         return shopRepository.getWorksByTag(tag, page, perPage);
     }
+
+    public Call<List<Work>> getWorkByTitle(String title) {
+        return shopRepository.getWorkByTitle(title);
+    }
 }

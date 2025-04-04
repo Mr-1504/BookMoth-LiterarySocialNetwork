@@ -38,7 +38,6 @@ public class CategoryWorksActivity extends AppCompatActivity {
     private final int ITEMS_PER_PAGE = 15;
     private ShopViewModel shopViewModel;
     private int totalPages = 1;
-    private int totalItems = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

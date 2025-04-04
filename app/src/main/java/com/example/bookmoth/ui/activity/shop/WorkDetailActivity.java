@@ -2,7 +2,9 @@ package com.example.bookmoth.ui.activity.shop;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -20,7 +22,6 @@ import com.example.bookmoth.domain.model.shop.Chapter;
 import com.example.bookmoth.domain.model.shop.Profile;
 import com.example.bookmoth.domain.model.shop.Work;
 import com.example.bookmoth.domain.usecase.shop.ShopUseCase;
-import com.example.bookmoth.ui.activity.option.OptionActivity;
 import com.example.bookmoth.ui.activity.wallet.ConfirmActivity;
 import com.example.bookmoth.ui.adapter.shop.DetailPager_Adapter;
 import com.example.bookmoth.ui.viewmodel.shop.ShopViewModel;
@@ -40,6 +41,7 @@ public class WorkDetailActivity extends AppCompatActivity {
 
     private ShopViewModel shopViewModel;
     private Work work;
+    private ImageButton btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +103,15 @@ public class WorkDetailActivity extends AppCompatActivity {
                 }
             }).attach();
         }
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(WorkDetailActivity.this, ShopActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         clickBuy();
     }
@@ -124,6 +135,7 @@ public class WorkDetailActivity extends AppCompatActivity {
         tvPrice = findViewById(R.id.tv_price);
         tabLayoutDetail = findViewById(R.id.tab_layout_detail);
         viewPagerDetail = findViewById(R.id.view_pager_detail);
+        btnBack = findViewById(R.id.btn_back);
     }
 
     private String formatPrice(BigDecimal price) {
