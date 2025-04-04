@@ -300,8 +300,6 @@ def convert_to_markdown(file):
     try:
         if file.filename.endswith('.docx'):
             tempname = ''.join(random.choices(string.ascii_letters, k=10))
-            while os.path.exists(os.path.join(TEMP_DIR, tempname + ".docx")):
-                tempname = ''.join(random.choices(string.ascii_letters, k=10))
             docx_path = os.path.join(TEMP_DIR, tempname + ".docx")
             with open(docx_path, 'wb') as docxfile:
                 docxfile.write(file.read())
