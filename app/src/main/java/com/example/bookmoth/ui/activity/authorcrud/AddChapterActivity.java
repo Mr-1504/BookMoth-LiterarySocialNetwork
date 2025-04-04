@@ -52,7 +52,6 @@ public class AddChapterActivity extends AppCompatActivity {
     private List<Work> works = new ArrayList<>();;
     private List<String> dropdownString;
     private Uri inp_content_uri;
-    private String token;
 
     private ActivityResultLauncher<Intent> pickContentFile = registerForActivityResult(
         new ActivityResultContracts.StartActivityForResult(),
@@ -66,13 +65,11 @@ public class AddChapterActivity extends AppCompatActivity {
 
     /**
      * Tạo Bundle với values cần thiết cho hoạt động của AddChapterActivity
-     * @param token Token xác thực
      * @param works Danh sách tác phẩm
      * @return Bundle, key="requirement"
      */
-    public static Bundle makeRequirementBundle(String token, List<Work> works) {
+    public static Bundle makeRequirementBundle(List<Work> works) {
         Bundle req = new Bundle();
-        req.putString("credential", token);
         req.putSerializable("works", (Serializable) works);
         return req;
     }
@@ -90,7 +87,6 @@ public class AddChapterActivity extends AppCompatActivity {
 
         if (getIntent().getBundleExtra("requirement") != null) {
             Bundle req = getIntent().getBundleExtra("requirement");
-            token = req.getString("credential");
             works = (List<Work>) req.getSerializable("works");
         }
 
@@ -167,7 +163,6 @@ public class AddChapterActivity extends AppCompatActivity {
 
     private Bundle compileInfoBundle() {
         Bundle infos = new Bundle();
-        infos.putString("credential", token);
         infos.putInt("work_id", works.get(dropdownString.indexOf(inp_forwork.getText().toString())).getWork_id());
         infos.putString("title", inp_title.getText().toString().isBlank() ? null : inp_title.getText().toString());
         infos.putParcelable("content_uri", inp_content_uri);

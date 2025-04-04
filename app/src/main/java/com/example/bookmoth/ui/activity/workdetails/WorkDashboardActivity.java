@@ -91,7 +91,7 @@ public class WorkDashboardActivity extends AppCompatActivity {
         rv_adapter.attachQuickActionListener(
             wid -> {
                 Intent it = new Intent(this, AddChapterActivity.class);
-                Bundle req = AddChapterActivity.makeRequirementBundle(LibraryConst.TEST_TOKEN, new ArrayList<Work>(Arrays.asList(work)));
+                Bundle req = AddChapterActivity.makeRequirementBundle(new ArrayList<Work>(Arrays.asList(work)));
                 it.putExtra("requirement", req);
                 startActivity(it);
             },

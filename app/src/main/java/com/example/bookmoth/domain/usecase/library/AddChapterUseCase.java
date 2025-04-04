@@ -9,7 +9,7 @@ import java.io.File;
 public class AddChapterUseCase {
     private LibApiRepository repo;
     public AddChapterUseCase(LibApiRepository repo) {this.repo = repo;}
-    public void run(String token, int work_id, File content, String filename, Chapter info, InnerCallback<String> callback) {
-        repo.postChapter(token, work_id, content, filename, info, callback);
+    public void run(int work_id, File content, String filename, Chapter info, InnerCallback<String> callback) {
+        repo.postChapter(work_id, content, filename, info, callback);
     }
 }

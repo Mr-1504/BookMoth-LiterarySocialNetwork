@@ -25,8 +25,6 @@ public class AddChapterViewModel extends ViewModel {
     public void setInfoBundle(Bundle infos, Context context) {
         infoBundle.setValue(infos);
 
-        String token = infos.getString("credential");
-
         File contentFile = null;
         if (infos.getParcelable("content_uri") != null) try {
             InputStream inpStream = context.getContentResolver().openInputStream(infos.getParcelable("content_uri"));
@@ -52,7 +50,7 @@ public class AddChapterViewModel extends ViewModel {
 
         String filename = infos.getString("filename");
 
-        addChapter.run(token, work_id, contentFile, filename, chapter, new InnerCallback<String>() {
+        addChapter.run(work_id, contentFile, filename, chapter, new InnerCallback<String>() {
             @Override
             public void onSuccess(String body) {
                 message.setValue("");

@@ -28,7 +28,7 @@ public class ReaderMainViewModel extends AndroidViewModel {
     public LiveData<String> getMarkdownString() {return markdownString;}
     public LiveData<String> getMessage() {return message;}
     public void fetchChapterContent(Chapter chapter) {
-        getChapterContent.run(LibraryConst.TEST_TOKEN, chapter.getContent_url(), new InnerCallback<String>() {
+        getChapterContent.run(chapter.getContent_url(), new InnerCallback<String>() {
             @Override
             public void onSuccess(String body) {
                 markdownString.setValue(body);

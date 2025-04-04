@@ -137,7 +137,6 @@ public class UpdateChapterActivity extends AppCompatActivity {
 
     private Bundle compileInfoBundle() {
         Bundle infos = new Bundle();
-        infos.putString("credential", LibraryConst.TEST_TOKEN);
         infos.putInt("chapter_id", chapter.getChapter_id());
         infos.putString("title", inp_title.getText().toString().isBlank() ? null : inp_title.getText().toString());
         if (inp_content_uri != null) {

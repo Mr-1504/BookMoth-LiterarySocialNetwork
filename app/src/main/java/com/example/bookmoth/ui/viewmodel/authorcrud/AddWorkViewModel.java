@@ -55,7 +55,7 @@ public class AddWorkViewModel extends AndroidViewModel {
         work.setPrice((double) infos.getInt("price"));
         work.setDescription(infos.getString("description"));
 
-        createWork.run(LibraryConst.TEST_TOKEN, coverImage, work, new InnerCallback<String>() {
+        createWork.run(coverImage, work, new InnerCallback<String>() {
             @Override
             public void onSuccess(String body) {
                 message.setValue("");

@@ -50,7 +50,7 @@ public class UpdateChapterViewModel extends ViewModel {
 
         String filename = infos.getString("filename");
 
-        updateChapter.run(token, chapter_id, contentFile, filename, chapter, new InnerCallback<String>() {
+        updateChapter.run(chapter_id, contentFile, filename, chapter, new InnerCallback<String>() {
             @Override
             public void onSuccess(String body) {
                 message.setValue("");

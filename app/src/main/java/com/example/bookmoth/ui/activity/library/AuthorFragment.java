@@ -66,12 +66,11 @@ public class AuthorFragment extends Fragment {
         rv_works_adapter = new AuthorPageRecyclerViewAdapter(works);
         rv_works_adapter.attachAddWorkListener(pos -> {
             Intent createWork = new Intent(requireContext(), AddWorkActivity.class);
-            createWork.putExtra("credential", LibraryConst.TEST_TOKEN);
             startActivity(createWork);
         });
         rv_works_adapter.attachAddChapteristener(pos -> {
             Intent addChapter = new Intent(requireContext(), AddChapterActivity.class);
-            Bundle req = AddChapterActivity.makeRequirementBundle(LibraryConst.TEST_TOKEN, works);
+            Bundle req = AddChapterActivity.makeRequirementBundle(works);
             addChapter.putExtra("requirement", req);
             startActivity(addChapter);
         });

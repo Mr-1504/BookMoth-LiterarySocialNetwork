@@ -9,7 +9,7 @@ import java.io.File;
 public class AddWorkUseCase {
     private LibApiRepository repo;
     public AddWorkUseCase(LibApiRepository repo) {this.repo = repo;}
-    public void run(String token, File cover, Work work, InnerCallback<String> callback) {
-        repo.postWork(token, cover, work, callback);
+    public void run(File cover, Work work, InnerCallback<String> callback) {
+        repo.postWork(cover, work, callback);
     }
 }

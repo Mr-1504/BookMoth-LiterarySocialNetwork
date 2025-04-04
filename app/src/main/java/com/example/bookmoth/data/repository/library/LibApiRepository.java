@@ -34,8 +34,8 @@ public class LibApiRepository {
         api = RetrofitClient.getLibraryRetrofit().create(LibApiService.class);
     }
 
-    public void getChapterContent(String token, String content_url, InnerCallback<String> callback) {
-        api.getChapterContent(token, content_url).enqueue(new Callback<ResponseBody>() {
+    public void getChapterContent(String content_url, InnerCallback<String> callback) {
+        api.getChapterContent(content_url).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -92,12 +92,12 @@ public class LibApiRepository {
         });
     }
 
-    public void getOwnedWorks(String token, InnerCallback<List<Work>> callback) {
-        api.getOwnedWorks(token).enqueue(NoProcessingCallback.make(callback));
+    public void getOwnedWorks(InnerCallback<List<Work>> callback) {
+        api.getOwnedWorks().enqueue(NoProcessingCallback.make(callback));
     }
 
-    public void getCreatedWorks(String token, InnerCallback<List<Work>> callback) {
-        api.getCreatedWorks(token).enqueue(NoProcessingCallback.make(callback));
+    public void getCreatedWorks(InnerCallback<List<Work>> callback) {
+        api.getCreatedWorks().enqueue(NoProcessingCallback.make(callback));
     }
 
     public void getWorkById(int work_id, InnerCallback<Work> callback) {
@@ -120,7 +120,7 @@ public class LibApiRepository {
 
     }
 
-    public void postWork(String token, File cover, Work info, InnerCallback<String> callback) {
+    public void postWork(File cover, Work info, InnerCallback<String> callback) {
         RequestBody resFile = cover != null ?
                 RequestBody.create(MediaType.parse("image/*"), cover) :
                 null;
@@ -128,28 +128,28 @@ public class LibApiRepository {
                 MultipartBody.Part.createFormData("cover", "cover", resFile) :
                 null;
         RequestBody resJson = RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(info));
-        api.postWork(token, coverFormatRes, resJson).enqueue(MessageOnlyCallback.make(callback));
+        api.postWork(coverFormatRes, resJson).enqueue(MessageOnlyCallback.make(callback));
     }
 
-    public void postChapter(String token, int work_id, File content, String filename, Chapter info, InnerCallback<String> callback) {
+    public void postChapter(int work_id, File content, String filename, Chapter info, InnerCallback<String> callback) {
         RequestBody resFile = content != null ?
                 RequestBody.create(MediaType.parse("application/octet-stream"), content) :
                 null;
         if (resFile == null) return;
         MultipartBody.Part contentFormatRes = MultipartBody.Part.createFormData("content", filename, resFile);
         RequestBody resJson = RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(info));
-        api.postChapter(token, work_id, contentFormatRes, resJson).enqueue(MessageOnlyCallback.make(callback));
+        api.postChapter(work_id, contentFormatRes, resJson).enqueue(MessageOnlyCallback.make(callback));
     }
 
-    public void getWorkStats(String token, int work_id, InnerCallback<ResponseBody> callback) {
-        api.getWorkStats(token, work_id).enqueue(NoProcessingCallback.make(callback));
+    public void getWorkStats(int work_id, InnerCallback<ResponseBody> callback) {
+        api.getWorkStats(work_id).enqueue(NoProcessingCallback.make(callback));
     }
 
-    public void deleteWork(String token, int work_id, InnerCallback<String> callback) {
-        api.deleteWork(token, work_id).enqueue(MessageOnlyCallback.make(callback));
+    public void deleteWork(int work_id, InnerCallback<String> callback) {
+        api.deleteWork(work_id).enqueue(MessageOnlyCallback.make(callback));
     }
 
-    public void putWork(String token, int work_id, File cover, Work info, InnerCallback<String> callback) {
+    public void putWork(int work_id, File cover, Work info, InnerCallback<String> callback) {
         RequestBody resFile = cover != null ?
                 RequestBody.create(MediaType.parse("image/*"), cover) :
                 null;
@@ -157,14 +157,14 @@ public class LibApiRepository {
                 MultipartBody.Part.createFormData("cover", "cover", resFile) :
                 null;
         RequestBody resJson = RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(info));
-        api.putWork(token, work_id, coverFormatRes, resJson).enqueue(MessageOnlyCallback.make(callback));
+        api.putWork(work_id, coverFormatRes, resJson).enqueue(MessageOnlyCallback.make(callback));
     }
 
-    public void deleteChapter(String token, int chapter_id, InnerCallback<String> callback) {
-        api.deleteChapter(token, chapter_id).enqueue(MessageOnlyCallback.make(callback));
+    public void deleteChapter(int chapter_id, InnerCallback<String> callback) {
+        api.deleteChapter(chapter_id).enqueue(MessageOnlyCallback.make(callback));
     }
 
-    public void putChapter(String token, int chapter_id, File content, String filename, Chapter info, InnerCallback<String> callback) {
+    public void putChapter(int chapter_id, File content, String filename, Chapter info, InnerCallback<String> callback) {
         RequestBody resFile = content != null ?
                 RequestBody.create(MediaType.parse("application/octet-stream"), content) :
                 null;
@@ -172,6 +172,6 @@ public class LibApiRepository {
                 MultipartBody.Part.createFormData("content", filename, resFile) :
                 null;
         RequestBody resJson = RequestBody.create(MediaType.parse("application/json"), new Gson().toJson(info));
-        api.putChapter(token, chapter_id, contentFormatRes, resJson).enqueue(MessageOnlyCallback.make(callback));
+        api.putChapter(chapter_id, contentFormatRes, resJson).enqueue(MessageOnlyCallback.make(callback));
     }
 }

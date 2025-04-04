@@ -47,7 +47,7 @@ public class UpdateWorkViewModel extends ViewModel {
         if (infos.containsKey("price")) workInfos.setPrice((double) infos.getInt("price"));
         if (infos.containsKey("description")) workInfos.setDescription(infos.getString("description"));
 
-        updateWork.run(LibraryConst.TEST_TOKEN, infos.getInt("work_id"), coverImage, workInfos, new InnerCallback<String>() {
+        updateWork.run(infos.getInt("work_id"), coverImage, workInfos, new InnerCallback<String>() {
             @Override
             public void onSuccess(String body) {
                 message.setValue("");

@@ -45,8 +45,6 @@ public class AddWorkActivity extends AppCompatActivity {
 
     private ImageView img_coverpreview;
 
-    private String credentialToken;
-
     private ActivityResultLauncher<Intent> pickImgArl = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             res -> {
@@ -67,8 +65,6 @@ public class AddWorkActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        credentialToken = getIntent().getStringExtra("credential");
 
         initObjects();
         initFunctions();

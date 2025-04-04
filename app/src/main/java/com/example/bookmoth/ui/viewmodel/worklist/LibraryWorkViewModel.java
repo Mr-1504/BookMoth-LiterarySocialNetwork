@@ -34,7 +34,7 @@ public class LibraryWorkViewModel extends AndroidViewModel {
     public LiveData<List<Work>> getCreatedWorks() {return createdWorks;}
 
     public void fetchOwnedWorks() {
-        getOwnedWorks.run(LibraryConst.TEST_TOKEN, new InnerCallback<List<Work>>() {
+        getOwnedWorks.run(new InnerCallback<List<Work>>() {
             @Override
             public void onSuccess(List<Work> body) {
                 ownedWorks.setValue(body);
@@ -48,7 +48,7 @@ public class LibraryWorkViewModel extends AndroidViewModel {
         });
     }
     public void fetchCreatedWorks() {
-        getCreatedWorks.run(LibraryConst.TEST_TOKEN, new InnerCallback<List<Work>>() {
+        getCreatedWorks.run(new InnerCallback<List<Work>>() {
             @Override
             public void onSuccess(List<Work> body) {
                 createdWorks.setValue(body);

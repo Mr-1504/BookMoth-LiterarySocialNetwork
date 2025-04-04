@@ -9,7 +9,7 @@ import java.util.List;
 public class GetCreatedWorksUseCase {
     private LibApiRepository repo;
     public GetCreatedWorksUseCase(LibApiRepository repo) {this.repo = repo;}
-    public void run(String token, InnerCallback<List<Work>> callback) {
-        repo.getCreatedWorks(token, callback);
+    public void run(InnerCallback<List<Work>> callback) {
+        repo.getCreatedWorks(callback);
     }
 }
