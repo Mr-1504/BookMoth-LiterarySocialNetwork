@@ -22,6 +22,7 @@ import com.example.bookmoth.domain.model.shop.Chapter;
 import com.example.bookmoth.domain.model.shop.Profile;
 import com.example.bookmoth.domain.model.shop.Work;
 import com.example.bookmoth.domain.usecase.shop.ShopUseCase;
+import com.example.bookmoth.ui.activity.wallet.ConfirmActivity;
 import com.example.bookmoth.ui.adapter.shop.DetailPager_Adapter;
 import com.example.bookmoth.ui.viewmodel.shop.ShopViewModel;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -134,6 +135,7 @@ public class WorkDetailActivity extends AppCompatActivity {
         tvPrice = findViewById(R.id.tv_price);
         tabLayoutDetail = findViewById(R.id.tab_layout_detail);
         viewPagerDetail = findViewById(R.id.view_pager_detail);
+        btnBack = findViewById(R.id.btn_back);
     }
 
     private String formatPrice(BigDecimal price) {
