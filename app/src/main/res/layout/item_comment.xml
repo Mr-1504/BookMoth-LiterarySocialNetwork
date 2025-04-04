@@ -52,7 +52,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="time bài viết"
-                    android:textColor="#000"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -68,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/transfer"
-                app:srcCompat="@drawable/outline_delete_24" />
+                app:srcCompat="@drawable/baseline_close_24" />
         </LinearLayout>
 
         <TextView
@@ -76,7 +75,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Nội dung bài viết"
-            android:textColor="#333"
             android:textSize="14sp" />
 
         <LinearLayout
@@ -98,7 +96,6 @@
                     android:layout_gravity="start"
                     android:layout_marginStart="35dp"
                     android:text="0"
-                    android:textColor="@android:color/black"
                     android:textSize="20sp" />
 
                 <ImageButton

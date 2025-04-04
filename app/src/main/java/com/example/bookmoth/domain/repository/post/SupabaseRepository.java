@@ -28,7 +28,7 @@ public interface SupabaseRepository {
     Call<List<Post>> getPostById(String postID);
 
 
-    Call<List<Post>> getPostByIdUser(String author_id, String status);
+    Call<List<Post>> getPostByIdUser(String author_id, String order, String status);
 
     Call<List<Post>> getPostsByUserIds(
             String userIdFilter, // Ví dụ: "in.(1,2,3)"

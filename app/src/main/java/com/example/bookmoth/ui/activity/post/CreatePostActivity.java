@@ -40,6 +40,7 @@ import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -133,12 +134,22 @@ public class CreatePostActivity extends AppCompatActivity {
                             if (checkBlood == 1) {
                                 btnSubmitPost.setEnabled(false);
                                 progressBar.setVisibility(View.VISIBLE);
-                                Toast.makeText(CreatePostActivity.this, "Đang kiểm tra nội dung...", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CreatePostActivity.this, "Nghi ngờ trong ảnh có máu. Đang kiểm tra.", Toast.LENGTH_SHORT).show();
 
                                 flaskViewModel.getProcessImage(Integer.parseInt(profileId), body1, new FlaskViewModel.OnGetProcessImage() {
                                     @Override
                                     public void onGetSuccess(byte[] imageBytes) {
                                         Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                                        // Lưu bitmap vào bộ nhớ tạm thời
+                                        File file = new File(getExternalCacheDir(), "processed_image.jpg");
+                                        try (FileOutputStream out = new FileOutputStream(file)) {
+                                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                                            out.flush();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        // Lấy Uri từ file đã lưu
+                                        fileUri = Uri.fromFile(file);
                                         imgView.setImageBitmap(bitmap);
                                         Toast.makeText(CreatePostActivity.this, "Kiểm tra nội dung thành công", Toast.LENGTH_SHORT).show();
                                         btnSubmitPost.setEnabled(true);

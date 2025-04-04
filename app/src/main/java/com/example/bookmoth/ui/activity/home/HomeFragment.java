@@ -57,7 +57,7 @@ public class HomeFragment extends Fragment {
 
     private String profileId;
     private int currentPage = 0;
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 3;
     private boolean isLoading = false;
     private boolean hasMoreData = true;
 
