@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bookmoth.R;
+import com.example.bookmoth.ui.activity.library.LibraryMainFragment;
 import com.example.bookmoth.ui.activity.option.OptionActivity;
 import com.example.bookmoth.ui.activity.option.SettingFragment;
 import com.example.bookmoth.ui.activity.shop.ShopActivity;
@@ -71,7 +72,7 @@ public class HomeActivity extends AppCompatActivity {
         buttonBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                loadFragment(new BookFragment());
+                loadFragment(new LibraryMainFragment());
                 buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search2));
                 buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
                 buttonStore.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));

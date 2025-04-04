@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="100dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="center|end"
+    tools:context="com.example.bookmoth.ui.activity.reader.ScrollFragment">
+
+    <TextView
+        android:id="@+id/rdr_tv_scroll"
+        android:layout_width="78dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|end"
+        android:text="0/0"
+        android:textAlignment="textEnd"
+        android:translationX="-24dp" />
+
+    <FrameLayout
+        android:layout_width="24dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center|end">
+
+        <SeekBar
+            android:id="@+id/rdr_sb_scroll"
+            android:layout_width="480sp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:rotation="90" />
+
+    </FrameLayout>
+
+</FrameLayout>
