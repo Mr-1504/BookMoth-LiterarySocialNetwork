@@ -30,8 +30,8 @@ public class PostUseCase {
     }
 
 
-    public Call<List<Post>> getPostByIdUser(String author_id, String status) {
-        return supabaseRepository.getPostByIdUser(author_id, status);
+    public Call<List<Post>> getPostByIdUser(String author_id,String order, String status) {
+        return supabaseRepository.getPostByIdUser(author_id,order, status);
     }
 
     public Call<List<Post>> getPostsByUserIds(

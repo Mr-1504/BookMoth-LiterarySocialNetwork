@@ -38,10 +38,17 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -98,7 +105,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         Post post = postList.get(position);
         holder.tvTitle.setText(post.getTitle());
         holder.tvContent.setText(post.getContent());
-        holder.tvTimestamp.setText(post.getTimestamp());
+        holder.tvTimestamp.setText(formatTimeAgo(post.getTimestamp()));
         holder.countLike.setText(String.valueOf(post.getCount_like()));
         holder.countComment.setText(String.valueOf(post.getCount_comment()));
 
@@ -197,12 +204,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         if (avatarPath != null && !avatarPath.isEmpty() && new File(avatarPath).exists()) {
             Picasso.get()
                     .load(new File(avatarPath))
+                    .resize(100, 100)
+                    .centerCrop()
                     .placeholder(R.drawable.avatar)
                     .error(R.drawable.avatar)
                     .into(holder.btnProfile);
         } else {
+            String imageUrl = "http://127.0.0.1:7100/images/avatars/"+ post.getAuthorId()+".png";
+            post.setAuthor_avatar_url(imageUrl); // Cập nhật đường dẫn ảnh vào post
             Picasso.get()
-                    .load(R.drawable.avatar)
+                    .load(imageUrl)
+                    .resize(100, 100)
+                    .centerCrop()
+                    .placeholder(R.drawable.avatar)
+                    .error(R.drawable.avatar)
                     .into(holder.btnProfile);
         }
 
@@ -269,31 +284,27 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         String mediaUrl = post.getMediaUrl();
         holder.resetMediaViews(); // Ẩn tất cả trước khi hiển thị nội dung phù hợp
 
-        if(isNetworkAvailable()){
-            if (mediaUrl != null && !mediaUrl.isEmpty()) {
-                if (mediaUrl.endsWith(".jpg") || mediaUrl.endsWith(".png") || mediaUrl.endsWith(".jpeg")) {
-                    holder.imageView.setVisibility(View.VISIBLE);
-                    Glide.with(context)
-                            .load(mediaUrl)
-                            .placeholder(R.drawable.placeholder_image) // Hiển thị ảnh mặc định khi tải
-                            .error(R.drawable.error_image) // Hiển thị ảnh lỗi nếu tải thất bại
-                            .into(holder.imageView);
-                }
-            }
-        }
-        else{
-            if (mediaUrl != null && !mediaUrl.isEmpty()) {
-                if (mediaUrl.endsWith(".jpg") || mediaUrl.endsWith(".png") || mediaUrl.endsWith(".jpeg")) {
-                    holder.imageView.setVisibility(View.VISIBLE);
-                    Glide.with(context)
-                            .load(new File(mediaUrl))
-                            .placeholder(R.drawable.placeholder_image) // Hiển thị ảnh mặc định khi tải
-                            .error(R.drawable.error_image) // Hiển thị ảnh lỗi nếu tải thất bại
-                            .into(holder.imageView);
-                }
-            }
+        if (mediaUrl != null && !mediaUrl.isEmpty() && isImageFile(mediaUrl)) {
+            holder.imageView.setVisibility(View.VISIBLE);
+            Glide.with(context)
+                    .load(isNetworkAvailable() ? mediaUrl : new File(mediaUrl)) // Nếu có mạng, tải từ URL, nếu không tải từ bộ nhớ cục bộ
+                    .placeholder(R.drawable.placeholder_image) // Ảnh chờ
+                    .error(R.drawable.error_image) // Ảnh lỗi
+                    .into(holder.imageView);
         }
 
+    }
+    private boolean isImageFile(String url) {
+        return url.endsWith(".jpg") || url.endsWith(".png") || url.endsWith(".jpeg");
+    }
+    // Hàm kiểm tra kết nối mạng
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            return networkInfo != null && networkInfo.isConnected();
+        }
+        return false;
     }
 //    private void getImageProfile(int authorId, ImageCallback callback) {
 //        flaskUseCase.getProfileAvata(authorId).enqueue(new Callback<Api>() {
@@ -347,6 +358,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         void onSuccess(String name);
         void onError(String error);
     }
+
 
     private void checkLikeStatus(int postId, PostViewHolder holder) {
         profileId = SecureStorage.getToken("profileId");
@@ -504,11 +516,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
+
 
     @Override
     public int getItemCount() {
@@ -549,5 +557,36 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 //            videoView.setVisibility(View.GONE);
 //            btnPlayAudio.setVisibility(View.GONE);
         }
+    }
+    private String formatTimeAgo(String timestamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+        try {
+            Date postTime = sdf.parse(timestamp);
+            if (postTime == null) return "";
+
+            long currentTime = System.currentTimeMillis();
+            long timeDiff = currentTime - postTime.getTime();
+
+            long minutes = timeDiff / (60 * 1000);
+            long hours = timeDiff / (60 * 60 * 1000);
+            long days = timeDiff / (24 * 60 * 60 * 1000);
+            long months = days / 30;
+
+            if (minutes < 60) {
+                return minutes + " phút trước";
+            } else if (hours < 24) {
+                return hours + " giờ trước";
+            } else if (days == 1) {
+                return "Hôm qua";
+            } else if (days < 30) {
+                return days + " ngày trước";
+            } else {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                return dateFormat.format(postTime);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

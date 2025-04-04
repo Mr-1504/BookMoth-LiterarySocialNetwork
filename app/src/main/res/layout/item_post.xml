@@ -42,6 +42,7 @@
                     android:id="@+id/nameProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingStart="5dp"
                     android:text="Họ và tên"
                     android:textSize="16sp"
                     android:textStyle="normal|bold" />
@@ -50,8 +51,9 @@
                     android:id="@+id/tvTimestamp"
                     android:layout_width="195dp"
                     android:layout_height="wrap_content"
+                    android:paddingStart="4dp"
+                    android:paddingTop="5dp"
                     android:text="time bài viết"
-                    android:textColor="#000"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -63,18 +65,19 @@
             <ImageButton
                 android:id="@+id/btnEdit"
                 android:layout_width="49dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/transfer"
+                android:background="@android:color/transparent"
+                android:padding="5dp"
                 app:srcCompat="@drawable/baseline_create_24" />
 
             <ImageButton
                 android:id="@+id/btnDelete"
                 android:layout_width="51dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/transfer"
-                app:srcCompat="@drawable/outline_delete_24" />
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/baseline_close_24" />
 
         </LinearLayout>
 
@@ -84,7 +87,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Tiêu đề bài viết"
-            android:textColor="#000"
             android:textSize="18sp" />
 
         <TextView
@@ -92,7 +94,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Nội dung bài viết"
-            android:textColor="#333"
             android:textSize="14sp" />
 
         <TextView
@@ -100,7 +101,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="TabWorks"
-            android:textColor="#333"
+            android:textColor="@android:color/holo_blue_dark"
             android:textSize="14sp" />
 
         <ImageView
@@ -113,13 +114,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="15dp"
+            android:layout_height="19dp"
             android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="15dp"
+                android:layout_width="28dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
@@ -127,25 +128,27 @@
 
             <TextView
                 android:id="@+id/countLike"
-                android:layout_width="174dp"
+                android:layout_width="148dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="0" />
-
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="15dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/button_commented" />
 
             <TextView
                 android:id="@+id/countComment"
-                android:layout_width="175dp"
+                android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="0" />
+                android:padding="2dp"
+                android:text="0"
+                android:textAlignment="textEnd" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="95dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="2dp"
+                android:text="bình luận" />
         </LinearLayout>
 
         <LinearLayout
@@ -165,7 +168,6 @@
                     android:layout_height="wrap_content"
                     android:text="Thích"
                     android:textSize="20sp"
-                    android:textColor="@android:color/black"
                     android:layout_gravity="start"
                     android:layout_marginStart="35dp"/>
 
@@ -189,7 +191,6 @@
                     android:layout_height="wrap_content"
                     android:text="Bình luận"
                     android:textSize="20sp"
-                    android:textColor="@android:color/black"
                     android:layout_gravity="start"
                     android:layout_marginStart="35dp"/>
 

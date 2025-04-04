@@ -33,6 +33,7 @@ public interface SupabaseApiService {
 
     @GET("rest/v1/posts")
     Call<List<Post>> getPostByIdUser(@Query("author_id") String author_id,
+                                     @Query("order") String order,
                                      @Query("status") String status
     );
 

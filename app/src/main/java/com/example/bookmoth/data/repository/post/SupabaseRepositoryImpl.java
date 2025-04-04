@@ -30,8 +30,8 @@ public class SupabaseRepositoryImpl implements SupabaseRepository {
     }
 
     @Override
-    public Call<List<Post>> getPostByIdUser(String author_id, String status) {
-        return supabaseApiService.getPostByIdUser(author_id,status);
+    public Call<List<Post>> getPostByIdUser(String author_id,String order, String status) {
+        return supabaseApiService.getPostByIdUser(author_id,order,status);
     }
 
     @Override
