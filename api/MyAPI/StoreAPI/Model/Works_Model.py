@@ -11,14 +11,14 @@ from unicodedata import category
 class WorksModel:
     def __init__(self):
         try:
-            server = 'WANGAMRT\SQLEXPRESS'
+            server = '.\\SQLEXPRESS'
             database = 'BookMoth'
             driver = 'ODBC Driver 17 for SQL Server'
             conn_str = f'mssql+pyodbc://@{server}/{database}?trusted_connection=yes&driver={driver}'
             self.engine = create_engine(conn_str, echo=False)
             self.engine.autocommit = True
 
-            self.base_url = "http://127.0.0.1:8000"
+            self.base_url = "http://192.168.218.34:8000"
             self.static_cover_url = "/covers/"
 
 

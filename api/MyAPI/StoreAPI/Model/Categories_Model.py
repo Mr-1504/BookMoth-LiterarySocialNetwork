@@ -6,7 +6,7 @@ from sqlalchemy.engine import row
 class CategoriesModel:
     def __init__(self):
         try:
-            server = 'WANGAMRT\SQLEXPRESS'
+            server = '.\\SQLEXPRESS'
             database = 'BookMoth'
             driver = 'ODBC Driver 17 for SQL Server'
             conn_str = f'mssql+pyodbc://{server}/{database}?trusted_connection=yes&driver={driver}'

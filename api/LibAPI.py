@@ -183,7 +183,7 @@ def reqres(res):
 
 
 def now_time():
-    now = datetime.datetime.now(datetime.UTC)
+    now = datetime.datetime.now(datetime.timezone.utc)
     return now.replace(microsecond=0)
 
 
