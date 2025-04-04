@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -23,7 +26,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.bookmoth.R;
 import com.example.bookmoth.core.utils.SecureStorage;
 import com.example.bookmoth.data.model.profile.ProfileDatabase;
@@ -40,7 +47,9 @@ import com.example.bookmoth.ui.adapter.PostAdapter;
 import com.example.bookmoth.ui.viewmodel.post.PostViewModel;
 import com.example.bookmoth.ui.viewmodel.profile.ProfileViewModel;
 import com.google.android.material.button.MaterialButton;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -224,6 +233,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onProfileSuccess(Profile profile) {
                 runOnUiThread(() -> {
+                    Log.i("ProfileActivity", "Profile loaded successfully");
                     setProfile(profile);
                 });
             }
@@ -238,6 +248,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 @Override
                                 public void onProfileSuccess(Profile profile) {
                                     runOnUiThread(() -> {
+                                        Log.i("ProfileActivity", "Local Profile loaded successfully");
                                         setProfile(profile);
                                     });
                                 }
@@ -268,14 +279,19 @@ public class ProfileActivity extends AppCompatActivity {
 
         txtUsername.setText(String.format("(%s)", profile.getUsername()));
 
+//        Picasso.get()
+//                .load(profile.getAvatar())
+//                .placeholder(R.drawable.avatar)
+//                .error(R.drawable.avatar)
+//                .into(avatar);
         // Load Avatar
         Glide.with(ProfileActivity.this)
                 .load(profile.getAvatar())
                 .placeholder(R.drawable.avatar)
                 .error(R.drawable.avatar)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .override(400, 400) // Giảm kích thước ảnh để tăng tốc
-                .thumbnail(0.1f) // Load ảnh nhỏ trước để hiển thị nhanh hơn
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .override(400, 400)
+                .thumbnail(0.1f)
                 .into(avatar);
 
         // Load Cover Photo
@@ -283,8 +299,8 @@ public class ProfileActivity extends AppCompatActivity {
                 .load(profile.getCoverphoto())
                 .placeholder(R.drawable.avatar)
                 .error(R.drawable.cover)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .override(800, 400) // Kích thước hợp lý hơn cho ảnh bìa
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .override(800, 400)
                 .thumbnail(0.1f)
                 .into(coverPhoto);
     }
