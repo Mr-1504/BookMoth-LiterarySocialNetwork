@@ -51,7 +51,6 @@ public class AddWorkViewModel extends AndroidViewModel {
         }
 
         Work work = new Work();
-        work.setProfile_id(LibraryConst.PROFILE_ID);
         work.setTitle(infos.getString("title"));
         work.setPrice((double) infos.getInt("price"));
         work.setDescription(infos.getString("description"));

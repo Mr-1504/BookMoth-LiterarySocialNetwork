@@ -43,7 +43,6 @@ public class UpdateWorkViewModel extends ViewModel {
         }
 
         Work workInfos = new Work();
-        workInfos.setProfile_id(LibraryConst.PROFILE_ID);
         if (infos.containsKey("title")) workInfos.setTitle(infos.getString("title"));
         if (infos.containsKey("price")) workInfos.setPrice((double) infos.getInt("price"));
         if (infos.containsKey("description")) workInfos.setDescription(infos.getString("description"));
