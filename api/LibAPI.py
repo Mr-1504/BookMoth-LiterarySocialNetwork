@@ -31,13 +31,6 @@ import jwt
 
 secret_key = "1k3akdh27dh4idj1gd4f82324eergfwe"
 
-decoded = jwt.decode(
-    token,
-    key=secte,
-    algorithms=["HS256"],
-    audience="expected-audience"
-)
-
 class SQLCons:
     IP = ".\\SQLEXPRESS"
     DB_NAME = "BookMoth"
@@ -229,9 +222,7 @@ class Validate:
             cr.fetchall()
         if ft is None:
             return 0, ResponseDict.NULL_TOKEN
-        aid = ft.__getattribute__(TokensConst.aid)
-        if ft.__getattribute__(TokensConst.exp).replace(tzinfo=datetime.timezone.utc) < now_time():
-            return 0, ResponseDict.EXPIRED_SESSION
+        aid = ft.__getattribute__(AccsConst.aid)
         return aid, ResponseDict.SUCCESS
 
     @staticmethod
