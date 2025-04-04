@@ -23,7 +23,7 @@
 
             <ImageButton
                 android:id="@+id/btnBack"
-                android:layout_width="1dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
@@ -32,7 +32,7 @@
 
             <EditText
                 android:id="@+id/textSearch"
-                android:layout_width="258dp"
+                android:layout_width="224dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"

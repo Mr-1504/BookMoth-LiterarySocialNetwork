@@ -60,10 +60,10 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 loadFragment(new HomeFragment());
                 buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search2));
-                buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
-                buttonStore.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
-                buttonNotification.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
-                buttonSetting.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
+                buttonStore.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
+                buttonNotification.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
+                buttonSetting.setBackground(ContextCompat.getDrawable(HomeActivity.this,R.color.trans ));
             }
         });
         buttonBook.setOnClickListener(new View.OnClickListener() {
@@ -71,10 +71,10 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                loadFragment(new BookFragment());
                 buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search2));
-                buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
-                buttonStore.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
-                buttonNotification.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
-                buttonSetting.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
+                buttonStore.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
+                buttonNotification.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
+                buttonSetting.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
             }
         });
 
@@ -83,10 +83,10 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                loadFragment(new StoreFragment());
                 buttonStore.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search2));
-                buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
-                buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
-                buttonNotification.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
-                buttonSetting.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
+                buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
+                buttonNotification.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
+                buttonSetting.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
             }
         });
 
@@ -95,10 +95,10 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 loadFragment(new NotificationFragment());
                 buttonNotification.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search2));
-                buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
-                buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
-                buttonStore.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
-                buttonSetting.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.drawable.search1));
+                buttonHome.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
+                buttonBook.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
+                buttonStore.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
+                buttonSetting.setBackground(ContextCompat.getDrawable(HomeActivity.this, R.color.trans));
             }
         });
 

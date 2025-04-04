@@ -74,7 +74,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/search1"
+                android:background="@android:color/transparent"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/book" />
@@ -84,7 +84,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/search1"
+                android:background="@android:color/transparent"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/store" />
@@ -94,7 +94,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/search1"
+                android:background="@android:color/transparent"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/notification" />
@@ -104,7 +104,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/search1"
+                android:background="@android:color/transparent"
                 android:padding="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/settingfix" />
