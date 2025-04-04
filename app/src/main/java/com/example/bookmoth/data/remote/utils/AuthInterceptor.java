@@ -25,10 +25,13 @@ public class AuthInterceptor implements Interceptor {
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         String token = SecureStorage.getToken("jwt_token");
+        String profileId = SecureStorage.getToken("profileId");
+
         if (token == null) return chain.proceed(chain.request());
 
         Request request = chain.request().newBuilder()
                 .addHeader("Authorization", "Bearer " + token)
+                .addHeader("ProfileId", "ProfileId " + profileId)
                 .build();
         return chain.proceed(request);
     }

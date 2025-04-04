@@ -61,6 +61,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:src="@drawable/avatar"
+            android:foreground="@drawable/circle_border"
             app:shapeAppearanceOverlay="@style/RoundedImage" />
 
         <com.jsibbold.zoomage.ZoomageView

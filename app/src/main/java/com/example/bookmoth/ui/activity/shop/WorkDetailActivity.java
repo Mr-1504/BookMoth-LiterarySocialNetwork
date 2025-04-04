@@ -16,6 +16,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.example.bookmoth.R;
+import com.example.bookmoth.core.enums.Transaction;
 import com.example.bookmoth.data.repository.shop.ShopRepositoryImpl;
 import com.example.bookmoth.domain.model.shop.Chapter;
 import com.example.bookmoth.domain.model.shop.Profile;
@@ -36,6 +37,7 @@ public class WorkDetailActivity extends AppCompatActivity {
     private Button btnBuy;
     private TabLayout tabLayoutDetail;
     private ViewPager2 viewPagerDetail;
+
     private ShopViewModel shopViewModel;
     private Work work;
     private ImageButton btnBack;
@@ -109,6 +111,17 @@ public class WorkDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        clickBuy();
+    }
+
+    private void clickBuy() {
+        btnBuy.setOnClickListener(view -> {
+            Intent intent = new Intent(WorkDetailActivity.this, ConfirmActivity.class);
+            intent.putExtra("type", Transaction.getTransactionType(Transaction.TransactionType.PAYMENT));
+            intent.putExtra("workId", work.getWork_id());
+            startActivity(intent);
+        });
     }
 
     private void initWidget() {
@@ -121,7 +134,6 @@ public class WorkDetailActivity extends AppCompatActivity {
         tvPrice = findViewById(R.id.tv_price);
         tabLayoutDetail = findViewById(R.id.tab_layout_detail);
         viewPagerDetail = findViewById(R.id.view_pager_detail);
-        btnBack = findViewById(R.id.btn_back);
     }
 
     private String formatPrice(BigDecimal price) {
