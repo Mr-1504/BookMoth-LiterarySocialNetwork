@@ -275,5 +275,5 @@ public class HomeFragment extends Fragment {
     private void saveFirstPageToSQLite(List<Post> posts) {
         dbHelper.savePosts(posts);
     }
-    
+
 }
