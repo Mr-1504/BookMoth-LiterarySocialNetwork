@@ -99,7 +99,9 @@ public class HomeFragment extends Fragment {
         btnAcc = view.findViewById(R.id.button_acc);
 
         profileId = SecureStorage.getToken("profileId");
-        getProfile();
+        getProfile(() -> {
+            loadInitialData(); // chỉ gọi khi profileId đã có
+        });
         postViewModel = new PostViewModel(new PostUseCase(new SupabaseRepositoryImpl()));
         flaskViewModel = new FlaskViewModel(new FlaskUseCase(new FlaskRepositoryImpl()));
 
@@ -112,7 +114,6 @@ public class HomeFragment extends Fragment {
         });
 
         Log.d("Supabase", "HomeFragment onCreateView - Gọi loadInitialData()");
-        loadInitialData();
         clickViewProfile();
         return view;
     }
@@ -124,7 +125,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void getProfile() {
+    private void getProfile(Runnable onSuccess) {
         LocalProfileRepositoryImpl localRepo = new LocalProfileRepositoryImpl(
                 getContext(), ProfileDatabase.getInstance(getContext()).profileDao()
         );
@@ -138,13 +139,14 @@ public class HomeFragment extends Fragment {
                 profileViewModel.saveProfile(profile);
                 SecureStorage.saveToken("profileId", profile.getProfileId());
                 profileId = profile.getProfileId();
+                onSuccess.run(); // chỉ gọi load khi xong
             }
 
             @Override
-            public void onProfileFailure(String error) {
-            }
+            public void onProfileFailure(String error) {}
         });
     }
+
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -273,64 +275,5 @@ public class HomeFragment extends Fragment {
     private void saveFirstPageToSQLite(List<Post> posts) {
         dbHelper.savePosts(posts);
     }
-
-    private void loadPosts() {
-        resetAndLoadPosts(); // Gộp vào resetAndLoadPosts để đồng nhất logic
-    }
-
-    private void loadPosts1() {
-        List<Integer> profile_ids = new ArrayList<>();
-        profileId = SecureStorage.getToken("profileId");
-        getProfile();
-        Log.d("loadPosts", "profileId = " + profileId);
-        if (profileId == null || profileId.isEmpty()) {
-            Log.e("loadPosts", "profileId is null or empty");
-            return;
-        }
-        int profileIdInt = Integer.parseInt(profileId);
-        profile_ids.add(profileIdInt);
-        flaskViewModel.getFollowers(Integer.parseInt(profileId), new FlaskViewModel.OnGetFollowers() {
-            @Override
-            public void onGetSuccess(List<Integer> followers) {
-                profile_ids.addAll(followers);
-                String profileIdsString = profile_ids.stream()
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(","));
-                postViewModel.getPostByIdUser("in.(" + profileIdsString + ")", new PostViewModel.OnGetPost() {
-                    @Override
-                    public void onGetPostSuccess(List<Post> posts) {
-                        postList.clear();
-                        postList.addAll(posts);
-                        postAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onGetPostFailure(String message) {
-                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onGetFailure(String message) {
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void loadPostProfileID() {
-        postViewModel.getPostByIdUser("eq." + profileId, new PostViewModel.OnGetPost() {
-            @Override
-            public void onGetPostSuccess(List<Post> posts) {
-                postList.clear();
-                postList.addAll(posts);
-                postAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onGetPostFailure(String message) {
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+    
 }
