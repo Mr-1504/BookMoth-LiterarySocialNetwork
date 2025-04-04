@@ -75,7 +75,7 @@ public class AuthorFragment extends Fragment {
         });
         rv_works_adapter.attachWorkClickListener(pos -> {
             Intent workDash = new Intent(requireContext(), WorkDashboardActivity.class);
-            workDash.putExtra("work_id", works.get(pos-1).getWork_id());
+            workDash.putExtra("work_id", works.get(pos-2).getWork_id());
             startActivity(workDash);
         });
         rv_works_adapter.attachRefreshListener(view -> viewModel.fetchCreatedWorks());
