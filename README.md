@@ -25,18 +25,20 @@ BookMoth aims to create a vibrant community for literary enthusiasts by providin
 ### System Architecture
 
 BookMoth follows a clean architecture pattern with multiple backend services supporting different functional domains. The application integrates social networking capabilities with e-commerce features for literary content.
-<br>
+
+
 <img src="overview/system architecture.png">
 
 ### Core Application Flow
-
 The application follows a structured user journey from authentication through core feature usage. The main entry point is `SplashScreenActivity`, with `HomeActivity` serving as the central navigation hub.
-<br>
+
+
 <img src="overview/core application flow.png">
 
 ## Technology Stack
 BookMoth utilizes a modern Android technology stack with clean architecture principles and multiple backend integrations.
-<br>
+
+
 <img src="overview/technology stack.png">
 
 ### Frontend Technologies
@@ -59,7 +61,9 @@ BookMoth utilizes a modern Android technology stack with clean architecture prin
   - ZaloPay SDK: Payment processing
   - Firebase: Push notifications and cloud messaging
 
-- **Data Flow Patterns**:<br>
+- **Data Flow Patterns**:
+
+  
 <img src="overview/data flow pattens.png">
 
 ### Architectural Patterns
