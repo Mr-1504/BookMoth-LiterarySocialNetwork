@@ -2,6 +2,13 @@
 
 ## Overview
 
+
+
+[Details here](https://deepwiki.com/Mr-1504/BookMoth-LiterarySocialNetwork)
+
+
+[![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/Mr-1504/BookMoth-LiterarySocialNetwork)
+
 BookMoth is an Android application that combines social networking with a digital marketplace for literary works. It allows users to connect with other book lovers, share posts and comments, browse and purchase literary content, and create their own works using integrated author tools. The app is built with a clean architecture, leveraging modern Android technologies and multiple backend services for a seamless user experience.
 
 ## Purpose and Scope
